@@ -9,3 +9,4 @@ public interface IWingetService
     Task RefreshInstalledStatusAsync(IEnumerable<SoftwarePackageItem> packages);
     Task<bool> InstallPackageAsync(SoftwarePackageItem package, IProgress<string>? progress = null, CancellationToken ct = default);
 }
+

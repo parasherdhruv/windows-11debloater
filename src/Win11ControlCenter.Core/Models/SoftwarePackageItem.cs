@@ -78,3 +78,4 @@ public class SoftwarePackageItem : INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }
+

@@ -111,3 +111,4 @@ public class SelectionSurfacingAndSoftwareCenterTests
         Assert.Empty(vm.SelectedPackages);
     }
 }
+
