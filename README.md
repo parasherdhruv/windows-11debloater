@@ -5,7 +5,7 @@ A modern, modular, and safety-first Windows 11 debloater, optimization dashboard
 ![Platform](https://img.shields.io/badge/Platform-Windows%2011%20x64-blue)
 ![Framework](https://img.shields.io/badge/.NET-10.0%20LTS-purple)
 ![Architecture](https://img.shields.io/badge/Architecture-WPF%20%7C%20MVVM-green)
-![Tests](https://img.shields.io/badge/Tests-127%20Passing%20(100%25)-brightgreen)
+![Tests](https://img.shields.io/badge/Tests-145%20Passing%20(100%25)-brightgreen)
 ![License](https://img.shields.io/badge/License-MIT-orange)
 
 ---
@@ -60,7 +60,7 @@ All system modifications adhere to a strict 10-step lifecycle:
 
 ## Automated Test Suite
 
-Win11 Control Center includes **127 automated tests** passing with a 100% pass rate:
+Win11 Control Center includes **145 automated tests** passing with a 100% pass rate:
 
 - **91 Safety Tests** (`Win11ControlCenter.SafetyTests`):
   - Protected packages removal prevention (`ShellExperienceHost`, `SecHealthUI`, `StorePurchaseApp`, etc.)
@@ -70,11 +70,19 @@ Win11 Control Center includes **127 automated tests** passing with a 100% pass r
   - Winget package ID regex validation (`^[a-zA-Z0-9\.\-_+]+$`) preventing command injection
   - Input injection sanitization on power scheme GUIDs and restore point descriptions
   - Dry-run simulation safety
-- **36 Unit Tests** (`Win11ControlCenter.UnitTests`):
-  - Hardware and OS telemetry discovery
-  - Reversible startup disabling bitmask calculation
-  - Optimization profiles diff calculation and plan compilation
-  - Custom profiles JSON serialization and lifecycle
+- **54 Unit & Full Automation Feature Tests** (`Win11ControlCenter.UnitTests`):
+  - **Full Application Automation Suite (`FullAppAutomationFeatureTests.cs`)**:
+    - End-to-end verification of all 15 core feature workflows
+    - Full DI Container registration & resolution across all 14 services and 13 ViewModels
+    - Automated shell navigation across all 13 pages without dispatcher thread termination
+    - Package discovery, Safe Bloat selection, Pin to Top, and Unselect chip tray
+    - Software Center category filtering, catalog search, and dry-run execution
+    - Startup Manager non-destructive toggling and service manager inventory
+    - Privacy baseline application, profile diffing, and cleaner target scanning
+    - Custom tweak validation with real-time safety blocks
+    - Snapshot session creation and emergency `.reg` generation
+    - Activity logging audit trail and settings theme toggling
+  - **STA XAML View Instantiation Tests**: Instantiates `MainWindow` and all 13 view templates in an isolated STA thread to prevent XAML parsing and binding regressions.
   - Selection surfacing synchronization and unselect commands in App Debloater & System Cleaner
   - Software Center package discovery, category filtering, and selection
   - Storage clutter scanning and byte formatting
@@ -82,7 +90,13 @@ Win11 Control Center includes **127 automated tests** passing with a 100% pass r
   - Audit logging recording, filtering, and export
   - Custom tweaks validation and storage
 
-Run tests:
+### Running the Full Application Automation Suite
+A dedicated PowerShell automation runner is included for an immediate live console walkthrough of all features:
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\run-full-automation.ps1
+```
+
+Or run all test suites via dotnet CLI:
 ```powershell
 $env:DOTNET_ROOT = "$env:USERPROFILE\.dotnet"; $env:PATH = "$env:USERPROFILE\.dotnet;$env:PATH"
 dotnet test
