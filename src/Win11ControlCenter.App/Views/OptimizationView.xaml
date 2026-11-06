@@ -321,7 +321,7 @@
                                                 <Button Grid.Column="2" Content="Activate" Style="{DynamicResource ModernButton}" Width="90" VerticalAlignment="Center"
                                                         Command="{Binding DataContext.ActivatePowerPlanCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                         CommandParameter="{Binding}"
-                                                        IsEnabled="{Binding IsActive, Converter={StaticResource BoolToVisConverter}, ConverterParameter='invert'}" />
+                                                        IsEnabled="{Binding IsActive, Converter={StaticResource InverseBoolConverter}}" />
                                             </Grid>
                                         </Border>
                                     </DataTemplate>

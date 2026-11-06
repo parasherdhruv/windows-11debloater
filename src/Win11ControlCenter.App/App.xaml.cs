@@ -34,10 +34,12 @@ public partial class App : Application
         services.AddSingleton<IOptimizationProfileService, OptimizationProfileService>();
         services.AddSingleton<ICleanupService, CleanupService>();
         services.AddSingleton<IRestoreService, RestoreService>();
+        services.AddSingleton<IWingetService, WingetService>();
 
         // ViewModels
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<AppDebloaterViewModel>();
+        services.AddSingleton<SoftwareCenterViewModel>();
         services.AddSingleton<StartupManagerViewModel>();
         services.AddSingleton<ServicesManagerViewModel>();
         services.AddSingleton<PrivacyViewModel>();

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Win11ControlCenter.Core.Enums;
 using Win11ControlCenter.Core.Interfaces;
@@ -16,6 +17,8 @@ public partial class AppDebloaterViewModel : ViewModelBase
     private PackageCategory? _selectedCategory;
     private ApplicationPackage? _selectedPackage;
     private List<ApplicationPackage> _allDiscoveredPackages = new();
+    private string _activeViewTab = "All"; // "All", "Selected", "SafeBloat"
+    private bool _pinSelectedToTop = true;
 
     private bool _isPlanModalOpen;
     private OperationPlan? _activePlan;
@@ -24,6 +27,7 @@ public partial class AppDebloaterViewModel : ViewModelBase
     private bool _isExecuting;
 
     public ObservableCollection<ApplicationPackage> Packages { get; } = new();
+    public ObservableCollection<ApplicationPackage> SelectedPackages { get; } = new();
 
     public string SearchFilter
     {
@@ -43,6 +47,37 @@ public partial class AppDebloaterViewModel : ViewModelBase
         set
         {
             if (SetProperty(ref _selectedCategory, value))
+            {
+                ApplyFilter();
+            }
+        }
+    }
+
+    public string ActiveViewTab
+    {
+        get => _activeViewTab;
+        set
+        {
+            if (SetProperty(ref _activeViewTab, value))
+            {
+                OnPropertyChanged(nameof(IsAllTabActive));
+                OnPropertyChanged(nameof(IsSelectedTabActive));
+                OnPropertyChanged(nameof(IsSafeBloatTabActive));
+                ApplyFilter();
+            }
+        }
+    }
+
+    public bool IsAllTabActive => ActiveViewTab == "All";
+    public bool IsSelectedTabActive => ActiveViewTab == "Selected";
+    public bool IsSafeBloatTabActive => ActiveViewTab == "SafeBloat";
+
+    public bool PinSelectedToTop
+    {
+        get => _pinSelectedToTop;
+        set
+        {
+            if (SetProperty(ref _pinSelectedToTop, value))
             {
                 ApplyFilter();
             }
@@ -93,11 +128,17 @@ public partial class AppDebloaterViewModel : ViewModelBase
 
     public bool IsNotExecuting => !IsExecuting;
 
-    public int SelectedCount => Packages.Count(p => p.IsSelectedForRemoval);
+    public int SelectedCount => _allDiscoveredPackages.Count > 0
+        ? _allDiscoveredPackages.Count(p => p.IsSelectedForRemoval)
+        : Packages.Count(p => p.IsSelectedForRemoval);
+
+    public bool HasSelectedPackages => SelectedCount > 0;
 
     public IAsyncRelayCommand RefreshCommand { get; }
     public IRelayCommand SelectAllSafeCommand { get; }
     public IRelayCommand ClearSelectionCommand { get; }
+    public IRelayCommand<ApplicationPackage> UnselectPackageCommand { get; }
+    public IRelayCommand<string> SwitchTabCommand { get; }
     public IAsyncRelayCommand PreviewRemovalPlanCommand { get; }
     public IAsyncRelayCommand DryRunSimulationCommand { get; }
     public IAsyncRelayCommand ExecuteConfirmedPlanCommand { get; }
@@ -112,10 +153,25 @@ public partial class AppDebloaterViewModel : ViewModelBase
         RefreshCommand = new AsyncRelayCommand(LoadPackagesAsync);
         SelectAllSafeCommand = new RelayCommand(SelectAllSafe);
         ClearSelectionCommand = new RelayCommand(ClearSelection);
+        UnselectPackageCommand = new RelayCommand<ApplicationPackage>(UnselectPackage);
+        SwitchTabCommand = new RelayCommand<string>(tab => { if (tab != null) ActiveViewTab = tab; });
         PreviewRemovalPlanCommand = new AsyncRelayCommand(PreviewRemovalPlanAsync);
         DryRunSimulationCommand = new AsyncRelayCommand(DryRunSimulationAsync);
         ExecuteConfirmedPlanCommand = new AsyncRelayCommand(ExecuteConfirmedPlanAsync);
         CloseModalCommand = new RelayCommand(() => IsPlanModalOpen = false);
+
+        Packages.CollectionChanged += (s, e) =>
+        {
+            if (e.NewItems != null)
+            {
+                foreach (ApplicationPackage item in e.NewItems)
+                {
+                    item.PropertyChanged -= OnItemPropertyChanged;
+                    item.PropertyChanged += OnItemPropertyChanged;
+                }
+            }
+            SyncSelectedCollection();
+        };
     }
 
     public override async Task InitializeAsync()
@@ -133,10 +189,17 @@ public partial class AppDebloaterViewModel : ViewModelBase
             var discovered = await _packageManager.GetInstalledPackagesAsync();
             _allDiscoveredPackages = discovered.ToList();
 
+            foreach (var item in _allDiscoveredPackages)
+            {
+                item.PropertyChanged -= OnItemPropertyChanged;
+                item.PropertyChanged += OnItemPropertyChanged;
+            }
+
             ApplyFilter();
 
-            StatusMessage = $"{Packages.Count} applications discovered.";
+            StatusMessage = $"{_allDiscoveredPackages.Count} applications discovered.";
             OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelectedPackages));
         }
         catch (Exception ex)
         {
@@ -149,27 +212,82 @@ public partial class AppDebloaterViewModel : ViewModelBase
         }
     }
 
+    private void OnItemPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ApplicationPackage.IsSelectedForRemoval))
+        {
+            SyncSelectedCollection();
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelectedPackages));
+
+            if (ActiveViewTab == "Selected")
+            {
+                ApplyFilter();
+            }
+        }
+    }
+
+    private void SyncSelectedCollection()
+    {
+        var source = _allDiscoveredPackages.Count > 0 ? _allDiscoveredPackages : Packages.ToList();
+        var selected = source.Where(p => p.IsSelectedForRemoval).ToList();
+
+        SelectedPackages.Clear();
+        foreach (var item in selected)
+        {
+            SelectedPackages.Add(item);
+        }
+    }
+
     private void SelectAllSafe()
     {
-        foreach (var p in Packages.Where(p => p.RiskLevel == OperationRiskLevel.Safe && !p.IsProtected))
+        var source = _allDiscoveredPackages.Count > 0 ? _allDiscoveredPackages : Packages.ToList();
+        foreach (var p in source.Where(p => p.RiskLevel == OperationRiskLevel.Safe && !p.IsProtected))
         {
             p.IsSelectedForRemoval = true;
         }
+        SyncSelectedCollection();
         OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(HasSelectedPackages));
     }
 
     private void ClearSelection()
     {
-        foreach (var p in Packages)
+        var source = _allDiscoveredPackages.Count > 0 ? _allDiscoveredPackages : Packages.ToList();
+        foreach (var p in source)
         {
             p.IsSelectedForRemoval = false;
         }
+        SyncSelectedCollection();
         OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(HasSelectedPackages));
+
+        if (ActiveViewTab == "Selected")
+        {
+            ApplyFilter();
+        }
+    }
+
+    private void UnselectPackage(ApplicationPackage? package)
+    {
+        if (package != null)
+        {
+            package.IsSelectedForRemoval = false;
+            SyncSelectedCollection();
+            OnPropertyChanged(nameof(SelectedCount));
+            OnPropertyChanged(nameof(HasSelectedPackages));
+
+            if (ActiveViewTab == "Selected")
+            {
+                ApplyFilter();
+            }
+        }
     }
 
     private async Task PreviewRemovalPlanAsync()
     {
-        var selected = Packages.Where(p => p.IsSelectedForRemoval).ToList();
+        var source = _allDiscoveredPackages.Count > 0 ? _allDiscoveredPackages : Packages.ToList();
+        var selected = source.Where(p => p.IsSelectedForRemoval).ToList();
         if (selected.Count == 0)
         {
             StatusMessage = "No packages selected for removal. Select applications first.";
@@ -250,6 +368,15 @@ public partial class AppDebloaterViewModel : ViewModelBase
         Packages.Clear();
         var query = _allDiscoveredPackages.AsEnumerable();
 
+        if (ActiveViewTab == "Selected")
+        {
+            query = query.Where(p => p.IsSelectedForRemoval);
+        }
+        else if (ActiveViewTab == "SafeBloat")
+        {
+            query = query.Where(p => p.RiskLevel == OperationRiskLevel.Safe && !p.IsProtected);
+        }
+
         if (!string.IsNullOrWhiteSpace(SearchFilter))
         {
             query = query.Where(p => p.DisplayName.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
@@ -262,11 +389,25 @@ public partial class AppDebloaterViewModel : ViewModelBase
             query = query.Where(p => p.Category == SelectedCategory.Value);
         }
 
+        if (PinSelectedToTop && ActiveViewTab == "All")
+        {
+            query = query.OrderByDescending(p => p.IsSelectedForRemoval)
+                         .ThenBy(p => p.DisplayName);
+        }
+        else
+        {
+            query = query.OrderBy(p => p.DisplayName);
+        }
+
         foreach (var item in query)
         {
+            item.PropertyChanged -= OnItemPropertyChanged;
+            item.PropertyChanged += OnItemPropertyChanged;
             Packages.Add(item);
         }
 
+        SyncSelectedCollection();
         OnPropertyChanged(nameof(SelectedCount));
+        OnPropertyChanged(nameof(HasSelectedPackages));
     }
 }

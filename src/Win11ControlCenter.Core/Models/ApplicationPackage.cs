@@ -1,9 +1,14 @@
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Win11ControlCenter.Core.Enums;
 
 namespace Win11ControlCenter.Core.Models;
 
-public class ApplicationPackage
+public class ApplicationPackage : INotifyPropertyChanged
 {
+    private bool _isSelectedForRemoval;
+    private bool _removeProvisioningToo = true;
+
     public string Name { get; set; } = string.Empty;
     public string DisplayName { get; set; } = string.Empty;
     public string PackageFullName { get; set; } = string.Empty;
@@ -25,8 +30,31 @@ public class ApplicationPackage
     public string Description { get; set; } = string.Empty;
     public string? InstallLocation { get; set; }
     
-    public bool IsSelectedForRemoval { get; set; }
-    public bool RemoveProvisioningToo { get; set; } = true;
+    public bool IsSelectedForRemoval
+    {
+        get => _isSelectedForRemoval;
+        set
+        {
+            if (_isSelectedForRemoval != value)
+            {
+                _isSelectedForRemoval = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+
+    public bool RemoveProvisioningToo
+    {
+        get => _removeProvisioningToo;
+        set
+        {
+            if (_removeProvisioningToo != value)
+            {
+                _removeProvisioningToo = value;
+                OnPropertyChanged();
+            }
+        }
+    }
 
     public string SizeFormatted
     {
@@ -37,5 +65,11 @@ public class ApplicationPackage
             return mb < 1024 ? $"{mb:F1} MB" : $"{mb / 1024.0:F2} GB";
         }
     }
-}
 
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}

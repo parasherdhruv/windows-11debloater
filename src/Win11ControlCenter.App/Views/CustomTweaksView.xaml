@@ -105,7 +105,7 @@
 
                 <!-- Validation Error display -->
                 <TextBlock Text="{Binding ValidationError}" FontSize="12" Foreground="{DynamicResource DangerBrush}" Margin="0,6,0,0" 
-                           Visibility="{Binding ValidationError, Converter={StaticResource BoolToVisConverter}}" />
+                           Visibility="{Binding ValidationError, Converter={StaticResource NullOrEmptyToVisConverter}}" />
             </StackPanel>
         </Border>
 

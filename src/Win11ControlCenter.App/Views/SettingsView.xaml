@@ -27,7 +27,7 @@
 
             <!-- Status message -->
             <TextBlock Text="{Binding SaveStatus}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" Margin="0,0,0,12"
-                       Visibility="{Binding SaveStatus, Converter={StaticResource BoolToVisConverter}}" />
+                       Visibility="{Binding SaveStatus, Converter={StaticResource NullOrEmptyToVisConverter}}" />
 
             <!-- Appearance Theme Card -->
             <Border Style="{DynamicResource FluentCard}">

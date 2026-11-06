@@ -1,3 +1,6 @@
+using System.Diagnostics;
+using System.Security.Principal;
+using System.Windows;
 using CommunityToolkit.Mvvm.Input;
 
 namespace Win11ControlCenter.App.ViewModels;
@@ -19,9 +22,13 @@ public partial class MainViewModel : ViewModelBase
         set => SetProperty(ref _currentPageTitle, value);
     }
 
-    // 12 ViewModels
+    public bool IsElevated { get; }
+    public string ElevationStatusText => IsElevated ? "Administrator (Elevated)" : "Standard User (Safe)";
+
+    // 13 ViewModels
     public DashboardViewModel DashboardVM { get; }
     public AppDebloaterViewModel AppDebloaterVM { get; }
+    public SoftwareCenterViewModel SoftwareCenterVM { get; }
     public StartupManagerViewModel StartupManagerVM { get; }
     public ServicesManagerViewModel ServicesManagerVM { get; }
     public PrivacyViewModel PrivacyVM { get; }
@@ -34,10 +41,12 @@ public partial class MainViewModel : ViewModelBase
     public SettingsViewModel SettingsVM { get; }
 
     public IRelayCommand<string> NavigateCommand { get; }
+    public IRelayCommand RelaunchElevatedCommand { get; }
 
     public MainViewModel(
         DashboardViewModel dashboardVM,
         AppDebloaterViewModel appDebloaterVM,
+        SoftwareCenterViewModel softwareCenterVM,
         StartupManagerViewModel startupManagerVM,
         ServicesManagerViewModel servicesManagerVM,
         PrivacyViewModel privacyVM,
@@ -51,6 +60,7 @@ public partial class MainViewModel : ViewModelBase
     {
         DashboardVM = dashboardVM;
         AppDebloaterVM = appDebloaterVM;
+        SoftwareCenterVM = softwareCenterVM;
         StartupManagerVM = startupManagerVM;
         ServicesManagerVM = servicesManagerVM;
         PrivacyVM = privacyVM;
@@ -62,13 +72,43 @@ public partial class MainViewModel : ViewModelBase
         ActivityLogsVM = activityLogsVM;
         SettingsVM = settingsVM;
 
+        using (var identity = WindowsIdentity.GetCurrent())
+        {
+            var principal = new WindowsPrincipal(identity);
+            IsElevated = principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
+
         _currentViewModel = DashboardVM;
         NavigateCommand = new RelayCommand<string>(NavigateToPage);
+        RelaunchElevatedCommand = new RelayCommand(RelaunchElevated);
     }
 
     public override async Task InitializeAsync()
     {
         await DashboardVM.InitializeAsync();
+    }
+
+    private void RelaunchElevated()
+    {
+        try
+        {
+            var exe = Environment.ProcessPath ?? Process.GetCurrentProcess().MainModule?.FileName;
+            if (!string.IsNullOrEmpty(exe))
+            {
+                var psi = new ProcessStartInfo
+                {
+                    FileName = exe,
+                    UseShellExecute = true,
+                    Verb = "runas"
+                };
+                Process.Start(psi);
+                Application.Current.Shutdown();
+            }
+        }
+        catch
+        {
+            // User cancelled UAC prompt
+        }
     }
 
     private async void NavigateToPage(string? pageKey)
@@ -79,6 +119,7 @@ public partial class MainViewModel : ViewModelBase
         {
             "Dashboard" => DashboardVM,
             "AppDebloater" => AppDebloaterVM,
+            "SoftwareCenter" => SoftwareCenterVM,
             "StartupManager" => StartupManagerVM,
             "ServicesManager" => ServicesManagerVM,
             "Privacy" => PrivacyVM,
@@ -97,6 +138,7 @@ public partial class MainViewModel : ViewModelBase
         {
             "Dashboard" => "Dashboard",
             "AppDebloater" => "App Debloater",
+            "SoftwareCenter" => "Software Center",
             "StartupManager" => "Startup Manager",
             "ServicesManager" => "Windows Services",
             "Privacy" => "Privacy & Telemetry",
@@ -113,4 +155,3 @@ public partial class MainViewModel : ViewModelBase
         await target.InitializeAsync();
     }
 }
-

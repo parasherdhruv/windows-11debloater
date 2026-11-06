@@ -6,11 +6,12 @@
              xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:AppDebloaterViewModel}"
-             d:DesignHeight="700" d:DesignWidth="900">
+             d:DesignHeight="700" d:DesignWidth="950">
     <Grid Margin="24">
         <!-- Main Content Area -->
         <Grid>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -26,13 +27,13 @@
                     <TextBlock Text="Application Debloater" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
                     <TextBlock Text="Audit and safely remove unwanted Windows applications. Core components are protected." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
                 </StackPanel>
-                <StackPanel Grid.Column="1" Orientation="Horizontal">
-                    <Button Content="Select All Safe" Style="{DynamicResource ModernButton}" Command="{Binding SelectAllSafeCommand}" Margin="0,0,8,0" />
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="✨ Select Safe Bloat" Style="{DynamicResource ModernButton}" Command="{Binding SelectAllSafeCommand}" Margin="0,0,8,0" />
                     <Button Content="Clear Selection" Style="{DynamicResource ModernButton}" Command="{Binding ClearSelectionCommand}" Margin="0,0,8,0" />
-                    <Button Content="Refresh" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
+                    <Button Content="🔄 Refresh" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
                     <Button Style="{DynamicResource PrimaryButton}" Command="{Binding PreviewRemovalPlanCommand}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Preview Removal Plan (" />
+                            <TextBlock Text="Preview Removal (" />
                             <TextBlock Text="{Binding SelectedCount}" FontWeight="Bold" />
                             <TextBlock Text=")" />
                         </StackPanel>
@@ -40,28 +41,100 @@
                 </StackPanel>
             </Grid>
 
-            <!-- Search and Filter Bar -->
-            <Grid Grid.Row="1" Margin="0,0,0,16">
+            <!-- Search, Tabs & Quick Filter Bar -->
+            <Grid Grid.Row="1" Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="280" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <Border Style="{DynamicResource FluentCard}" Padding="8,6" Margin="0">
+                <!-- Search Input -->
+                <Border Style="{DynamicResource FluentCard}" Padding="10,6" Margin="0,0,12,0" VerticalAlignment="Center">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="🔍" VerticalAlignment="Center" Margin="8,0,8,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        <TextBlock Text="🔍" VerticalAlignment="Center" Margin="4,0,8,0" Foreground="{DynamicResource TextMutedBrush}" />
                         <TextBox Grid.Column="1" Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged}" 
                                  Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
                                  BorderThickness="0" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource SegoeFluent}" />
                     </Grid>
                 </Border>
+
+                <!-- Segmented Tabs (All / Selected / Safe) -->
+                <Border Grid.Column="1" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="All Applications" Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsAllTabActive}" 
+                                     Command="{Binding SwitchTabCommand}" CommandParameter="All" />
+                        
+                        <RadioButton Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsSelectedTabActive}" 
+                                     Command="{Binding SwitchTabCommand}" CommandParameter="Selected">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Selected Only (" />
+                                <TextBlock Text="{Binding SelectedCount}" FontWeight="Bold" Foreground="{DynamicResource AccentLightBrush}" />
+                                <TextBlock Text=")" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <RadioButton Content="Safe Recommendations" Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsSafeBloatTabActive}" 
+                                     Command="{Binding SwitchTabCommand}" CommandParameter="SafeBloat" />
+                    </StackPanel>
+                </Border>
+
+                <!-- Pin Selected To Top Toggle -->
+                <CheckBox Grid.Column="2" Content="Pin Selected to Top" IsChecked="{Binding PinSelectedToTop}" 
+                          Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="8,0,0,0" />
             </Grid>
 
+            <!-- Selected Applications Shelf / Tray (Surfaces what has been selected) -->
+            <Border Grid.Row="2" Style="{DynamicResource FluentCardElevated}" Margin="0,0,0,12" Padding="12,10"
+                    Visibility="{Binding HasSelectedPackages, Converter={StaticResource BoolToVisConverter}}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
+                        <TextBlock Text="Selected for Removal (" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
+                        <TextBlock Text="{Binding SelectedCount}" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
+                        <TextBlock Text="):" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
+                    </StackPanel>
+
+                    <!-- Horizontal Scrollable Chips of Selected Packages -->
+                    <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding SelectedPackages}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#253545" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="12" Padding="8,3" Margin="0,0,6,0">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,6,0" />
+                                            <Button Command="{Binding DataContext.UnselectPackageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding}" Content="✕" Cursor="Hand" Background="Transparent" BorderThickness="0" 
+                                                    Foreground="{DynamicResource DangerBrush}" FontWeight="Bold" FontSize="11" Padding="2,0" />
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <Button Grid.Column="2" Content="Clear All" Command="{Binding ClearSelectionCommand}" 
+                            Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextSecondaryBrush}" 
+                            FontSize="11" Cursor="Hand" VerticalAlignment="Center" Margin="8,0,0,0" />
+                </Grid>
+            </Border>
+
             <!-- Master-Detail Layout -->
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*" />
                     <ColumnDefinition Width="2*" />
@@ -87,7 +160,7 @@
                                                     <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="#2560CDFF" />
+                                                    <Setter Property="Background" Value="#250078D4" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -106,7 +179,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Selection Checkbox -->
-                                    <CheckBox IsChecked="{Binding IsSelectedForRemoval}" IsEnabled="{Binding IsRemovable}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <CheckBox IsChecked="{Binding IsSelectedForRemoval, Mode=TwoWay}" IsEnabled="{Binding IsRemovable}" VerticalAlignment="Center" Margin="0,0,12,0" />
 
                                     <!-- App Info -->
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -125,7 +198,7 @@
 
                                     <!-- Risk Badge -->
                                     <Border Grid.Column="3" Style="{DynamicResource StatusBadge}">
-                                        <TextBlock Text="{Binding RiskLevel}" FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                        <TextBlock Text="{Binding RiskLevel}" FontSize="11" Foreground="{Binding RiskLevel, Converter={StaticResource RiskToBrushConverter}}" FontWeight="SemiBold" />
                                     </Border>
                                 </Grid>
                             </DataTemplate>
@@ -134,49 +207,49 @@
                 </Border>
 
                 <!-- Right: Package Inspector Panel -->
-                <Border Grid.Column="1" Style="{DynamicResource FluentCard}" Padding="16">
+                <Border Grid.Column="1" Style="{DynamicResource FluentCard}" Padding="18">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <TextBlock Text="Package Inspector" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,16" />
 
-                            <TextBlock Text="APPLICATION NAME" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="APPLICATION NAME" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
                             <TextBlock Text="{Binding SelectedPackage.DisplayName, FallbackValue='Select an application to inspect'}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,12" />
 
-                            <TextBlock Text="PACKAGE IDENTITY" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
-                            <TextBlock Text="{Binding SelectedPackage.PackageFullName, FallbackValue='N/A'}" FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap" Margin="0,2,0,12" />
+                            <TextBlock Text="PACKAGE IDENTITY" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
+                            <TextBlock Text="{Binding SelectedPackage.PackageFullName, FallbackValue='N/A'}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,12" />
 
-                            <TextBlock Text="PUBLISHER" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="PUBLISHER" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
                             <TextBlock Text="{Binding SelectedPackage.Publisher, FallbackValue='N/A'}" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,12" />
 
-                            <TextBlock Text="VERSION &amp; TYPE" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="VERSION &amp; TYPE" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,12">
                                 <TextBlock Text="{Binding SelectedPackage.Version, FallbackValue='1.0.0'}" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,8,0" />
                                 <Border Style="{DynamicResource StatusBadge}">
-                                    <TextBlock Text="{Binding SelectedPackage.PackageType, FallbackValue='AppX'}" FontSize="11" Foreground="{DynamicResource AccentBrush}" />
+                                    <TextBlock Text="{Binding SelectedPackage.PackageType, FallbackValue='AppX'}" FontSize="11" Foreground="{DynamicResource AccentLightBrush}" />
                                 </Border>
                             </StackPanel>
 
-                            <TextBlock Text="REMOVAL RISK CLASSIFICATION" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="REMOVAL RISK CLASSIFICATION" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
                             <StackPanel Orientation="Horizontal" Margin="0,2,0,12">
                                 <Border Style="{DynamicResource StatusBadge}">
-                                    <TextBlock Text="{Binding SelectedPackage.RiskLevel, FallbackValue='Safe'}" FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                    <TextBlock Text="{Binding SelectedPackage.RiskLevel, FallbackValue='Safe'}" FontSize="11" Foreground="{Binding SelectedPackage.RiskLevel, Converter={StaticResource RiskToBrushConverter}}" FontWeight="Bold" />
                                 </Border>
                                 <Border Style="{DynamicResource StatusBadge}" Margin="8,0,0,0">
                                     <TextBlock Text="{Binding SelectedPackage.Category, FallbackValue='SafeConsumer'}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" />
                                 </Border>
                             </StackPanel>
 
-                            <TextBlock Text="REMOVAL SCOPE OPTIONS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,4" />
+                            <TextBlock Text="REMOVAL SCOPE OPTIONS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="0,4,0,4" />
                             <CheckBox IsChecked="{Binding SelectedPackage.RemoveProvisioningToo, FallbackValue=True}" 
                                       Content="Also remove package provisioning for new accounts" 
                                       Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,14" />
 
                             <!-- Safety Warning Banner -->
-                            <Border Background="#20FFFFFF" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12">
+                            <Border Background="#1A0078D4" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
                                 <StackPanel>
-                                    <TextBlock Text="Reversibility Note" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentBrush}" />
-                                    <TextBlock Text="Removing an application deletes its local assets. To restore it later, re-download it via the Microsoft Store or Windows Package Manager (winget)." 
-                                               FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                    <TextBlock Text="🛡️ Reversibility Note" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
+                                    <TextBlock Text="Removing an application deletes its local packages. You can easily re-install it anytime via the Microsoft Store or our integrated Software Center." 
+                                               FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,3,0,0" />
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -187,8 +260,8 @@
 
         <!-- Operation Summary & Confirmation Modal Overlay -->
         <Border Background="#C0000000" Visibility="{Binding IsPlanModalOpen, Converter={StaticResource BoolToVisConverter}}" Margin="-24">
-            <Border Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                    CornerRadius="10" Width="680" MaxHeight="600" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="24">
+            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                    CornerRadius="12" Width="680" MaxHeight="600" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="24">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -206,7 +279,7 @@
                     </Grid>
 
                     <!-- Selected Items List -->
-                    <Border Grid.Row="1" Background="#181818" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,16">
+                    <Border Grid.Row="1" Background="#141416" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="8" Margin="0,0,0,16">
                         <ListBox ItemsSource="{Binding ActivePlan.Items}" Background="Transparent" BorderThickness="0" MaxHeight="250">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
@@ -231,7 +304,7 @@
 
                     <!-- Progress Indicator -->
                     <StackPanel Grid.Row="2" Margin="0,0,0,16" Visibility="{Binding IsExecuting, Converter={StaticResource BoolToVisConverter}}">
-                        <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="4" Margin="0,0,0,6" Foreground="{DynamicResource AccentBrush}" />
+                        <ProgressBar Value="{Binding ProgressPercent}" Maximum="100" Height="4" Margin="0,0,0,6" Foreground="{DynamicResource AccentLightBrush}" />
                         <TextBlock Text="{Binding ProgressStatus}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
                     </StackPanel>
 
@@ -241,7 +314,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="Safety Shield: All system components are verified safe." VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource SuccessBrush}" />
+                        <TextBlock Text="🛡️ Safety Shield: All system components are verified safe." VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource SuccessBrush}" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <Button Content="Close" Style="{DynamicResource ModernButton}" Command="{Binding CloseModalCommand}" Margin="0,0,8,0" IsEnabled="{Binding IsNotExecuting}" />
                             <Button Content="Dry-Run Simulation" Style="{DynamicResource ModernButton}" Command="{Binding DryRunSimulationCommand}" Margin="0,0,8,0" IsEnabled="{Binding IsNotExecuting}" />
