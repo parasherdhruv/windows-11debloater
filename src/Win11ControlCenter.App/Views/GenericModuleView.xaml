@@ -10,7 +10,7 @@
             <Border Style="{DynamicResource FluentCard}" Padding="32">
                 <StackPanel HorizontalAlignment="Center">
                     <TextBlock Text="⚙️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16" />
-                    <TextBlock x:Name="ModuleTitle" Text="Windows Optimization Module" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                    <TextBlock x:Name="ModuleTitle" Text="Windows Optimization Module" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
                     <TextBlock x:Name="ModuleDescription" Text="Modular engine ready. Full features are enabled in the upcoming roadmap phases following safe verification." 
                                FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,8,0,20" TextWrapping="Wrap" TextAlignment="Center" />
                     <Border Style="{DynamicResource StatusBadge}" Background="#1A60CDFF" BorderBrush="{DynamicResource AccentBrush}" HorizontalAlignment="Center">

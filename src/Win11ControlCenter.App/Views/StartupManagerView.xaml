@@ -21,7 +21,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Startup Application Manager" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                <TextBlock Text="Startup Application Manager" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
                 <TextBlock Text="Inspect and control applications configured to launch on Windows boot. Disabling is 100% reversible." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -40,7 +40,7 @@
                 <TextBlock Text="🔍" VerticalAlignment="Center" Margin="8,0,8,0" Foreground="{DynamicResource TextSecondaryBrush}" />
                 <TextBox Grid.Column="1" Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged}" 
                          Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
-                         BorderThickness="0" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource SegoeFluent}" />
+                         BorderThickness="0" VerticalAlignment="Center" FontSize="13" FontFamily="{DynamicResource SegoeFluent}" />
             </Grid>
         </Border>
 

@@ -24,7 +24,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="System Cleaner &amp; Maintenance" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                <TextBlock Text="System Cleaner &amp; Maintenance" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
                 <TextBlock Text="Safely scan and clean temporary system caches, crash dumps, and Recycle Bin without touching user personal files or drivers." 
                            FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
@@ -194,7 +194,7 @@
 
         <!-- Cleanup Confirmation Modal -->
         <Border Grid.RowSpan="5" Background="#C0000000" Visibility="{Binding IsPlanModalOpen, Converter={StaticResource BoolToVisConverter}}" Margin="-24">
-            <Border Width="680" MaxHeight="550" Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="24" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <Border Width="680" MaxHeight="550" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Padding="24" VerticalAlignment="Center" HorizontalAlignment="Center">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

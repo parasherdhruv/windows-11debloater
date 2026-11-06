@@ -24,7 +24,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel>
-                    <TextBlock Text="Application Debloater" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                    <TextBlock Text="Application Debloater" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
                     <TextBlock Text="Audit and safely remove unwanted Windows applications. Core components are protected." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
@@ -60,7 +60,7 @@
                         <TextBlock Text="🔍" VerticalAlignment="Center" Margin="4,0,8,0" Foreground="{DynamicResource TextMutedBrush}" />
                         <TextBox Grid.Column="1" Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged}" 
                                  Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
-                                 BorderThickness="0" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource SegoeFluent}" />
+                                 BorderThickness="0" VerticalAlignment="Center" FontSize="13" FontFamily="{DynamicResource SegoeFluent}" />
                     </Grid>
                 </Border>
 
@@ -261,7 +261,7 @@
 
         <!-- Operation Summary & Confirmation Modal Overlay -->
         <Border Background="#C0000000" Visibility="{Binding IsPlanModalOpen, Converter={StaticResource BoolToVisConverter}}" Margin="-24">
-            <Border Background="{DynamicResource CardBackgroundColor}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+            <Border Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                     CornerRadius="12" Width="680" MaxHeight="600" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="24">
                 <Grid>
                     <Grid.RowDefinitions>

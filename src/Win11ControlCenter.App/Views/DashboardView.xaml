@@ -17,7 +17,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel>
-                    <TextBlock Text="System Overview" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                    <TextBlock Text="System Overview" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
                     <TextBlock Text="Live hardware status, OS configuration, and resource distribution." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
                 </StackPanel>
                 <Button Grid.Column="1" Content="Scan System (Read-Only)" Style="{DynamicResource PrimaryButton}" Command="{Binding ScanSystemCommand}" />
