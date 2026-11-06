@@ -1,0 +1,24 @@
+<UserControl x:Class="Win11ControlCenter.App.Views.GenericModuleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="900">
+    <Grid Margin="24">
+        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" MaxWidth="600">
+            <Border Style="{DynamicResource FluentCard}" Padding="32">
+                <StackPanel HorizontalAlignment="Center">
+                    <TextBlock Text="⚙️" FontSize="48" HorizontalAlignment="Center" Margin="0,0,0,16" />
+                    <TextBlock x:Name="ModuleTitle" Text="Windows Optimization Module" FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                    <TextBlock x:Name="ModuleDescription" Text="Modular engine ready. Full features are enabled in the upcoming roadmap phases following safe verification." 
+                               FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,8,0,20" TextWrapping="Wrap" TextAlignment="Center" />
+                    <Border Style="{DynamicResource StatusBadge}" Background="#1A60CDFF" BorderBrush="{DynamicResource AccentBrush}" HorizontalAlignment="Center">
+                        <TextBlock Text="Phase 1 Application Architecture Active" FontSize="12" Foreground="{DynamicResource AccentBrush}" Margin="6,2" />
+                    </Border>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </Grid>
+</UserControl>
+

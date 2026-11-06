@@ -1,0 +1,251 @@
+<UserControl x:Class="Win11ControlCenter.App.Views.RestoreCenterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:RestoreCenterViewModel}"
+             d:DesignHeight="700" d:DesignWidth="1000">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="🛡️ System Recovery &amp; Restore Center" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="Automated pre-optimization snapshots, emergency .reg rollback files, and Windows System Restore checkpoint integration." 
+                           FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="🔄 Refresh" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
+                <Button Content="➕ Create Restore Checkpoint" Style="{DynamicResource AccentButton}" Command="{Binding CreateRestorePointCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Status Cards -->
+        <Grid Grid.Row="1" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- System Restore Status -->
+            <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Margin="0,0,8,0">
+                <StackPanel>
+                    <TextBlock Text="SYSTEM PROTECTION" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding SystemRestoreStatusText}" FontSize="18" FontWeight="Bold" Margin="0,4,0,0">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsSystemRestoreAvailable}" Value="False">
+                                        <Setter Property="Foreground" Value="{DynamicResource WarningBrush}" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                    <TextBlock Text="Windows System Restore state" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Total Backups -->
+            <Border Grid.Column="1" Style="{DynamicResource FluentCard}" Margin="4,0,4,0">
+                <StackPanel>
+                    <TextBlock Text="SAVED BACKUPS" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                    <TextBlock Text="{Binding Backups.Count}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Margin="0,4,0,0" />
+                    <TextBlock Text="Local rollback snapshots" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Rollback Architecture -->
+            <Border Grid.Column="2" Style="{DynamicResource FluentCard}" Margin="4,0,4,0">
+                <StackPanel>
+                    <TextBlock Text="ROLLBACK FIDELITY" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource SuccessBrush}" />
+                    <TextBlock Text="Dual Mechanism" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}" Margin="0,4,0,0" />
+                    <TextBlock Text="Typed Plan + Emergency .REG" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                </StackPanel>
+            </Border>
+
+            <!-- Reversibility Guarantee -->
+            <Border Grid.Column="3" Style="{DynamicResource FluentCard}" Margin="8,0,0,0">
+                <StackPanel>
+                    <TextBlock Text="SAFETY SHIELD" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="Non-Destructive" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,0" />
+                    <TextBlock Text="Reversible configuration changes" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <!-- Master-Detail Content -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="380" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Backups List -->
+            <Border Grid.Column="0" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12" Margin="0,0,16,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Configuration Snapshots" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="4,0,0,12" />
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ListBox ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" Background="Transparent" BorderThickness="0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#1C1C1C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14,10" Margin="0,0,0,6">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Row 0: Timestamp -->
+                                            <TextBlock Grid.Row="0" Text="{Binding BackupId}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+
+                                            <!-- Row 1: Profile -->
+                                            <TextBlock Grid.Row="1" Text="{Binding TriggerProfile}" FontSize="12" Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,4" />
+
+                                            <!-- Row 2: Counts -->
+                                            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                                <Border Style="{DynamicResource StatusBadge}" Margin="0,0,6,0">
+                                                    <TextBlock Text="{Binding RegistryEntriesCount, StringFormat='{}{0} Reg'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                </Border>
+                                                <Border Style="{DynamicResource StatusBadge}">
+                                                    <TextBlock Text="{Binding ServicesCount, StringFormat='{}{0} Svc'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                </Border>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- Right: Selected Backup Details -->
+            <Border Grid.Column="1" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <!-- Title & Actions -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="{Binding SelectedBackup.BackupId, StringFormat='Snapshot {0}', TargetNullValue='No Backup Selected'}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <TextBlock Text="{Binding SelectedBackup.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                                <Button Content="📂 Open Folder" Style="{DynamicResource ModernButton}" Command="{Binding OpenBackupFolderCommand}" Margin="0,0,8,0" />
+                                <Button Content="🗑️ Delete" Style="{DynamicResource ModernButton}" Command="{Binding DeleteBackupCommand}" Margin="0,0,8,0" />
+                                <Button Content="↩️ Rollback Snapshot" Style="{DynamicResource AccentButton}" Command="{Binding RestoreSelectedBackupCommand}" />
+                            </StackPanel>
+                        </Grid>
+
+                        <!-- Path Display -->
+                        <Border Background="#161616" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="SNAPSHOT STORAGE LOCATION:" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                                <TextBlock Text="{Binding SelectedBackup.Path}" FontSize="11" Foreground="{DynamicResource AccentBrush}" FontFamily="Consolas" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Breakdown Grid -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Border Grid.Column="0" Background="#181818" CornerRadius="6" Padding="12" Margin="0,0,6,0">
+                                <StackPanel>
+                                    <TextBlock Text="REGISTRY VALUES" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedBackup.RegistryEntriesCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="1" Background="#181818" CornerRadius="6" Padding="12" Margin="2,0,4,0">
+                                <StackPanel>
+                                    <TextBlock Text="SERVICES" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedBackup.ServicesCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="2" Background="#181818" CornerRadius="6" Padding="12" Margin="4,0,2,0">
+                                <StackPanel>
+                                    <TextBlock Text="STARTUP ITEMS" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedBackup.StartupCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border Grid.Column="3" Background="#181818" CornerRadius="6" Padding="12" Margin="6,0,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="PACKAGES" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                                    <TextBlock Text="{Binding SelectedBackup.PackageCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <Border Background="#1A1A1A" CornerRadius="6" Padding="14">
+                            <StackPanel>
+                                <TextBlock Text="💡 About Emergency Rollback" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,4" />
+                                <TextBlock Text="Each snapshot creates a standalone .reg file located in the 'registry' subfolder. Even if Win11 Control Center is closed or uninstalled, double-clicking 'pre_apply_rollback.reg' in Windows Explorer will instantly restore all registry settings to their pre-modification state." 
+                                           FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+        </Grid>
+
+        <!-- Restore / Checkpoint Modal -->
+        <Border Grid.RowSpan="3" Background="#AA000000" Visibility="{Binding IsRestoreModalOpen, Converter={StaticResource BoolToVisConverter}}">
+            <Border Width="500" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="24" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Recovery Operation" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,16" />
+
+                    <!-- Status Text -->
+                    <Border Grid.Row="1" Background="#181818" CornerRadius="6" Padding="14" Margin="0,0,0,16">
+                        <TextBlock Text="{Binding RestoreStatusMessage}" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap" />
+                    </Border>
+
+                    <!-- Progress Bar -->
+                    <ProgressBar Grid.Row="2" IsIndeterminate="{Binding IsRestoring}" Maximum="100" Height="4" Margin="0,0,0,20" Foreground="{DynamicResource AccentBrush}" />
+
+                    <!-- Close Button -->
+                    <Button Grid.Row="3" Content="Dismiss" Style="{DynamicResource ModernButton}" Command="{Binding CloseModalCommand}" HorizontalAlignment="Right" Width="100" IsEnabled="{Binding IsNotRestoring}" />
+                </Grid>
+            </Border>
+        </Border>
+    </Grid>
+</UserControl>

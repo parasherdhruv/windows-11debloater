@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Win11ControlCenter.App/Win11ControlCenter.App.csproj" />
+    <Project Path="src/Win11ControlCenter.Core/Win11ControlCenter.Core.csproj" />
+    <Project Path="src/Win11ControlCenter.Infrastructure/Win11ControlCenter.Infrastructure.csproj" />
+    <Project Path="src/Win11ControlCenter.PowerShell/Win11ControlCenter.PowerShell.csproj" />
+    <Project Path="src/Win11ControlCenter.SystemEngine/Win11ControlCenter.SystemEngine.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Win11ControlCenter.SafetyTests/Win11ControlCenter.SafetyTests.csproj" />
+    <Project Path="tests/Win11ControlCenter.UnitTests/Win11ControlCenter.UnitTests.csproj" />
+  </Folder>
+</Solution>

@@ -1,0 +1,146 @@
+<Window x:Class="Win11ControlCenter.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
+        xmlns:views="clr-namespace:Win11ControlCenter.App.Views"
+        mc:Ignorable="d"
+        Title="Win11 Control Center" Height="780" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        FontFamily="{StaticResource SegoeFluent}">
+
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type vm:DashboardViewModel}">
+            <views:DashboardView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:AppDebloaterViewModel}">
+            <views:AppDebloaterView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:StartupManagerViewModel}">
+            <views:StartupManagerView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ServicesManagerViewModel}">
+            <views:ServicesManagerView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:RestoreCenterViewModel}">
+            <views:RestoreCenterView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:ActivityLogsViewModel}">
+            <views:ActivityLogsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SettingsViewModel}">
+            <views:SettingsView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:PrivacyViewModel}">
+            <views:PrivacyView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:OptimizationViewModel}">
+            <views:OptimizationView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:GamingViewModel}">
+            <views:GamingView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:SystemCleanerViewModel}">
+            <views:SystemCleanerView />
+        </DataTemplate>
+        <DataTemplate DataType="{x:Type vm:CustomTweaksViewModel}">
+            <views:CustomTweaksView />
+        </DataTemplate>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- Left Navigation Sidebar -->
+        <Border Grid.Column="0" Background="{DynamicResource SidebarBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- App Branding -->
+                <StackPanel Grid.Row="0" Margin="20,24,20,20">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⚡" FontSize="20" VerticalAlignment="Center" Margin="0,0,10,0" Foreground="{DynamicResource AccentBrush}" />
+                        <TextBlock Text="Win11 Control" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                    </StackPanel>
+                    <TextBlock Text="Safe Debloater &amp; Optimization" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="30,2,0,0" />
+                </StackPanel>
+
+                <!-- Navigation List -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Margin="10,0">
+                        <RadioButton Content="📊 Dashboard" Style="{DynamicResource NavRadioButton}" IsChecked="True" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
+                        <RadioButton Content="📦 App Debloater" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="AppDebloater" />
+                        <RadioButton Content="🚀 Startup Manager" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="StartupManager" />
+                        <RadioButton Content="⚙️ Windows Services" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="ServicesManager" />
+                        <RadioButton Content="🔒 Privacy &amp; Telemetry" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="Privacy" />
+                        <RadioButton Content="✨ Windows Optimization" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="Optimization" />
+                        <RadioButton Content="🎮 Gaming Optimization" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="Gaming" />
+                        <RadioButton Content="🧹 System Cleaner" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="SystemCleaner" />
+                        <RadioButton Content="🛠️ Custom Tweaks" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="CustomTweaks" />
+                        <RadioButton Content="🛡️ Restore Center" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="RestoreCenter" />
+                        <RadioButton Content="📜 Activity Logs" Style="{DynamicResource NavRadioButton}" 
+                                     Command="{Binding NavigateCommand}" CommandParameter="ActivityLogs" />
+                    </StackPanel>
+                </ScrollViewer>
+
+                <!-- Bottom Sidebar: Settings -->
+                <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,12">
+                    <RadioButton Content="⚙️ Settings" Style="{DynamicResource NavRadioButton}" 
+                                 Command="{Binding NavigateCommand}" CommandParameter="Settings" />
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Right Main View Area -->
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Top Header Bar -->
+            <Border Grid.Row="0" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="24,0">
+                <Grid VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    
+                    <TextBlock Text="{Binding CurrentPageTitle}" FontSize="15" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+
+                    <!-- Status Badges -->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Style="{DynamicResource StatusBadge}" Margin="0,0,8,0">
+                            <TextBlock Text="Windows 11 x64" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" />
+                        </Border>
+                        <Border Style="{DynamicResource StatusBadge}" Background="#1F3D27" BorderBrush="#357A44">
+                            <TextBlock Text="Standard Rights (Safe Mode)" FontSize="11" Foreground="{DynamicResource SuccessBrush}" />
+                        </Border>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- View Content -->
+            <ContentControl Grid.Row="1" Content="{Binding CurrentViewModel}" Focusable="False" />
+        </Grid>
+    </Grid>
+</Window>

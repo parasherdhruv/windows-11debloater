@@ -1,0 +1,120 @@
+<UserControl x:Class="Win11ControlCenter.App.Views.SettingsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:SettingsViewModel}"
+             d:DesignHeight="700" d:DesignWidth="900">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="24">
+            <!-- Header -->
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <TextBlock Text="⚙️ Application Settings &amp; Appearance" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                    <TextBlock Text="Configure user interface theme, safety boundaries, and retention policies." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="Reset Defaults" Style="{DynamicResource ModernButton}" Command="{Binding ResetDefaultsCommand}" Margin="0,0,8,0" />
+                    <Button Content="💾 Save Settings" Style="{DynamicResource AccentButton}" Command="{Binding SaveCommand}" />
+                </StackPanel>
+            </Grid>
+
+            <!-- Status message -->
+            <TextBlock Text="{Binding SaveStatus}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" Margin="0,0,0,12"
+                       Visibility="{Binding SaveStatus, Converter={StaticResource BoolToVisConverter}}" />
+
+            <!-- Appearance Theme Card -->
+            <Border Style="{DynamicResource FluentCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="180" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Application Theme" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="Select between Windows 11 Dark Mode and Light Mode." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <ComboBox Grid.Column="1" ItemsSource="{Binding AvailableThemes}" SelectedItem="{Binding SelectedTheme}" Style="{DynamicResource ModernComboBox}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Auto Audit -->
+            <Border Style="{DynamicResource FluentCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Automatic System Audit on Startup" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="Run a read-only hardware and OS telemetry audit whenever the application launches." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding Settings.AutoScanOnStartup}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <!-- System Restore Points -->
+            <Border Style="{DynamicResource FluentCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Create Restore Checkpoint Before Optimization" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="Automatically request a Windows System Restore point before major profile changes." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding Settings.CreateRestorePointBeforeExecution}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Advanced Admin Mode -->
+            <Border Style="{DynamicResource FluentCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Advanced System Administrator Mode" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="Expose advanced Windows service startup adjustments and deep capability management." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding Settings.AdvancedMode}" VerticalAlignment="Center" />
+                </Grid>
+            </Border>
+
+            <!-- Retention -->
+            <Border Style="{DynamicResource FluentCard}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <StackPanel>
+                        <TextBlock Text="Audit Log History Retention" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" />
+                        <TextBlock Text="Retain local operation and rollback history for the specified period." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                    </StackPanel>
+                    <TextBlock Grid.Column="1" Text="{Binding Settings.LogRetentionDays, StringFormat='{}{0} Days'}" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" />
+                </Grid>
+            </Border>
+
+            <!-- About Win11 Control Center Card -->
+            <Border Style="{DynamicResource FluentCard}" Background="#181818" Margin="0,12,0,0">
+                <StackPanel>
+                    <TextBlock Text="About Win11 Control Center" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,10" />
+                    <TextBlock Text="{Binding AppVersionText}" FontSize="13" FontWeight="SemiBold" Foreground="{DynamicResource AccentBrush}" Margin="0,0,0,4" />
+                    <TextBlock Text="{Binding DotNetVersionText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,2" />
+                    <TextBlock Text="{Binding ArchitectureText}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,10" />
+                    <TextBlock Text="Designed with safety before performance, reversibility before convenience, and zero simulated claims." 
+                               FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

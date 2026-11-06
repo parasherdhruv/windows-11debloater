@@ -1,0 +1,189 @@
+<UserControl x:Class="Win11ControlCenter.App.Views.CustomTweaksView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:CustomTweaksViewModel}"
+             d:DesignHeight="700" d:DesignWidth="1000">
+
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="🛠️ Custom Registry Tweaks" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="Define, test, and manage custom Windows registry optimizations with built-in safety boundaries and automated rollback generation." 
+                           FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
+            </StackPanel>
+            <Button Grid.Column="1" Content="🔄 Refresh" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" VerticalAlignment="Center" />
+        </Grid>
+
+        <!-- New Tweak Creator Card -->
+        <Border Grid.Row="1" Style="{DynamicResource FluentCard}" Padding="18" Margin="0,0,0,16">
+            <StackPanel>
+                <TextBlock Text="Add New Custom Registry Tweak" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,12" />
+
+                <!-- Row 1: Name, Category, Hive -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Tweak Name" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewName, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                        <TextBlock Text="Category" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewCategory, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Hive" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <ComboBox ItemsSource="{Binding AvailableHives}" SelectedItem="{Binding NewHive}" Style="{DynamicResource ModernComboBox}" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Row 2: Key Path & Value Name -->
+                <Grid Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="120" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Registry Key Path" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewKeyPath, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                        <TextBlock Text="Value Name" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewValueName, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="Type" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <ComboBox ItemsSource="{Binding AvailableTypes}" SelectedItem="{Binding NewValueType}" Style="{DynamicResource ModernComboBox}" />
+                    </StackPanel>
+                </Grid>
+
+                <!-- Row 3: Recommended Value & Default Value & Submit -->
+                <Grid Margin="0,0,0,6">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                        <TextBlock Text="Target / Optimized Value" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewRecommendedValue, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernTextBox}" />
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                        <TextBlock Text="Default / Revert Value" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
+                        <TextBox Text="{Binding NewDefaultValue, UpdateSourceTrigger=PropertyChanged}" Style="{DynamicResource ModernTextBox}" />
+                    </StackPanel>
+
+                    <Button Grid.Column="2" Content="➕ Add Custom Tweak" Style="{DynamicResource AccentButton}" Command="{Binding AddTweakCommand}" VerticalAlignment="Bottom" Height="34" />
+                </Grid>
+
+                <!-- Validation Error display -->
+                <TextBlock Text="{Binding ValidationError}" FontSize="12" Foreground="{DynamicResource DangerBrush}" Margin="0,6,0,0" 
+                           Visibility="{Binding ValidationError, Converter={StaticResource BoolToVisConverter}}" />
+            </StackPanel>
+        </Border>
+
+        <!-- Custom Tweaks List -->
+        <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding CustomTweaks}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="#1C1C1C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,12" Margin="0,0,0,8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Left: Info -->
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center" Margin="0,0,16,0">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                            <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                            <Border Style="{DynamicResource StatusBadge}" Margin="10,0,0,0">
+                                                <TextBlock Text="{Binding Category}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                            </Border>
+                                            <Border Style="{DynamicResource StatusBadge}" Margin="6,0,0,0">
+                                                <TextBlock Text="{Binding ScopeDescription}" FontSize="10" Foreground="{DynamicResource AccentBrush}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding KeyPath, StringFormat='Path: {0}'}" FontSize="11" Foreground="#888888" FontFamily="Consolas" />
+                                        <TextBlock Text="{Binding ValueName, StringFormat='Value: {0}'}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas" Margin="0,2,0,0" />
+                                    </StackPanel>
+
+                                    <!-- Status Pill -->
+                                    <Border Grid.Column="1" VerticalAlignment="Center" Padding="10,4" CornerRadius="12" Margin="0,0,16,0"
+                                            Background="{DynamicResource SidebarBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
+                                        <TextBlock FontSize="11" FontWeight="SemiBold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="○ Default" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsApplied}" Value="True">
+                                                            <Setter Property="Text" Value="✓ Active" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </Border>
+
+                                    <!-- Apply/Revert Button -->
+                                    <Button Grid.Column="2" VerticalAlignment="Center" Width="90" Margin="0,0,8,0"
+                                            Command="{Binding DataContext.ToggleTweakCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource ModernButton}">
+                                                <Setter Property="Content" Value="Apply" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsApplied}" Value="True">
+                                                        <Setter Property="Content" Value="Revert" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+
+                                    <!-- Delete Button -->
+                                    <Button Grid.Column="3" Content="🗑️" Style="{DynamicResource ModernButton}" VerticalAlignment="Center" Width="40"
+                                            Command="{Binding DataContext.DeleteTweakCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>

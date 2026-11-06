@@ -1,0 +1,155 @@
+<UserControl x:Class="Win11ControlCenter.App.Views.StartupManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance Type=vm:StartupManagerViewModel}"
+             d:DesignHeight="700" d:DesignWidth="900">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel>
+                <TextBlock Text="Startup Application Manager" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{StaticResource SegoeFluent}" />
+                <TextBlock Text="Inspect and control applications configured to launch on Windows boot. Disabling is 100% reversible." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
+            </StackPanel>
+            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                <Button Content="Export Inventory" Style="{DynamicResource ModernButton}" Command="{Binding ExportInventoryCommand}" Margin="0,0,8,0" />
+                <Button Content="Refresh Entries" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Search Bar -->
+        <Border Grid.Row="1" Style="{DynamicResource FluentCard}" Padding="8,6" Margin="0,0,0,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="🔍" VerticalAlignment="Center" Margin="8,0,8,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                <TextBox Grid.Column="1" Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged}" 
+                         Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
+                         BorderThickness="0" VerticalAlignment="Center" FontSize="13" FontFamily="{StaticResource SegoeFluent}" />
+            </Grid>
+        </Border>
+
+        <!-- Master-Detail Content -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Left: Startup Entries List -->
+            <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Padding="0" Margin="0,0,12,0">
+                <ListBox ItemsSource="{Binding StartupItems}" SelectedItem="{Binding SelectedItem}"
+                         Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="ListBoxItem">
+                            <Setter Property="Padding" Value="14,10" />
+                            <Setter Property="BorderThickness" Value="0,0,0,1" />
+                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                            <ContentPresenter />
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
+                                            </Trigger>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter Property="Background" Value="#2560CDFF" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Name and Command -->
+                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding Command}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+
+                                    <!-- Location Badge -->
+                                    <Border Grid.Column="1" Style="{DynamicResource StatusBadge}" Margin="10,0">
+                                        <TextBlock Text="{Binding LocationType}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </Border>
+
+                                    <!-- Disk Status Badge -->
+                                    <Border Grid.Column="2" Style="{DynamicResource StatusBadge}" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding DiskStatusText, FallbackValue='Verified on Disk'}" FontSize="11" Foreground="{DynamicResource SuccessBrush}" />
+                                    </Border>
+
+                                    <!-- Toggle Switch Button -->
+                                    <Button Grid.Column="3" Content="{Binding StatusText, FallbackValue='Enabled'}"
+                                            Style="{DynamicResource ModernButton}" 
+                                            Command="{Binding DataContext.ToggleStateCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Padding="10,4" FontSize="12" />
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Border>
+
+                <!-- Right: Startup Detail Inspector -->
+                <Border Grid.Column="1" Style="{DynamicResource FluentCard}" Padding="16">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="Startup Item Inspector" FontSize="16" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,16" />
+
+                            <TextBlock Text="APPLICATION NAME" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding SelectedItem.Name, FallbackValue='Select an entry from the list'}" FontSize="16" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,12" />
+
+                            <TextBlock Text="EXECUTABLE TARGET PATH" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding SelectedItem.ExecutablePath, FallbackValue='N/A'}" FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap" Margin="0,2,0,12" />
+
+                            <TextBlock Text="STARTUP LOCATION" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding SelectedItem.RegistryKeyPath, FallbackValue='N/A'}" FontSize="12" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" Margin="0,2,0,12" />
+
+                            <TextBlock Text="COMMAND ARGUMENTS" FontSize="11" FontWeight="Bold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                            <TextBlock Text="{Binding SelectedItem.Command, FallbackValue='N/A'}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,14" />
+
+                            <!-- Action button -->
+                            <Button Content="📂 Reveal in File Explorer" Style="{DynamicResource ModernButton}" 
+                                    Command="{Binding OpenLocationCommand}" CommandParameter="{Binding SelectedItem}" Margin="0,0,0,16" />
+
+                            <!-- Safety Guarantee Box -->
+                            <Border Background="#1A107C41" BorderBrush="{DynamicResource SuccessBrush}" BorderThickness="1" CornerRadius="6" Padding="12">
+                                <StackPanel>
+                                    <TextBlock Text="Non-Destructive Disabling" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource SuccessBrush}" />
+                                    <TextBlock Text="Startup items are disabled using standard Windows Task Manager flags. Original files and registry paths remain intact." 
+                                               FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0" />
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+</UserControl>
