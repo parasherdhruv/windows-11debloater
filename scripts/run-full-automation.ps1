@@ -82,3 +82,4 @@ if ($exitCode -eq 0) {
     Write-Host $testOutput -ForegroundColor DarkRed
     exit $exitCode
 }
+

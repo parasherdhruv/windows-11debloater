@@ -85,4 +85,18 @@ public class XamlViewInstantiationTests
             Assert.NotNull(new SettingsView());
         });
     }
+
+    [Fact]
+    public void SoftwareCenterView_WithDataContext_RendersWithoutErrors()
+    {
+        RunInSta(() =>
+        {
+            var logger = new Win11ControlCenter.Infrastructure.Services.LoggingService();
+            var winget = new Win11ControlCenter.SystemEngine.Services.WingetService(logger);
+            var vm = new Win11ControlCenter.App.ViewModels.SoftwareCenterViewModel(winget, logger);
+            var view = new SoftwareCenterView { DataContext = vm };
+            Assert.NotNull(view);
+            Assert.NotNull(view.Content);
+        });
+    }
 }
