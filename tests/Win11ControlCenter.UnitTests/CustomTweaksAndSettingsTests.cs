@@ -87,3 +87,4 @@ public class CustomTweaksAndSettingsTests
         _settingsStorage.Save(settings);
     }
 }
+

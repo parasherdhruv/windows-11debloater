@@ -29,3 +29,4 @@ public class CustomTweaksSafetyTests
         Assert.Contains("protected", reason, StringComparison.OrdinalIgnoreCase);
     }
 }
+
