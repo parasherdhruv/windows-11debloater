@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Win11ControlCenter.App.ViewModels;
@@ -18,7 +19,7 @@ public partial class App : Application
         _serviceProvider = services.BuildServiceProvider();
     }
 
-    private static void ConfigureServices(IServiceCollection services)
+    public static void ConfigureServices(IServiceCollection services)
     {
         // Infrastructure & Core Services
         services.AddSingleton<ILoggingService, LoggingService>();
@@ -60,6 +61,28 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        AppDomain.CurrentDomain.UnhandledException += (s, args) =>
+        {
+            LogFatalException(args.ExceptionObject as Exception, "AppDomain.UnhandledException");
+        };
+
+        TaskScheduler.UnobservedTaskException += (s, args) =>
+        {
+            LogFatalException(args.Exception, "TaskScheduler.UnobservedTaskException");
+            args.SetObserved();
+        };
+
+        DispatcherUnhandledException += (s, args) =>
+        {
+            LogFatalException(args.Exception, "DispatcherUnhandledException");
+            MessageBox.Show(
+                $"An unexpected error occurred:\n\n{args.Exception.Message}\n\nThe details have been logged to the activity log.",
+                "Win11 Control Center - Notification",
+                MessageBoxButton.OK,
+                MessageBoxImage.Warning);
+            args.Handled = true;
+        };
+
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
         var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();
 
@@ -67,5 +90,22 @@ public partial class App : Application
         mainWindow.Show();
 
         await mainViewModel.InitializeAsync();
+    }
+
+    private static void LogFatalException(Exception? ex, string source)
+    {
+        if (ex == null) return;
+        try
+        {
+            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            var logDir = Path.Combine(localAppData, "Win11ControlCenter", "Logs");
+            Directory.CreateDirectory(logDir);
+            var crashPath = Path.Combine(logDir, "crash.log");
+            File.AppendAllText(crashPath, $"[{DateTime.UtcNow:O}] [{source}] {ex}\n\n");
+        }
+        catch
+        {
+            // Best effort logging
+        }
     }
 }

@@ -15,20 +15,27 @@ public class XamlViewInstantiationTests
         {
             try
             {
-                if (Application.Current == null)
+                try
                 {
-                    var app = new Application();
-                    app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                    if (Application.Current == null)
                     {
-                        Source = new Uri("pack://application:,,,/Win11ControlCenter.App;component/Themes/ThemeResources.xaml")
-                    });
+                        var app = new Application();
+                        app.Resources.MergedDictionaries.Add(new ResourceDictionary
+                        {
+                            Source = new Uri("pack://application:,,,/Win11ControlCenter.App;component/Themes/ThemeResources.xaml")
+                        });
+                    }
+                    else if (Application.Current.Resources.MergedDictionaries.Count == 0)
+                    {
+                        Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
+                        {
+                            Source = new Uri("pack://application:,,,/Win11ControlCenter.App;component/Themes/ThemeResources.xaml")
+                        });
+                    }
                 }
-                else if (Application.Current.Resources.MergedDictionaries.Count == 0)
+                catch (InvalidOperationException)
                 {
-                    Application.Current.Resources.MergedDictionaries.Add(new ResourceDictionary
-                    {
-                        Source = new Uri("pack://application:,,,/Win11ControlCenter.App;component/Themes/ThemeResources.xaml")
-                    });
+                    // Ignore if Application was already initialized by another test
                 }
 
                 action();

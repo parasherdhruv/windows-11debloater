@@ -152,6 +152,13 @@ public partial class MainViewModel : ViewModelBase
             _ => "Dashboard"
         };
 
-        await target.InitializeAsync();
+        try
+        {
+            await target.InitializeAsync();
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Error initializing page {pageKey}: {ex}");
+        }
     }
 }
