@@ -28,10 +28,11 @@
                     <TextBlock Text="Audit and safely remove unwanted Windows applications. Core components are protected." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Button Content="⚡ 1-Click Debloat" Style="{DynamicResource PrimaryButton}" Command="{Binding QuickDebloatCommand}" Margin="0,0,8,0" />
                     <Button Content="✨ Select Safe Bloat" Style="{DynamicResource ModernButton}" Command="{Binding SelectAllSafeCommand}" Margin="0,0,8,0" />
                     <Button Content="Clear Selection" Style="{DynamicResource ModernButton}" Command="{Binding ClearSelectionCommand}" Margin="0,0,8,0" />
                     <Button Content="🔄 Refresh" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
-                    <Button Style="{DynamicResource PrimaryButton}" Command="{Binding PreviewRemovalPlanCommand}">
+                    <Button Style="{DynamicResource ModernButton}" Command="{Binding PreviewRemovalPlanCommand}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="Preview Removal (" />
                             <TextBlock Text="{Binding SelectedCount}" FontWeight="Bold" />

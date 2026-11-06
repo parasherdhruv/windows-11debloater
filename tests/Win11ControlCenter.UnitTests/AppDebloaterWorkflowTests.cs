@@ -85,5 +85,31 @@ public class AppDebloaterWorkflowTests
         Assert.Equal(OperationType.PackageRemoval, vm.ActivePlan.Items[0].OperationType);
         Assert.Equal(ReversibilityTier.ReinstallRequired, vm.ActivePlan.Items[0].Reversibility);
     }
+
+    [Fact]
+    public async Task DebloaterViewModel_QuickDebloat_SelectsSafeAndOpensModal()
+    {
+        var logger = new LoggingService();
+        var backupRepo = new BackupRepository();
+        var executor = new OperationExecutor(logger, backupRepo);
+        var pkgManager = new PackageManagerService(logger, executor);
+
+        var vm = new AppDebloaterViewModel(logger, pkgManager, executor);
+
+        vm.Packages.Add(new ApplicationPackage
+        {
+            Name = "Microsoft.BingNews",
+            DisplayName = "Microsoft News",
+            RiskLevel = OperationRiskLevel.Safe,
+            IsProtected = false
+        });
+
+        await vm.QuickDebloatCommand.ExecuteAsync(null);
+
+        Assert.True(vm.IsPlanModalOpen);
+        Assert.NotNull(vm.ActivePlan);
+        Assert.Single(vm.ActivePlan.Items);
+        Assert.Equal(1, vm.SelectedCount);
+    }
 }
 

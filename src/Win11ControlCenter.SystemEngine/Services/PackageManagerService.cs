@@ -120,13 +120,14 @@ public class PackageManagerService : IPackageManagerService
                 RiskLevel = pkg.RiskLevel,
                 OperationType = OperationType.PackageRemoval,
                 Reversibility = ReversibilityTier.ReinstallRequired,
-                Target = pkg.PackageFullName,
+                Target = !string.IsNullOrWhiteSpace(pkg.PackageFullName) ? pkg.PackageFullName : pkg.Name,
                 RecommendedValue = "Remove",
                 RequiresAdmin = pkg.IsProvisioned || pkg.InstallScope.Contains("AllUsers"),
                 Metadata = new Dictionary<string, string>
                 {
                     { "PackageName", pkg.Name },
                     { "PackageFullName", pkg.PackageFullName },
+                    { "PackageType", pkg.PackageType },
                     { "IsProvisioned", pkg.IsProvisioned.ToString() },
                     { "RemoveProvisioningToo", pkg.RemoveProvisioningToo.ToString() }
                 }
@@ -244,8 +245,9 @@ public class PackageManagerService : IPackageManagerService
         {
             "BingNews" => "Microsoft News",
             "BingWeather" => "MSN Weather",
+            "BingSearch" => "Bing Search",
             "MicrosoftSolitaireCollection" => "Microsoft Solitaire Collection",
-            "Clipchamp.Clipchamp" => "Clipchamp Video Editor",
+            "Clipchamp.Clipchamp" or "Clipchamp" => "Clipchamp Video Editor",
             "GamingApp" => "Xbox App",
             "XboxGamingOverlay" => "Xbox Game Bar",
             "YourPhone" => "Phone Link",
@@ -257,6 +259,10 @@ public class PackageManagerService : IPackageManagerService
             "ZuneMusic" => "Media Player",
             "ZuneVideo" => "Films & TV",
             "WindowsFeedbackHub" => "Feedback Hub",
+            "MicrosoftOfficeHub" => "Microsoft 365 (Office)",
+            "People" => "Microsoft People",
+            "SkypeApp" => "Skype",
+            "Cortana" or "549981C3F5F10" => "Cortana",
             _ => rawName
         };
     }
@@ -280,16 +286,33 @@ public class PackageManagerService : IPackageManagerService
     {
         if (name.Contains("News", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Weather", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("BingSearch", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Solitaire", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Clipchamp", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Zune", StringComparison.OrdinalIgnoreCase) ||
-            name.Contains("FeedbackHub", StringComparison.OrdinalIgnoreCase))
+            name.Contains("FeedbackHub", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("GetHelp", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Getstarted", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("WindowsMaps", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("OfficeHub", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("People", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("SkypeApp", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("PowerAutomate", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Todos", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Cortana", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("549981C3F5F10", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Spotify", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Netflix", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Disney", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("TikTok", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Duolingo", StringComparison.OrdinalIgnoreCase))
         {
             return PackageCategory.SafeConsumer;
         }
 
         if (name.Contains("Xbox", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("YourPhone", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("GamingApp", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Teams", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("OneDrive", StringComparison.OrdinalIgnoreCase))
         {

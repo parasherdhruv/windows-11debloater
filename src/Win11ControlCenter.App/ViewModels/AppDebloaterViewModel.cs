@@ -135,6 +135,7 @@ public partial class AppDebloaterViewModel : ViewModelBase
     public bool HasSelectedPackages => SelectedCount > 0;
 
     public IAsyncRelayCommand RefreshCommand { get; }
+    public IAsyncRelayCommand QuickDebloatCommand { get; }
     public IRelayCommand SelectAllSafeCommand { get; }
     public IRelayCommand ClearSelectionCommand { get; }
     public IRelayCommand<ApplicationPackage> UnselectPackageCommand { get; }
@@ -151,6 +152,7 @@ public partial class AppDebloaterViewModel : ViewModelBase
         _operationExecutor = operationExecutor;
 
         RefreshCommand = new AsyncRelayCommand(LoadPackagesAsync);
+        QuickDebloatCommand = new AsyncRelayCommand(QuickDebloatAsync);
         SelectAllSafeCommand = new RelayCommand(SelectAllSafe);
         ClearSelectionCommand = new RelayCommand(ClearSelection);
         UnselectPackageCommand = new RelayCommand<ApplicationPackage>(UnselectPackage);
@@ -249,6 +251,19 @@ public partial class AppDebloaterViewModel : ViewModelBase
         SyncSelectedCollection();
         OnPropertyChanged(nameof(SelectedCount));
         OnPropertyChanged(nameof(HasSelectedPackages));
+    }
+
+    private async Task QuickDebloatAsync()
+    {
+        SelectAllSafe();
+        if (SelectedCount > 0)
+        {
+            await PreviewRemovalPlanAsync();
+        }
+        else
+        {
+            StatusMessage = "No safe bloatware packages detected on this system.";
+        }
     }
 
     private void ClearSelection()
