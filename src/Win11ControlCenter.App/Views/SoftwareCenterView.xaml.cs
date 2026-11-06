@@ -9,3 +9,4 @@ public partial class SoftwareCenterView : UserControl
         InitializeComponent();
     }
 }
+

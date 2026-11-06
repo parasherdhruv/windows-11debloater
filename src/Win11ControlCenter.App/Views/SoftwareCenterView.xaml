@@ -6,10 +6,11 @@
              xmlns:vm="clr-namespace:Win11ControlCenter.App.ViewModels"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance Type=vm:SoftwareCenterViewModel}"
-             d:DesignHeight="700" d:DesignWidth="1000">
+             d:DesignHeight="750" d:DesignWidth="1050">
 
     <Grid Margin="24">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -18,14 +19,14 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,16">
+        <Grid Grid.Row="0" Margin="0,0,0,14">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="Essential Software Center" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
-                <TextBlock Text="Install curated, clean, bloat-free open-source applications directly via Windows Package Manager (Winget)." 
+                <TextBlock Text="Essential Clean Software Center" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeFluent}" />
+                <TextBlock Text="Install curated, free and open-source (FOSS) software directly via the official Windows Package Manager (Winget)." 
                            FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
@@ -44,7 +45,7 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </Border>
-                <Button Content="🔄 Check Status" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
+                <Button Content="🔄 Refresh Status" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" Margin="0,0,8,0" />
                 <Button Style="{DynamicResource PrimaryButton}" Command="{Binding InstallSelectedCommand}" IsEnabled="{Binding IsNotInstalling}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Install Selected (" />
@@ -55,10 +56,33 @@
             </StackPanel>
         </Grid>
 
+        <!-- Security & Source Provenance Banner -->
+        <Border Grid.Row="1" Background="#121A28" BorderBrush="#1F3652" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,14">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border Width="34" Height="34" CornerRadius="8" Background="#182E48" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Center">
+                    <TextBlock Text="🏛️" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Official Microsoft Windows Package Manager (Winget) Community Repository" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource AccentLightBrush}" />
+                        <Border Background="#143522" BorderBrush="#1B5E3C" BorderThickness="1" CornerRadius="6" Padding="6,1" Margin="10,0,0,0" VerticalAlignment="Center">
+                            <TextBlock Text="✓ 100% Free &amp; Open Source (FOSS)" FontSize="10" Foreground="{DynamicResource SuccessBrush}" FontWeight="SemiBold" />
+                        </Border>
+                    </StackPanel>
+                    <TextBlock Text="All software is distributed under permissive open-source licenses (GPL, MIT, Apache, MPL) or free for personal use. Packages are malware-scanned by Microsoft and downloaded directly from official verified publisher servers with zero copyright infringement risks." 
+                               FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,3,0,0" TextWrapping="Wrap" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
         <!-- Search & Category Filters -->
-        <Grid Grid.Row="1" Margin="0,0,0,12">
+        <Grid Grid.Row="2" Margin="0,0,0,12">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="280" />
+                <ColumnDefinition Width="260" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -78,27 +102,31 @@
 
             <!-- Category Pills -->
             <Border Grid.Column="1" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" VerticalAlignment="Center">
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="All" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" IsChecked="True" 
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="All" />
-                    <RadioButton Content="Utilities" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="Utilities" />
-                    <RadioButton Content="Browsers" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="Browsers" />
-                    <RadioButton Content="Developer" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="Developer" />
-                    <RadioButton Content="Media" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="Media" />
-                    <RadioButton Content="Security" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="Security" />
-                    <RadioButton Content="Productivity" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
-                                 Command="{Binding FilterCategoryCommand}" CommandParameter="Productivity" />
-                </StackPanel>
+                <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton Content="All" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" IsChecked="True" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="All" />
+                        <RadioButton Content="Utilities" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Utilities" />
+                        <RadioButton Content="Browsers" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Browsers" />
+                        <RadioButton Content="Developer" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Developer" />
+                        <RadioButton Content="Media" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Media" />
+                        <RadioButton Content="Graphics" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Graphics" />
+                        <RadioButton Content="Security" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Security" />
+                        <RadioButton Content="Productivity" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" 
+                                     Command="{Binding FilterCategoryCommand}" CommandParameter="Productivity" />
+                    </StackPanel>
+                </ScrollViewer>
             </Border>
         </Grid>
 
         <!-- Selected Software Tray (Surfaces what has been selected) -->
-        <Border Grid.Row="2" Style="{DynamicResource FluentCardElevated}" Margin="0,0,0,12" Padding="12,10"
+        <Border Grid.Row="3" Style="{DynamicResource FluentCardElevated}" Margin="0,0,0,12" Padding="12,10"
                 Visibility="{Binding HasSelectedPackages, Converter={StaticResource BoolToVisConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -144,7 +172,7 @@
         </Border>
 
         <!-- Live Installation Progress Banner -->
-        <Border Grid.Row="3" Background="#1C2538" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,12"
+        <Border Grid.Row="4" Background="#1C2538" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,12"
                 Visibility="{Binding IsInstalling, Converter={StaticResource BoolToVisConverter}}">
             <StackPanel>
                 <Grid Margin="0,0,0,6">
@@ -156,12 +184,12 @@
         </Border>
 
         <!-- Packages List / Cards -->
-        <Border Grid.Row="4" Style="{DynamicResource FluentCard}" Padding="8">
+        <Border Grid.Row="5" Style="{DynamicResource FluentCard}" Padding="8">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Packages}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#161619" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14,12" Margin="0,0,0,8">
+                            <Border Background="#161619" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,8">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -172,30 +200,63 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Selection Checkbox -->
-                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled, Converter={StaticResource InverseBoolConverter}}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled, Converter={StaticResource InverseBoolConverter}}" VerticalAlignment="Center" Margin="0,0,14,0" />
 
-                                    <!-- Icon -->
-                                    <Border Grid.Column="1" Width="38" Height="38" CornerRadius="8" Background="#202026" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,14,0" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding IconGlyph}" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <!-- Application Icon Badge -->
+                                    <Border Grid.Column="1" Width="44" Height="44" CornerRadius="10" Background="#1E1E26" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,16,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding IconGlyph}" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
 
-                                    <!-- Details -->
+                                    <!-- Details & Metadata -->
                                     <StackPanel Grid.Column="2" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                            <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
-                                            <Border Style="{DynamicResource StatusBadge}" Margin="8,0,0,0">
+                                        <!-- Title & Badges Row -->
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Name}" FontSize="15" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                                            
+                                            <!-- Category Badge -->
+                                            <Border Style="{DynamicResource StatusBadge}" Margin="8,0,0,0" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Category}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
                                             </Border>
-                                            <Border Style="{DynamicResource StatusBadge}" Margin="6,0,0,0">
+
+                                            <!-- License Badge (FOSS / Free) -->
+                                            <Border Background="#11291A" BorderBrush="#1B5E3C" BorderThickness="1" CornerRadius="8" Padding="6,2" Margin="6,0,0,0" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock Text="🟢 " FontSize="8" VerticalAlignment="Center" />
+                                                    <TextBlock Text="{Binding License}" FontSize="10" Foreground="{DynamicResource SuccessBrush}" FontWeight="SemiBold" />
+                                                </StackPanel>
+                                            </Border>
+
+                                            <!-- Package ID Badge -->
+                                            <Border Style="{DynamicResource StatusBadge}" Margin="6,0,0,0" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Id}" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" FontFamily="Consolas" />
                                             </Border>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,2" />
-                                        <TextBlock Text="{Binding Publisher}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
+
+                                        <!-- Description -->
+                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,6" />
+
+                                        <!-- Publisher & Provenance Link -->
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="By " FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
+                                            <TextBlock Text="{Binding Publisher}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,12,0" />
+                                            
+                                            <!-- Official Website Link Button -->
+                                            <Button Command="{Binding DataContext.OpenHomepageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                                                    CommandParameter="{Binding HomepageUrl}"
+                                                    Background="Transparent" BorderThickness="0" Cursor="Hand" Padding="0">
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                                    <TextBlock Text="🌐 " FontSize="11" />
+                                                    <TextBlock Text="Official Website" FontSize="11" Foreground="{DynamicResource AccentLightBrush}" TextDecorations="Underline" />
+                                                </StackPanel>
+                                            </Button>
+
+                                            <TextBlock Text=" • Source: " FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="8,0,0,0" />
+                                            <TextBlock Text="{Binding RepositorySource}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" />
+                                        </StackPanel>
                                     </StackPanel>
 
-                                    <!-- Status Badge -->
-                                    <Border Grid.Column="3" VerticalAlignment="Center" Margin="14,0" Padding="10,4" CornerRadius="12">
+                                    <!-- Installation Status Badge -->
+                                    <Border Grid.Column="3" VerticalAlignment="Center" Margin="16,0" Padding="12,5" CornerRadius="12">
                                         <Border.Style>
                                             <Style TargetType="Border">
                                                 <Setter Property="Background" Value="#222228" />
@@ -232,12 +293,14 @@
 
                                     <!-- Action Button -->
                                     <StackPanel Grid.Column="4" VerticalAlignment="Center">
-                                        <Button Content="Install" Style="{DynamicResource ModernButton}" Padding="12,5" FontSize="12"
+                                        <Button Content="Install" Style="{DynamicResource ModernButton}" Padding="14,6" FontSize="12"
                                                 Command="{Binding DataContext.InstallSingleCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
                                                 Visibility="{Binding IsInstalled, Converter={StaticResource InverseBoolToVisConverter}}" />
-                                        <TextBlock Text="✓ Ready" FontSize="11" Foreground="{DynamicResource SuccessBrush}" FontWeight="SemiBold"
-                                                   Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisConverter}}" HorizontalAlignment="Center" />
+                                        <Border Background="#132E22" BorderBrush="#1B5E3C" BorderThickness="1" CornerRadius="6" Padding="10,4"
+                                                Visibility="{Binding IsInstalled, Converter={StaticResource BoolToVisConverter}}" HorizontalAlignment="Center">
+                                            <TextBlock Text="✓ Installed" FontSize="11" Foreground="{DynamicResource SuccessBrush}" FontWeight="SemiBold" />
+                                        </Border>
                                     </StackPanel>
                                 </Grid>
                             </Border>

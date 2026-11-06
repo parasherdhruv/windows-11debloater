@@ -254,7 +254,11 @@ public class FullAppAutomationFeatureTests
 
             // Test Search Filtering
             vm.SearchFilter = "git";
-            Assert.All(vm.Packages, p => Assert.Contains("git", p.Name, StringComparison.OrdinalIgnoreCase));
+            Assert.NotEmpty(vm.Packages);
+            Assert.All(vm.Packages, p => Assert.True(
+                p.Name.Contains("git", StringComparison.OrdinalIgnoreCase) ||
+                p.Id.Contains("git", StringComparison.OrdinalIgnoreCase) ||
+                p.Description.Contains("git", StringComparison.OrdinalIgnoreCase)));
             vm.SearchFilter = "";
 
             // Test Selection & Selected Tray

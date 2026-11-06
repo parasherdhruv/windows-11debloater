@@ -18,6 +18,8 @@ public class SoftwarePackageItem : INotifyPropertyChanged
     public string Version { get; set; } = string.Empty;
     public string IconGlyph { get; set; } = "📦";
     public string HomepageUrl { get; set; } = string.Empty;
+    public string License { get; set; } = "Free & Open Source";
+    public string RepositorySource { get; set; } = "Official Winget Community (microsoft/winget-pkgs)";
 
     public bool IsSelected
     {

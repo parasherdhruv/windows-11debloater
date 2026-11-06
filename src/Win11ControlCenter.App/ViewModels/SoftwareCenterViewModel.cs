@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.Input;
 using Win11ControlCenter.Core.Interfaces;
 using Win11ControlCenter.Core.Models;
@@ -82,6 +83,7 @@ public partial class SoftwareCenterViewModel : ViewModelBase
     public IRelayCommand ClearSelectionCommand { get; }
     public IRelayCommand<SoftwarePackageItem> UnselectPackageCommand { get; }
     public IRelayCommand<string> FilterCategoryCommand { get; }
+    public IRelayCommand<string> OpenHomepageCommand { get; }
 
     public SoftwareCenterViewModel(IWingetService wingetService, ILoggingService logger)
     {
@@ -94,6 +96,7 @@ public partial class SoftwareCenterViewModel : ViewModelBase
         ClearSelectionCommand = new RelayCommand(ClearSelection);
         UnselectPackageCommand = new RelayCommand<SoftwarePackageItem>(UnselectPackage);
         FilterCategoryCommand = new RelayCommand<string>(cat => { if (cat != null) SelectedCategory = cat; });
+        OpenHomepageCommand = new RelayCommand<string>(OpenHomepage);
 
         Packages.CollectionChanged += (s, e) =>
         {
@@ -122,11 +125,6 @@ public partial class SoftwareCenterViewModel : ViewModelBase
         try
         {
             IsWingetAvailable = await _wingetService.IsWingetAvailableAsync();
-            if (!IsWingetAvailable)
-            {
-                StatusMessage = "Winget (Windows Package Manager) is not installed or enabled.";
-                return;
-            }
 
             StatusMessage = "Loading curated essential applications...";
             _allCatalog = await _wingetService.GetCuratedPackagesAsync();
@@ -138,11 +136,20 @@ public partial class SoftwareCenterViewModel : ViewModelBase
             }
 
             ApplyFilter();
+            IsBusy = false;
 
-            StatusMessage = "Checking installed software on system...";
-            await _wingetService.RefreshInstalledStatusAsync(_allCatalog);
-
-            StatusMessage = $"Ready. {_allCatalog.Count} essential applications cataloged.";
+            if (IsWingetAvailable)
+            {
+                StatusMessage = $"Ready. {_allCatalog.Count} essential applications cataloged.";
+                _ = Task.Run(async () =>
+                {
+                    await _wingetService.RefreshInstalledStatusAsync(_allCatalog);
+                });
+            }
+            else
+            {
+                StatusMessage = "Winget (Windows Package Manager) is not detected in system PATH. Viewing catalog in offline mode.";
+            }
         }
         catch (Exception ex)
         {
@@ -280,6 +287,25 @@ public partial class SoftwareCenterViewModel : ViewModelBase
         finally
         {
             IsInstalling = false;
+        }
+    }
+
+    private void OpenHomepage(string? url)
+    {
+        if (string.IsNullOrWhiteSpace(url) || !Uri.TryCreate(url, UriKind.Absolute, out var uri)) return;
+        if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps) return;
+
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to open homepage '{url}'", ex, "SoftwareCenter");
         }
     }
 }
