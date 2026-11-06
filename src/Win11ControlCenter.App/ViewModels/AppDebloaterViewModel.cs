@@ -68,9 +68,23 @@ public partial class AppDebloaterViewModel : ViewModelBase
         }
     }
 
-    public bool IsAllTabActive => ActiveViewTab == "All";
-    public bool IsSelectedTabActive => ActiveViewTab == "Selected";
-    public bool IsSafeBloatTabActive => ActiveViewTab == "SafeBloat";
+    public bool IsAllTabActive
+    {
+        get => ActiveViewTab == "All";
+        set { if (value) ActiveViewTab = "All"; }
+    }
+
+    public bool IsSelectedTabActive
+    {
+        get => ActiveViewTab == "Selected";
+        set { if (value) ActiveViewTab = "Selected"; }
+    }
+
+    public bool IsSafeBloatTabActive
+    {
+        get => ActiveViewTab == "SafeBloat";
+        set { if (value) ActiveViewTab = "SafeBloat"; }
+    }
 
     public bool PinSelectedToTop
     {
@@ -424,5 +438,10 @@ public partial class AppDebloaterViewModel : ViewModelBase
         SyncSelectedCollection();
         OnPropertyChanged(nameof(SelectedCount));
         OnPropertyChanged(nameof(HasSelectedPackages));
+
+        if (SelectedPackage == null || !Packages.Contains(SelectedPackage))
+        {
+            SelectedPackage = Packages.FirstOrDefault();
+        }
     }
 }

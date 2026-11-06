@@ -79,19 +79,19 @@
             <!-- Category Pills -->
             <Border Grid.Column="1" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" VerticalAlignment="Center">
                 <StackPanel Orientation="Horizontal">
-                    <RadioButton Content="All" Style="{DynamicResource SegmentPillButton}" IsChecked="True" 
+                    <RadioButton Content="All" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup" IsChecked="True" 
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="All" />
-                    <RadioButton Content="Utilities" Style="{DynamicResource SegmentPillButton}" 
+                    <RadioButton Content="Utilities" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="Utilities" />
-                    <RadioButton Content="Browsers" Style="{DynamicResource SegmentPillButton}" 
+                    <RadioButton Content="Browsers" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="Browsers" />
-                    <RadioButton Content="Developer" Style="{DynamicResource SegmentPillButton}" 
+                    <RadioButton Content="Developer" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="Developer" />
-                    <RadioButton Content="Media" Style="{DynamicResource SegmentPillButton}" 
+                    <RadioButton Content="Media" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="Media" />
-                    <RadioButton Content="Security" Style="{DynamicResource SegmentPillButton}" 
+                    <RadioButton Content="Security" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="Security" />
-                    <RadioButton Content="Productivity" Style="{DynamicResource SegmentPillButton}" 
+                    <RadioButton Content="Productivity" Style="{DynamicResource SegmentPillButton}" GroupName="SoftwareCategoriesGroup"
                                  Command="{Binding FilterCategoryCommand}" CommandParameter="Productivity" />
                 </StackPanel>
             </Border>

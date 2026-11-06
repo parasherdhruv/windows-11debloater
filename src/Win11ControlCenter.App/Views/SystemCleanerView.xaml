@@ -85,10 +85,10 @@
         <!-- Segmented Tab Filter (All / Selected Only) -->
         <Border Grid.Row="2" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" Margin="0,0,0,12">
             <StackPanel Orientation="Horizontal">
-                <RadioButton Content="All Categories" Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsAllTabActive}" 
+                <RadioButton Content="All Categories" Style="{DynamicResource SegmentPillButton}" GroupName="CleanerTabsGroup" IsChecked="{Binding IsAllTabActive}" 
                              Command="{Binding SwitchTabCommand}" CommandParameter="All" />
                 
-                <RadioButton Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsSelectedTabActive}" 
+                <RadioButton Style="{DynamicResource SegmentPillButton}" GroupName="CleanerTabsGroup" IsChecked="{Binding IsSelectedTabActive}" 
                              Command="{Binding SwitchTabCommand}" CommandParameter="Selected">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Selected Targets (" />

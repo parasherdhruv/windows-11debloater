@@ -39,8 +39,17 @@ public partial class SystemCleanerViewModel : ViewModelBase
         }
     }
 
-    public bool IsAllTabActive => ActiveViewTab == "All";
-    public bool IsSelectedTabActive => ActiveViewTab == "Selected";
+    public bool IsAllTabActive
+    {
+        get => ActiveViewTab == "All";
+        set { if (value) ActiveViewTab = "All"; }
+    }
+
+    public bool IsSelectedTabActive
+    {
+        get => ActiveViewTab == "Selected";
+        set { if (value) ActiveViewTab = "Selected"; }
+    }
 
     private IEnumerable<CleanupTarget> GetEffectiveTargets() => _allTargets.Count > 0 ? _allTargets : Targets;
 

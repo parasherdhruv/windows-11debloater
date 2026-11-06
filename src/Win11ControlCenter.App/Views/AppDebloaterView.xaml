@@ -67,10 +67,10 @@
                 <!-- Segmented Tabs (All / Selected / Safe) -->
                 <Border Grid.Column="1" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
-                        <RadioButton Content="All Applications" Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsAllTabActive}" 
+                        <RadioButton Content="All Applications" Style="{DynamicResource SegmentPillButton}" GroupName="DebloaterTabsGroup" IsChecked="{Binding IsAllTabActive}" 
                                      Command="{Binding SwitchTabCommand}" CommandParameter="All" />
                         
-                        <RadioButton Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsSelectedTabActive}" 
+                        <RadioButton Style="{DynamicResource SegmentPillButton}" GroupName="DebloaterTabsGroup" IsChecked="{Binding IsSelectedTabActive}" 
                                      Command="{Binding SwitchTabCommand}" CommandParameter="Selected">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="Selected Only (" />
@@ -79,7 +79,7 @@
                             </StackPanel>
                         </RadioButton>
 
-                        <RadioButton Content="Safe Recommendations" Style="{DynamicResource SegmentPillButton}" IsChecked="{Binding IsSafeBloatTabActive}" 
+                        <RadioButton Content="Safe Recommendations" Style="{DynamicResource SegmentPillButton}" GroupName="DebloaterTabsGroup" IsChecked="{Binding IsSafeBloatTabActive}" 
                                      Command="{Binding SwitchTabCommand}" CommandParameter="SafeBloat" />
                     </StackPanel>
                 </Border>

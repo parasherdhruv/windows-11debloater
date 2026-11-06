@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Windows;
+using Win11ControlCenter.App;
 using Win11ControlCenter.App.Views;
 using Xunit;
 
@@ -45,6 +46,16 @@ public class XamlViewInstantiationTests
         {
             throw new AggregateException("STA Execution failed", thrown);
         }
+    }
+
+    [Fact]
+    public void MainWindow_InstantiatesWithoutXamlParseException()
+    {
+        RunInSta(() =>
+        {
+            var win = new MainWindow();
+            Assert.NotNull(win);
+        });
     }
 
     [Fact]

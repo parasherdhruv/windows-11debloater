@@ -87,42 +87,42 @@
                     <StackPanel Margin="10,0,10,10">
                         <!-- Section: System & Apps -->
                         <TextBlock Text="SYSTEM &amp; PACKAGES" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="12,10,0,4" />
-                        <RadioButton Content="📊  Dashboard" Style="{DynamicResource NavRadioButton}" IsChecked="True" 
+                        <RadioButton Content="📊  Dashboard" Style="{DynamicResource NavRadioButton}" IsChecked="True" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
-                        <RadioButton Content="🗑️  App Debloater" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🗑️  App Debloater" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="AppDebloater" />
-                        <RadioButton Content="📦  Software Center" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="📦  Software Center" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="SoftwareCenter" />
-                        <RadioButton Content="🚀  Startup Manager" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🚀  Startup Manager" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="StartupManager" />
-                        <RadioButton Content="⚙️  Windows Services" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="⚙️  Windows Services" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="ServicesManager" />
 
                         <!-- Section: Optimization -->
                         <TextBlock Text="OPTIMIZATION &amp; TWEAKS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="12,14,0,4" />
-                        <RadioButton Content="🔒  Privacy &amp; Telemetry" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🔒  Privacy &amp; Telemetry" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Privacy" />
-                        <RadioButton Content="✨  Windows Tweaks" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="✨  Windows Tweaks" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Optimization" />
-                        <RadioButton Content="🎮  Gaming Mode" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🎮  Gaming Mode" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Gaming" />
-                        <RadioButton Content="🧹  System Cleaner" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🧹  System Cleaner" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="SystemCleaner" />
-                        <RadioButton Content="🛠️  Custom Tweaks" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🛠️  Custom Tweaks" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="CustomTweaks" />
 
                         <!-- Section: Recovery & Audit -->
                         <TextBlock Text="SAFETY &amp; AUDIT" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="12,14,0,4" />
-                        <RadioButton Content="🛡️  Restore Center" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="🛡️  Restore Center" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="RestoreCenter" />
-                        <RadioButton Content="📜  Activity Logs" Style="{DynamicResource NavRadioButton}" 
+                        <RadioButton Content="📜  Activity Logs" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="ActivityLogs" />
                     </StackPanel>
                 </ScrollViewer>
 
                 <!-- Bottom Sidebar: Settings -->
                 <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,12">
-                    <RadioButton Content="⚙️  Settings" Style="{DynamicResource NavRadioButton}" 
+                    <RadioButton Content="⚙️  Settings" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                  Command="{Binding NavigateCommand}" CommandParameter="Settings" />
                 </Border>
             </Grid>
