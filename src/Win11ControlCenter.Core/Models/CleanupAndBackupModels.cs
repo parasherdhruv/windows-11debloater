@@ -64,4 +64,48 @@ public class BackupMetadata
     public int StartupCount { get; set; }
     public int PackageCount { get; set; }
     public string Path { get; set; } = string.Empty;
+
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string FormattedTimestamp
+    {
+        get
+        {
+            if (DateTime.TryParse(CreatedAt, out var dt))
+            {
+                return dt.ToLocalTime().ToString("yyyy-MM-dd  HH:mm:ss");
+            }
+
+            if (!string.IsNullOrEmpty(BackupId) && BackupId.Length >= 19 && BackupId.Contains('_'))
+            {
+                var parts = BackupId.Split('_');
+                if (parts.Length >= 2)
+                {
+                    var timeStr = parts[1].Replace('-', ':');
+                    return $"{parts[0]}  {timeStr}";
+                }
+            }
+
+            return BackupId;
+        }
+    }
+
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string ShortId
+    {
+        get
+        {
+            if (string.IsNullOrEmpty(BackupId)) return string.Empty;
+            var idx = BackupId.LastIndexOf('_');
+            if (idx >= 0 && idx < BackupId.Length - 1)
+            {
+                return BackupId[(idx + 1)..];
+            }
+            return BackupId.Length > 8 ? BackupId[^6..] : BackupId;
+        }
+    }
+
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string DisplayTitle => !string.IsNullOrWhiteSpace(TriggerProfile)
+        ? TriggerProfile
+        : (!string.IsNullOrWhiteSpace(Description) ? Description : FormattedTimestamp);
 }

@@ -15,6 +15,8 @@ public partial class RestoreCenterViewModel : ViewModelBase
     private readonly BackupRepository _backupRepository;
 
     private BackupMetadata? _selectedBackup;
+    private List<BackupMetadata> _allBackups = new();
+    private string _searchFilter = string.Empty;
     private bool _isSystemRestoreAvailable;
     private string _systemRestoreStatusText = "Checking...";
     private string _restorePointDescription = "Win11ControlCenter Checkpoint";
@@ -24,6 +26,18 @@ public partial class RestoreCenterViewModel : ViewModelBase
     private bool _isRestoreModalOpen;
 
     public ObservableCollection<BackupMetadata> Backups { get; } = new();
+
+    public string SearchFilter
+    {
+        get => _searchFilter;
+        set
+        {
+            if (SetProperty(ref _searchFilter, value))
+            {
+                ApplyFilter();
+            }
+        }
+    }
 
     public BackupMetadata? SelectedBackup
     {
@@ -117,22 +131,37 @@ public partial class RestoreCenterViewModel : ViewModelBase
             IsSystemRestoreAvailable = _restoreService.IsSystemRestoreAvailable();
             SystemRestoreStatusText = IsSystemRestoreAvailable ? "Available / Enabled" : "Disabled or Restricted";
 
-            Backups.Clear();
             var list = await _restoreService.GetBackupsAsync();
-            foreach (var b in list)
-            {
-                Backups.Add(b);
-            }
-
-            if (SelectedBackup == null && Backups.Count > 0)
-            {
-                SelectedBackup = Backups[0];
-            }
+            _allBackups = list.OrderByDescending(b => b.CreatedAt).ThenByDescending(b => b.BackupId).ToList();
+            ApplyFilter();
         }
         catch (Exception ex)
         {
             _logger.LogError("Failed to refresh restore center", ex, "RestoreCenterViewModel");
         }
+    }
+
+    private void ApplyFilter()
+    {
+        var prevSelectedId = SelectedBackup?.BackupId;
+        Backups.Clear();
+        var query = _allBackups.AsEnumerable();
+        if (!string.IsNullOrWhiteSpace(SearchFilter))
+        {
+            query = query.Where(b =>
+                b.BackupId.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                b.TriggerProfile.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                b.Description.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                b.FormattedTimestamp.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase) ||
+                b.ShortId.Contains(SearchFilter, StringComparison.OrdinalIgnoreCase));
+        }
+
+        foreach (var b in query)
+        {
+            Backups.Add(b);
+        }
+
+        SelectedBackup = Backups.FirstOrDefault(b => b.BackupId == prevSelectedId) ?? Backups.FirstOrDefault();
     }
 
     private async Task CreateRestorePointAsync()

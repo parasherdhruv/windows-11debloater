@@ -92,7 +92,7 @@
         <!-- Master-Detail Content -->
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="380" />
+                <ColumnDefinition Width="400" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
@@ -101,61 +101,114 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="Configuration Snapshots" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="4,0,0,12" />
+                    <Grid Grid.Row="0" Margin="2,0,2,10">
+                        <TextBlock Text="Configuration Snapshots" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                        <Border HorizontalAlignment="Right" Background="{DynamicResource BadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="8,1">
+                            <TextBlock Text="{Binding Backups.Count, StringFormat='{}{0} Total'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                        </Border>
+                    </Grid>
 
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <ListBox ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" Background="Transparent" BorderThickness="0">
-                            <ListBox.ItemContainerStyle>
-                                <Style TargetType="ListBoxItem">
-                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
-                                    <Setter Property="Margin" Value="0,1" />
-                                    <Setter Property="Padding" Value="0" />
-                                    <Setter Property="Cursor" Value="Hand" />
-                                </Style>
-                            </ListBox.ItemContainerStyle>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,6">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition Width="*" />
-                                            </Grid.ColumnDefinitions>
-                                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Center">
-                                                <TextBlock Text="🛡️" FontSize="16" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <!-- Search Filter -->
+                    <Border Grid.Row="1" Background="{DynamicResource InputBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="7" Padding="8,5" Margin="0,0,0,10">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="🔍" VerticalAlignment="Center" Margin="4,0,8,0" Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="{DynamicResource SegoeEmoji}" FontSize="12" />
+                            <TextBox Grid.Column="1" Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged}" 
+                                     Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
+                                     BorderThickness="0" VerticalAlignment="Center" FontSize="12" FontFamily="{DynamicResource SegoeFluent}" />
+                        </Grid>
+                    </Border>
+
+                    <!-- Direct Virtualized ListBox with Modern Fluent Container Style -->
+                    <ListBox Grid.Row="2" ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" 
+                             Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                <Setter Property="Margin" Value="0,2" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Cursor" Value="Hand" />
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ListBoxItem">
+                                            <Border x:Name="itemCard" Background="{DynamicResource SubCardBackgroundBrush}" 
+                                                    BorderBrush="{DynamicResource BorderBrush}" 
+                                                    BorderThickness="1" 
+                                                    CornerRadius="8" 
+                                                    Padding="10,9">
+                                                <Grid>
+                                                    <Rectangle x:Name="indicator" Width="3" Height="20" Fill="{DynamicResource AccentLightBrush}" 
+                                                               HorizontalAlignment="Left" RadiusX="1.5" RadiusY="1.5" Visibility="Collapsed" Margin="-6,0,0,0" />
+                                                    <ContentPresenter Margin="2,0,0,0" />
+                                                </Grid>
                                             </Border>
-                                            <Grid Grid.Column="1">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                    <RowDefinition Height="Auto" />
-                                                </Grid.RowDefinitions>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter TargetName="itemCard" Property="Background" Value="{DynamicResource SubCardHoverBrush}" />
+                                                    <Setter TargetName="itemCard" Property="BorderBrush" Value="{DynamicResource BorderHighlightBrush}" />
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter TargetName="itemCard" Property="Background" Value="{DynamicResource CardElevatedBackgroundBrush}" />
+                                                    <Setter TargetName="itemCard" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                                    <Setter TargetName="indicator" Property="Visibility" Value="Visible" />
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                                <!-- Row 0: Timestamp -->
-                                                <TextBlock Grid.Row="0" Text="{Binding BackupId}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
-
-                                                <!-- Row 1: Profile -->
-                                                <TextBlock Grid.Row="1" Text="{Binding TriggerProfile}" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" Margin="0,2,0,4" />
-
-                                                <!-- Row 2: Counts -->
-                                                <StackPanel Grid.Row="2" Orientation="Horizontal">
-                                                    <Border Style="{DynamicResource StatusBadge}" Margin="0,0,6,0">
-                                                        <TextBlock Text="{Binding RegistryEntriesCount, StringFormat='{}{0} Reg'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                                    </Border>
-                                                    <Border Style="{DynamicResource StatusBadge}">
-                                                        <TextBlock Text="{Binding ServicesCount, StringFormat='{}{0} Svc'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                                    </Border>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Grid>
+                                    <!-- Shield Icon Badge -->
+                                    <Border Grid.Column="0" Width="34" Height="34" CornerRadius="8" 
+                                            Background="{DynamicResource IconBadgeBackgroundBrush}" 
+                                            BorderBrush="{DynamicResource BorderBrush}" 
+                                            BorderThickness="1" 
+                                            Margin="0,0,10,0" 
+                                            VerticalAlignment="Center">
+                                        <TextBlock Text="🛡️" FontSize="15" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-                    </ScrollViewer>
+
+                                    <!-- Details (Title, ID, Formatted Date) -->
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayTitle}" FontWeight="SemiBold" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="190" />
+                                            <Border Background="{DynamicResource BadgeBackgroundBrush}" CornerRadius="4" Padding="4,1" Margin="6,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding ShortId, StringFormat='#{0}'}" FontSize="9.5" Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas" />
+                                            </Border>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding FormattedTimestamp}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                                    </StackPanel>
+
+                                    <!-- Counts Badges (Reg / Svc) -->
+                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="6,0,0,0">
+                                        <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Margin="0,0,4,0" Padding="6,2">
+                                            <TextBlock Text="{Binding RegistryEntriesCount, StringFormat='{}{0} Reg'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </Border>
+                                        <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Padding="6,2">
+                                            <TextBlock Text="{Binding ServicesCount, StringFormat='{}{0} Svc'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </Border>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
             </Border>
 
@@ -163,22 +216,49 @@
             <Border Grid.Column="1" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <!-- Title & Actions -->
-                        <Grid Margin="0,0,0,16">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <StackPanel>
-                                <TextBlock Text="{Binding SelectedBackup.BackupId, StringFormat='Snapshot {0}', TargetNullValue='No Backup Selected'}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
-                                <TextBlock Text="{Binding SelectedBackup.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
-                            </StackPanel>
-                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                                <Button Content="📂 Open Folder" Style="{DynamicResource ModernButton}" Command="{Binding OpenBackupFolderCommand}" Margin="0,0,8,0" />
-                                <Button Content="🗑️ Delete" Style="{DynamicResource ModernButton}" Command="{Binding DeleteBackupCommand}" Margin="0,0,8,0" />
-                                <Button Content="↩️ Rollback Snapshot" Style="{DynamicResource AccentButton}" Command="{Binding RestoreSelectedBackupCommand}" />
-                            </StackPanel>
-                        </Grid>
+                        <!-- Title & Actions Card -->
+                        <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,16">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Big Shield Badge -->
+                                <Border Grid.RowSpan="2" Grid.Column="0" Width="46" Height="46" CornerRadius="10" 
+                                        Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" 
+                                        Margin="0,0,14,0" VerticalAlignment="Top">
+                                    <TextBlock Text="🛡️" FontSize="22" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+
+                                <!-- Title, Profile and Date -->
+                                <StackPanel Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SelectedBackup.DisplayTitle, FallbackValue='No Backup Selected'}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="360" />
+                                        <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource ChipBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" Margin="8,0,0,0" VerticalAlignment="Center"
+                                                Visibility="{Binding SelectedBackup.ShortId, Converter={StaticResource NullOrEmptyToVisConverter}}">
+                                            <TextBlock Text="{Binding SelectedBackup.ShortId, StringFormat='#{0}'}" FontSize="10.5" Foreground="{DynamicResource AccentLightBrush}" FontFamily="Consolas" FontWeight="SemiBold" />
+                                        </Border>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" Margin="0,4,0,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding SelectedBackup.FormattedTimestamp}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        <TextBlock Text=" • " FontSize="12" Foreground="{DynamicResource TextMutedBrush}" Visibility="{Binding SelectedBackup.Description, Converter={StaticResource NullOrEmptyToVisConverter}}" />
+                                        <TextBlock Text="{Binding SelectedBackup.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="360" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Action Buttons Row -->
+                                <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="0,12,0,0">
+                                    <Button Content="↩️ Rollback Snapshot" Style="{DynamicResource AccentButton}" Command="{Binding RestoreSelectedBackupCommand}" Margin="0,0,10,0" />
+                                    <Button Content="📂 Open Folder" Style="{DynamicResource ModernButton}" Command="{Binding OpenBackupFolderCommand}" Margin="0,0,10,0" />
+                                    <Button Content="🗑️ Delete" Style="{DynamicResource DangerButton}" Command="{Binding DeleteBackupCommand}" />
+                                </StackPanel>
+                            </Grid>
+                        </Border>
 
                         <!-- Path Display -->
                         <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,16">
