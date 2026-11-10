@@ -1,3 +1,4 @@
+using System.IO;
 using Win11ControlCenter.Core.Enums;
 using Win11ControlCenter.Core.Models;
 using Win11ControlCenter.Infrastructure.Services;
@@ -181,6 +182,130 @@ public class PrivacyAndOptimizationTests
         // Verify gone
         var remaining = await _profileService.GetCustomProfilesAsync();
         Assert.DoesNotContain(remaining, c => c.Id == testProfile.Id);
+    }
+
+    [Fact]
+    public async Task PortableProfile_ExportAndImport_Roundtrip_PreservesData()
+    {
+        var tempFile = Path.Combine(Path.GetTempPath(), $"test_profile_{Guid.NewGuid():N}.w11profile");
+
+        try
+        {
+            var profile = new PortableMachineProfile
+            {
+                Name = "Ultimate Gaming & Clean",
+                Description = "High performance gaming profile",
+                Author = "Antigravity Dev",
+                PrivacyTweakIds = new List<string> { "disable-advertising-id", "disable-start-bing-search" },
+                OptimizationTweakIds = new List<string> { "show-file-extensions", "enable-game-mode" },
+                ServiceAdjustments = new Dictionary<string, string> { { "RetailDemo", "Manual" }, { "MapsBroker", "Disabled" } },
+                DebloatPackageNames = new List<string> { "Clipchamp.Clipchamp", "Microsoft.BingWeather" },
+                TargetPowerPlanName = "High performance"
+            };
+
+            // 1. Export
+            var exportPath = await _profileService.ExportPortableProfileToFileAsync(profile, tempFile);
+            Assert.True(File.Exists(exportPath));
+            Assert.True(new FileInfo(exportPath).Length > 0);
+
+            // 2. Import
+            var imported = await _profileService.ImportPortableProfileFromFileAsync(exportPath);
+            Assert.NotNull(imported);
+            Assert.Equal("Ultimate Gaming & Clean", imported.Name);
+            Assert.Equal("Antigravity Dev", imported.Author);
+            Assert.Equal(2, imported.PrivacyTweakIds.Count);
+            Assert.Equal(2, imported.OptimizationTweakIds.Count);
+            Assert.Equal(2, imported.ServiceAdjustments.Count);
+            Assert.Equal("High performance", imported.TargetPowerPlanName);
+            Assert.True(imported.TotalActionCount >= 7);
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
+
+    [Fact]
+    public async Task PortableProfile_Import_SanitizesProtectedServicesAndPackages()
+    {
+        var tempFile = Path.Combine(Path.GetTempPath(), $"malicious_test_{Guid.NewGuid():N}.w11profile");
+
+        try
+        {
+            // Profile attempting to tamper with core Windows services and protected store components
+            var dangerousProfile = new PortableMachineProfile
+            {
+                Name = "Untrusted Profile from Web",
+                ServiceAdjustments = new Dictionary<string, string>
+                {
+                    { "RpcSs", "Disabled" },       // Critical protected service
+                    { "WinDefend", "Disabled" },   // Critical protected service
+                    { "Dnscache", "Disabled" },    // Critical protected service
+                    { "RetailDemo", "Manual" }     // Safe service
+                },
+                DebloatPackageNames = new List<string>
+                {
+                    "Microsoft.WindowsStore",      // Core protected package
+                    "Microsoft.UI.Xaml.2.8",       // Core protected framework
+                    "Clipchamp.Clipchamp"          // Safe consumer bloatware
+                }
+            };
+
+            await _profileService.ExportPortableProfileToFileAsync(dangerousProfile, tempFile);
+
+            // Import must sanitize and strip out dangerous items
+            var sanitized = await _profileService.ImportPortableProfileFromFileAsync(tempFile);
+            Assert.NotNull(sanitized);
+
+            // Verify core services were stripped
+            Assert.DoesNotContain("RpcSs", sanitized.ServiceAdjustments.Keys);
+            Assert.DoesNotContain("WinDefend", sanitized.ServiceAdjustments.Keys);
+            Assert.DoesNotContain("Dnscache", sanitized.ServiceAdjustments.Keys);
+            Assert.Contains("RetailDemo", sanitized.ServiceAdjustments.Keys);
+
+            // Verify protected packages were stripped
+            Assert.DoesNotContain("Microsoft.WindowsStore", sanitized.DebloatPackageNames);
+            Assert.DoesNotContain("Microsoft.UI.Xaml.2.8", sanitized.DebloatPackageNames);
+            Assert.Contains("Clipchamp.Clipchamp", sanitized.DebloatPackageNames);
+        }
+        finally
+        {
+            if (File.Exists(tempFile)) File.Delete(tempFile);
+        }
+    }
+
+    [Fact]
+    public async Task PortableProfile_CreateExecutionPlan_GeneratesValidOperations()
+    {
+        var profile = new PortableMachineProfile
+        {
+            Name = "Clean Office Profile",
+            PrivacyTweakIds = new List<string> { "disable-advertising-id" },
+            OptimizationTweakIds = new List<string> { "show-file-extensions" },
+            ServiceAdjustments = new Dictionary<string, string> { { "RetailDemo", "Manual" } }
+        };
+
+        var plan = await _profileService.CreatePortableProfileExecutionPlanAsync(profile, isDryRun: true);
+
+        Assert.NotNull(plan);
+        Assert.True(plan.Items.Count >= 2);
+        Assert.True(plan.IsDryRun);
+        Assert.All(plan.Items, item =>
+        {
+            Assert.True(item.RollbackSupported);
+            Assert.NotEqual(OperationRiskLevel.Critical, item.RiskLevel);
+        });
+    }
+
+    [Fact]
+    public async Task PortableProfile_CaptureCurrentSystemProfile_ReturnsGenuineSnapshot()
+    {
+        var snapshot = await _profileService.CaptureCurrentSystemProfileAsync("My Test PC", "Automated capture test");
+
+        Assert.NotNull(snapshot);
+        Assert.Equal("My Test PC", snapshot.Name);
+        Assert.NotNull(snapshot.Author);
+        Assert.True(snapshot.ExportedAtUtc <= DateTime.UtcNow);
     }
 }
 

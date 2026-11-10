@@ -52,6 +52,12 @@ public interface IOptimizationProfileService
     Task<bool> DeleteCustomProfileAsync(string profileId, CancellationToken cancellationToken = default);
     Task<OptimizationProfile?> ImportProfileFromJsonAsync(string jsonContent);
     Task<string> ExportProfileToJsonAsync(OptimizationProfile profile);
+
+    // Portable Profile Import & Export (.w11profile)
+    Task<string> ExportPortableProfileToFileAsync(PortableMachineProfile profile, string destinationFilePath, CancellationToken cancellationToken = default);
+    Task<PortableMachineProfile?> ImportPortableProfileFromFileAsync(string sourceFilePath, CancellationToken cancellationToken = default);
+    Task<PortableMachineProfile> CaptureCurrentSystemProfileAsync(string name, string description, CancellationToken cancellationToken = default);
+    Task<OperationPlan> CreatePortableProfileExecutionPlanAsync(PortableMachineProfile profile, bool isDryRun, CancellationToken cancellationToken = default);
 }
 
 public interface ICleanupService

@@ -14,7 +14,7 @@
         </Grid.RowDefinitions>
 
         <!-- Header -->
-        <Grid Grid.Row="0" Margin="0,0,0,20">
+        <Grid Grid.Row="0" Margin="0,0,0,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
@@ -25,9 +25,25 @@
                            FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Button Content="📥 Import Profile" Style="{DynamicResource ModernButton}" Command="{Binding ImportProfileCommand}" ToolTip="Import portable machine profile (.w11profile)" Margin="0,0,8,0" />
+                <Button Content="📤 Export Profile" Style="{DynamicResource ModernButton}" Command="{Binding ExportProfileCommand}" ToolTip="Export active profile to .w11profile" Margin="0,0,8,0" />
+                <Button Content="💾 Snapshot PC" Style="{DynamicResource ModernButton}" Command="{Binding ExportCurrentSystemCommand}" ToolTip="Capture full machine configuration to .w11profile" Margin="0,0,8,0" />
                 <Button Content="🔄 Refresh" Style="{DynamicResource ModernButton}" Command="{Binding RefreshCommand}" />
             </StackPanel>
         </Grid>
+
+        <!-- Status Notification Banner -->
+        <Border Grid.Row="0" Margin="0,64,0,0" Style="{DynamicResource FluentCard}" Background="{DynamicResource BannerBackgroundBrush}" 
+                BorderBrush="{DynamicResource BannerBorderBrush}" Padding="12,8" VerticalAlignment="Top"
+                Visibility="{Binding StatusNotification, Converter={StaticResource NullOrEmptyToVisConverter}}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="{Binding StatusNotification}" FontSize="12.5" Foreground="{DynamicResource AccentLightBrush}" VerticalAlignment="Center" />
+            </Grid>
+        </Border>
 
         <!-- Main Tabbed Content -->
         <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0">
@@ -461,6 +477,118 @@
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <Button Content="Cancel" Style="{DynamicResource ModernButton}" Command="{Binding CancelPlanCommand}" Margin="0,0,8,0" IsEnabled="{Binding IsNotExecuting}" />
                             <Button Content="Confirm &amp; Apply" Style="{DynamicResource AccentButton}" Command="{Binding ExecutePlanCommand}" IsEnabled="{Binding IsNotExecuting}" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </Border>
+        </Border>
+
+        <!-- Imported Portable Profile Preview Modal -->
+        <Border Grid.RowSpan="2" Background="#AA000000" Visibility="{Binding IsImportModalOpen, Converter={StaticResource BoolToVisConverter}}">
+            <Border Width="760" MaxHeight="600" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="24" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!-- Modal Header -->
+                    <Grid Grid.Row="0" Margin="0,0,0,14">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding ImportedProfile.Icon}" FontSize="20" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                <TextBlock Text="{Binding ImportedProfile.Name}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
+                                <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource SuccessBackgroundBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" Margin="10,0,0,0">
+                                    <TextBlock Text="Portable Profile (.w11profile)" FontSize="10.5" Foreground="{DynamicResource SuccessBrush}" FontWeight="SemiBold" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="{Binding ImportedProfile.Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- Profile Metadata Card -->
+                    <Border Grid.Row="1" Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14,10" Margin="0,0,0,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="AUTHOR" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding ImportedProfile.Author}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="EXPORTED" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding ImportedProfile.ExportedAtUtc, StringFormat='{}{0:yyyy-MM-dd HH:mm}'}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="COMPATIBILITY" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding ImportedProfile.MinimumOsBuild}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="3">
+                                <TextBlock Text="TOTAL ACTIONS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" />
+                                <TextBlock Text="{Binding ImportedProfile.TotalActionCount, StringFormat='{}{0} operations'}" FontSize="12" FontWeight="SemiBold" Foreground="{DynamicResource AccentLightBrush}" Margin="0,2,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+
+                    <!-- Planned Actions DataGrid -->
+                    <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="0" Margin="0,0,0,16" ClipToBounds="True">
+                        <DataGrid ItemsSource="{Binding DiffItems}" AutoGenerateColumns="False" IsReadOnly="True" 
+                                  Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
+                                  GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}" MaxHeight="260">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Setting Name" Binding="{Binding Name}" Width="220" />
+                                <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="150" />
+                                <DataGridTextColumn Header="Current Machine State" Binding="{Binding CurrentValue}" Width="140" />
+                                <DataGridTextColumn Header="Profile Target State" Binding="{Binding TargetValue}" Width="140" />
+                                <DataGridTemplateColumn Header="Action Required" Width="*">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Style="{DynamicResource StatusBadge}" HorizontalAlignment="Left" Margin="8,0,0,0">
+                                                <TextBlock FontSize="10.5" FontWeight="SemiBold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Setter Property="Text" Value="Already Compliant" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding WillChange}" Value="True">
+                                                                    <Setter Property="Text" Value="⚡ Will Modify" />
+                                                                    <Setter Property="Foreground" Value="{DynamicResource AccentLightBrush}" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+
+                    <!-- Footer / Actions -->
+                    <Grid Grid.Row="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="🛡️ Sanitized by Core Safety Shield • 100% Reversible" FontSize="11" Foreground="{DynamicResource SuccessBrush}" VerticalAlignment="Center" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <Button Content="✕ Close" Style="{DynamicResource ModernButton}" Command="{Binding CloseImportModalCommand}" Margin="0,0,8,0" />
+                            <Button Content="💾 Save to My Profiles" Style="{DynamicResource ModernButton}" Command="{Binding SaveImportedAsCustomCommand}" Margin="0,0,8,0" />
+                            <Button Content="⚡ Review &amp; Apply Now" Style="{DynamicResource PrimaryButton}" Command="{Binding ApplyImportedProfileCommand}" />
                         </StackPanel>
                     </Grid>
                 </Grid>

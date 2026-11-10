@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using CommunityToolkit.Mvvm.Input;
 using Win11ControlCenter.Core.Enums;
 using Win11ControlCenter.Core.Interfaces;
@@ -18,8 +19,11 @@ public partial class OptimizationViewModel : ViewModelBase
 
     private bool _isPlanModalOpen;
     private bool _isDiffModalOpen;
+    private bool _isImportModalOpen;
     private OperationPlan? _activePlan;
     private ProfileDiffResult? _currentDiff;
+    private PortableMachineProfile? _importedProfile;
+    private string _statusNotification = string.Empty;
     private double _progressPercent;
     private string _progressStatus = string.Empty;
     private bool _isExecuting;
@@ -54,6 +58,12 @@ public partial class OptimizationViewModel : ViewModelBase
         set => SetProperty(ref _isDiffModalOpen, value);
     }
 
+    public bool IsImportModalOpen
+    {
+        get => _isImportModalOpen;
+        set => SetProperty(ref _isImportModalOpen, value);
+    }
+
     public OperationPlan? ActivePlan
     {
         get => _activePlan;
@@ -64,6 +74,18 @@ public partial class OptimizationViewModel : ViewModelBase
     {
         get => _currentDiff;
         set => SetProperty(ref _currentDiff, value);
+    }
+
+    public PortableMachineProfile? ImportedProfile
+    {
+        get => _importedProfile;
+        set => SetProperty(ref _importedProfile, value);
+    }
+
+    public string StatusNotification
+    {
+        get => _statusNotification;
+        set => SetProperty(ref _statusNotification, value);
     }
 
     public double ProgressPercent
@@ -108,6 +130,13 @@ public partial class OptimizationViewModel : ViewModelBase
     public IRelayCommand CancelPlanCommand { get; }
     public IRelayCommand CloseDiffModalCommand { get; }
 
+    public IAsyncRelayCommand ImportProfileCommand { get; }
+    public IAsyncRelayCommand ExportProfileCommand { get; }
+    public IAsyncRelayCommand ExportCurrentSystemCommand { get; }
+    public IAsyncRelayCommand ApplyImportedProfileCommand { get; }
+    public IAsyncRelayCommand SaveImportedAsCustomCommand { get; }
+    public IRelayCommand CloseImportModalCommand { get; }
+
     public OptimizationViewModel(
         ILoggingService logger,
         ITweakEngineService tweakService,
@@ -128,6 +157,13 @@ public partial class OptimizationViewModel : ViewModelBase
         ExecutePlanCommand = new AsyncRelayCommand(ExecuteActivePlanAsync);
         CancelPlanCommand = new RelayCommand(() => IsPlanModalOpen = false);
         CloseDiffModalCommand = new RelayCommand(() => IsDiffModalOpen = false);
+
+        ImportProfileCommand = new AsyncRelayCommand(ImportProfileAsync);
+        ExportProfileCommand = new AsyncRelayCommand(ExportProfileAsync);
+        ExportCurrentSystemCommand = new AsyncRelayCommand(ExportCurrentSystemAsync);
+        ApplyImportedProfileCommand = new AsyncRelayCommand(ApplyImportedProfileAsync);
+        SaveImportedAsCustomCommand = new AsyncRelayCommand(SaveImportedAsCustomAsync);
+        CloseImportModalCommand = new RelayCommand(() => IsImportModalOpen = false);
     }
 
     public override async Task InitializeAsync()
@@ -308,6 +344,145 @@ public partial class OptimizationViewModel : ViewModelBase
         finally
         {
             IsExecuting = false;
+        }
+    }
+
+    private async Task ImportProfileAsync()
+    {
+        try
+        {
+            var dlg = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "Import Windows 11 Optimization Profile (.w11profile)",
+                Filter = "Win11 Machine Profile (*.w11profile;*.json)|*.w11profile;*.json|All Files (*.*)|*.*",
+                CheckFileExists = true
+            };
+
+            if (dlg.ShowDialog() == true)
+            {
+                var imported = await _profileService.ImportPortableProfileFromFileAsync(dlg.FileName);
+                if (imported != null)
+                {
+                    ImportedProfile = imported;
+
+                    var optProfile = imported.ToOptimizationProfile();
+                    CurrentDiff = await _profileService.CalculateProfileDiffAsync(optProfile);
+                    DiffItems.Clear();
+                    foreach (var item in CurrentDiff.Items)
+                    {
+                        DiffItems.Add(item);
+                    }
+
+                    IsImportModalOpen = true;
+                    StatusNotification = $"Loaded profile '{imported.Name}' with {imported.TotalActionCount} actions.";
+                }
+                else
+                {
+                    StatusNotification = "Could not parse or validate the selected profile file.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error importing portable profile", ex, "OptimizationViewModel");
+            StatusNotification = $"Import failed: {ex.Message}";
+        }
+    }
+
+    private async Task ExportProfileAsync()
+    {
+        try
+        {
+            var source = SelectedProfile != null
+                ? PortableMachineProfile.FromOptimizationProfile(SelectedProfile)
+                : await _profileService.CaptureCurrentSystemProfileAsync("System Snapshot", "Custom machine configuration");
+
+            var sanitizedName = string.Join("_", source.Name.Split(Path.GetInvalidFileNameChars()));
+            var dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Export Portable Optimization Profile (.w11profile)",
+                Filter = "Win11 Machine Profile (*.w11profile)|*.w11profile|JSON Profile (*.json)|*.json",
+                FileName = $"{sanitizedName}_{DateTime.Now:yyyyMMdd}.w11profile"
+            };
+
+            if (dlg.ShowDialog() == true)
+            {
+                await _profileService.ExportPortableProfileToFileAsync(source, dlg.FileName);
+                StatusNotification = $"Profile exported to '{Path.GetFileName(dlg.FileName)}'.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error exporting portable profile", ex, "OptimizationViewModel");
+            StatusNotification = $"Export failed: {ex.Message}";
+        }
+    }
+
+    private async Task ExportCurrentSystemAsync()
+    {
+        try
+        {
+            var systemSnapshot = await _profileService.CaptureCurrentSystemProfileAsync(
+                $"{Environment.MachineName} Baseline",
+                $"Full configuration snapshot of {Environment.MachineName} running Windows 11.");
+
+            var dlg = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Export Current System State Profile (.w11profile)",
+                Filter = "Win11 Machine Profile (*.w11profile)|*.w11profile|JSON Profile (*.json)|*.json",
+                FileName = $"{Environment.MachineName}_Snapshot_{DateTime.Now:yyyyMMdd}.w11profile"
+            };
+
+            if (dlg.ShowDialog() == true)
+            {
+                await _profileService.ExportPortableProfileToFileAsync(systemSnapshot, dlg.FileName);
+                StatusNotification = $"System snapshot exported to '{Path.GetFileName(dlg.FileName)}'.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error capturing and exporting system profile", ex, "OptimizationViewModel");
+            StatusNotification = $"Snapshot export failed: {ex.Message}";
+        }
+    }
+
+    private async Task ApplyImportedProfileAsync()
+    {
+        if (ImportedProfile == null) return;
+
+        try
+        {
+            IsDryRun = false;
+            ActivePlan = await _profileService.CreatePortableProfileExecutionPlanAsync(ImportedProfile, IsDryRun);
+            IsImportModalOpen = false;
+            IsPlanModalOpen = true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to generate execution plan for imported profile '{ImportedProfile.Name}'", ex, "OptimizationViewModel");
+            StatusNotification = $"Execution error: {ex.Message}";
+        }
+    }
+
+    private async Task SaveImportedAsCustomAsync()
+    {
+        if (ImportedProfile == null) return;
+
+        try
+        {
+            var optProfile = ImportedProfile.ToOptimizationProfile();
+            var success = await _profileService.SaveCustomProfileAsync(optProfile);
+            if (success)
+            {
+                await RefreshAsync();
+                SelectedProfile = Profiles.FirstOrDefault(p => p.Id == optProfile.Id) ?? optProfile;
+                IsImportModalOpen = false;
+                StatusNotification = $"Saved '{ImportedProfile.Name}' to your custom profiles library.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to save imported profile as custom: {ex.Message}", ex, "OptimizationViewModel");
         }
     }
 }

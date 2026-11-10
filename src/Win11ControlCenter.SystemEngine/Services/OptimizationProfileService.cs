@@ -13,6 +13,7 @@ public class OptimizationProfileService : IOptimizationProfileService
     private readonly ITweakEngineService _tweakService;
     private readonly IServiceManagerService _serviceManager;
     private readonly IOperationExecutor _operationExecutor;
+    private readonly IPackageManagerService? _packageManager;
     private readonly string _profilesDirectory;
 
     public OptimizationProfileService(
@@ -20,13 +21,15 @@ public class OptimizationProfileService : IOptimizationProfileService
         IPrivacyService privacyService,
         ITweakEngineService tweakService,
         IServiceManagerService serviceManager,
-        IOperationExecutor operationExecutor)
+        IOperationExecutor operationExecutor,
+        IPackageManagerService? packageManager = null)
     {
         _logger = logger;
         _privacyService = privacyService;
         _tweakService = tweakService;
         _serviceManager = serviceManager;
         _operationExecutor = operationExecutor;
+        _packageManager = packageManager;
 
         var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         _profilesDirectory = Path.Combine(appData, "Win11ControlCenter", "Profiles");
@@ -516,6 +519,174 @@ public class OptimizationProfileService : IOptimizationProfileService
     {
         var json = JsonSerializer.Serialize(profile, new JsonSerializerOptions { WriteIndented = true });
         return Task.FromResult(json);
+    }
+
+    public async Task<string> ExportPortableProfileToFileAsync(PortableMachineProfile profile, string destinationFilePath, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var options = new JsonSerializerOptions { WriteIndented = true };
+            var json = JsonSerializer.Serialize(profile, options);
+            var dir = Path.GetDirectoryName(destinationFilePath);
+            if (!string.IsNullOrWhiteSpace(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            await File.WriteAllTextAsync(destinationFilePath, json, cancellationToken);
+            _logger.LogInfo($"Exported portable machine profile '{profile.Name}' to '{destinationFilePath}'.", "Profiles");
+            return destinationFilePath;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to export portable profile to '{destinationFilePath}'", ex, "Profiles");
+            throw;
+        }
+    }
+
+    public async Task<PortableMachineProfile?> ImportPortableProfileFromFileAsync(string sourceFilePath, CancellationToken cancellationToken = default)
+    {
+        if (!File.Exists(sourceFilePath))
+        {
+            _logger.LogWarning($"Portable profile file not found: '{sourceFilePath}'", "Profiles");
+            return null;
+        }
+
+        try
+        {
+            var json = await File.ReadAllTextAsync(sourceFilePath, cancellationToken);
+            var profile = JsonSerializer.Deserialize<PortableMachineProfile>(json, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (profile == null) return null;
+
+            // --- CRITICAL SAFETY SHIELD SANITIZATION ---
+            // 1. Sanitize Service Adjustments: Never allow tampering with core Windows services
+            var blockedServices = profile.ServiceAdjustments.Keys
+                .Where(CoreWindowsServices.IsProtectedService)
+                .ToList();
+
+            foreach (var blockedSvc in blockedServices)
+            {
+                profile.ServiceAdjustments.Remove(blockedSvc);
+                _logger.LogWarning($"Safety Shield stripped protected service '{blockedSvc}' from imported profile '{profile.Name}'.", "SafetyValidator");
+            }
+
+            // 2. Sanitize Package Removals: Never allow removal of protected infrastructure packages
+            var blockedPackages = profile.DebloatPackageNames
+                .Where(ProtectedPackages.IsProtected)
+                .ToList();
+
+            foreach (var blockedPkg in blockedPackages)
+            {
+                profile.DebloatPackageNames.Remove(blockedPkg);
+                _logger.LogWarning($"Safety Shield stripped protected package '{blockedPkg}' from imported profile '{profile.Name}'.", "SafetyValidator");
+            }
+
+            // 3. Fallback name if missing
+            if (string.IsNullOrWhiteSpace(profile.Name))
+            {
+                profile.Name = Path.GetFileNameWithoutExtension(sourceFilePath);
+            }
+
+            _logger.LogInfo($"Successfully imported and sanitized portable profile '{profile.Name}' ({profile.TotalActionCount} actions).", "Profiles");
+            return profile;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError($"Failed to deserialize portable profile from '{sourceFilePath}'", ex, "Profiles");
+            return null;
+        }
+    }
+
+    public async Task<PortableMachineProfile> CaptureCurrentSystemProfileAsync(string name, string description, CancellationToken cancellationToken = default)
+    {
+        var profile = new PortableMachineProfile
+        {
+            Name = string.IsNullOrWhiteSpace(name) ? $"System Snapshot ({DateTime.Now:yyyy-MM-dd})" : name,
+            Description = string.IsNullOrWhiteSpace(description) ? "Captured active configuration of current Windows 11 installation." : description,
+            Author = Environment.UserName,
+            ExportedAtUtc = DateTime.UtcNow,
+            Icon = "🖥️",
+            SafetyTier = "Tier 1: Safe & Reversible"
+        };
+
+        try
+        {
+            // 1. Capture applied privacy tweaks
+            var privacyTweaks = await _privacyService.GetPrivacyTweaksAsync(cancellationToken);
+            profile.PrivacyTweakIds = privacyTweaks
+                .Where(t => t.IsApplied)
+                .Select(t => t.Id)
+                .ToList();
+
+            // 2. Capture applied explorer & gaming tweaks
+            var explorerTweaks = await _tweakService.GetExplorerTweaksAsync(cancellationToken);
+            var gamingTweaks = await _tweakService.GetGamingTweaksAsync(cancellationToken);
+            profile.OptimizationTweakIds = explorerTweaks.Concat(gamingTweaks)
+                .Where(t => t.IsApplied)
+                .Select(t => t.Id)
+                .ToList();
+
+            // 3. Capture active power plan
+            var powerPlans = await _tweakService.GetPowerPlansAsync(cancellationToken);
+            var activePlan = powerPlans.FirstOrDefault(p => p.IsActive);
+            if (activePlan != null)
+            {
+                profile.TargetPowerPlanName = activePlan.Name;
+            }
+
+            _logger.LogInfo($"Captured current system profile with {profile.TotalActionCount} active settings.", "Profiles");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError("Error while capturing current system profile", ex, "Profiles");
+        }
+
+        return profile;
+    }
+
+    public async Task<OperationPlan> CreatePortableProfileExecutionPlanAsync(PortableMachineProfile profile, bool isDryRun, CancellationToken cancellationToken = default)
+    {
+        var optProfile = profile.ToOptimizationProfile();
+        var plan = await CreateProfilePlanAsync(optProfile, isDryRun, cancellationToken);
+
+        // If profile specifies debloat packages, add them
+        if (_packageManager != null && profile.DebloatPackageNames.Count > 0)
+        {
+            try
+            {
+                var installed = await _packageManager.GetInstalledPackagesAsync(cancellationToken);
+                var targetPackages = installed
+                    .Where(p => profile.DebloatPackageNames.Any(name =>
+                        string.Equals(p.Name, name, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(p.PackageFullName, name, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(p.DisplayName, name, StringComparison.OrdinalIgnoreCase)))
+                    .Where(p => !p.IsProtected)
+                    .ToList();
+
+                if (targetPackages.Count > 0)
+                {
+                    foreach (var pkg in targetPackages)
+                    {
+                        pkg.IsSelectedForRemoval = true;
+                    }
+                    var removalPlan = await _packageManager.CreateRemovalPlanAsync(targetPackages, isDryRun);
+                    foreach (var item in removalPlan.Items)
+                    {
+                        plan.Items.Add(item);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning($"Could not resolve packages for profile execution: {ex.Message}", "Profiles");
+            }
+        }
+
+        return plan;
     }
 }
 
