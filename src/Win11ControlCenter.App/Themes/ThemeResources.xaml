@@ -556,19 +556,21 @@
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
         <Setter Property="BorderThickness" Value="0" />
-        <Setter Property="Padding" Value="10,8" />
+        <Setter Property="Height" Value="36" />
         <Setter Property="FontFamily" Value="{StaticResource SegoeFluent}" />
         <Setter Property="FontSize" Value="13" />
         <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border x:Name="navBorder" Background="{TemplateBinding Background}" CornerRadius="6" Margin="4,1">
+                    <Border x:Name="navBorder" Background="{TemplateBinding Background}" CornerRadius="6" Margin="0,1.5" Height="36">
                         <Grid>
                             <!-- Windows 11 Active Indicator Pill on the left -->
-                            <Rectangle x:Name="indicator" Width="3" Height="16" Fill="{DynamicResource NavIndicatorBrush}" 
-                                       HorizontalAlignment="Left" RadiusX="1.5" RadiusY="1.5" Visibility="Collapsed" Margin="0,0,0,0" />
-                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" />
+                            <Rectangle x:Name="indicator" Width="3" Height="18" Fill="{DynamicResource NavIndicatorBrush}" 
+                                       HorizontalAlignment="Left" VerticalAlignment="Center" RadiusX="1.5" RadiusY="1.5" 
+                                       Visibility="Collapsed" Margin="0,0,0,0" />
+                            <ContentPresenter HorizontalAlignment="Left" VerticalAlignment="Center" Margin="14,0,10,0" />
                         </Grid>
                     </Border>
                     <ControlTemplate.Triggers>

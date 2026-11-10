@@ -94,96 +94,96 @@
 
                 <!-- Navigation List with Sections -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="8,0,8,8">
+                    <StackPanel Margin="10,4,10,10">
                         <!-- Section: System & Apps -->
-                        <TextBlock Text="SYSTEM &amp; PACKAGES" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,8,0,3" />
+                        <TextBlock Text="SYSTEM &amp; PACKAGES" FontSize="10.5" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,8,0,5" />
                         <RadioButton Style="{DynamicResource NavRadioButton}" IsChecked="True" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Dashboard">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="📊" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="📊" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="AppDebloater">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🗑️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🗑️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="App Debloater" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="SoftwareCenter">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="📦" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="📦" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Software Center" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="StartupManager">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🚀" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🚀" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Startup Manager" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="ServicesManager">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="⚙️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="⚙️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Windows Services" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
 
                         <!-- Section: Optimization -->
-                        <TextBlock Text="OPTIMIZATION &amp; TWEAKS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,12,0,3" />
+                        <TextBlock Text="OPTIMIZATION &amp; TWEAKS" FontSize="10.5" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,18,0,5" />
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Privacy">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🔒" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🔒" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Privacy &amp; Telemetry" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Optimization">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="✨" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="✨" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Windows Tweaks" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Gaming">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🎮" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🎮" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Gaming Mode" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="SystemCleaner">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🧹" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🧹" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="System Cleaner" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="CustomTweaks">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🛠️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🛠️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Custom Tweaks" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
 
                         <!-- Section: Recovery & Audit -->
-                        <TextBlock Text="SAFETY &amp; AUDIT" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,12,0,3" />
+                        <TextBlock Text="SAFETY &amp; AUDIT" FontSize="10.5" FontWeight="SemiBold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,18,0,5" />
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="RestoreCenter">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🛡️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="🛡️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Restore Center" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="ActivityLogs">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="📜" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="📜" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Activity Logs" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
@@ -191,19 +191,19 @@
                 </ScrollViewer>
 
                 <!-- Bottom Sidebar: Appearance & Settings Dock -->
-                <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,10">
+                <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,12">
                     <StackPanel>
                         <!-- Settings Navigation Item -->
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="Settings" Margin="0,0,0,8">
+                                     Command="{Binding NavigateCommand}" CommandParameter="Settings" Margin="0,0,0,10">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="⚙️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="⚙️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
                                 <TextBlock Text="Application Settings" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
 
                         <!-- Section Label & Current Theme -->
-                        <Grid Margin="4,0,4,6">
+                        <Grid Margin="4,0,4,8">
                             <TextBlock Text="APPEARANCE" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" />
                             <Border HorizontalAlignment="Right" Background="{DynamicResource BadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="6,1">
                                 <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
