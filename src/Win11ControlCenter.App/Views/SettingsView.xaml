@@ -38,7 +38,7 @@
                     </Grid.ColumnDefinitions>
                     <StackPanel>
                         <TextBlock Text="Application Theme" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" />
-                        <TextBlock Text="Select between Windows 11 Dark Mode and Light Mode." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                        <TextBlock Text="Select between System (OS Auto-sync), Dark, Light, Midnight OLED, and Cobalt." FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
                     </StackPanel>
                     <ComboBox Grid.Column="1" ItemsSource="{Binding AvailableThemes}" SelectedItem="{Binding SelectedTheme}" Style="{DynamicResource ModernComboBox}" VerticalAlignment="Center" />
                 </Grid>

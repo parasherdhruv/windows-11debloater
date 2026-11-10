@@ -589,4 +589,38 @@ public class FullAppAutomationFeatureTests
             Assert.True(mainVm.ElevationStatusText.Contains("Administrator") || mainVm.ElevationStatusText.Contains("Standard User"));
         });
     }
+
+    [Fact]
+    public void Test16_SidebarThemeSelection_PreservedWhenNavigatingToSettings()
+    {
+        RunInSta(async () =>
+        {
+            var sp = CreateAppServiceProvider();
+            var mainVm = sp.GetRequiredService<MainViewModel>();
+            var settingsVm = sp.GetRequiredService<SettingsViewModel>();
+
+            // 1. User selects Light theme from sidebar dock pills
+            mainVm.SelectThemeCommand.Execute("Light");
+            Assert.Equal("Light", mainVm.ThemeService.CurrentTheme);
+            Assert.True(mainVm.IsLightTheme);
+
+            // 2. User clicks "Application Settings" navigation in sidebar
+            mainVm.NavigateCommand.Execute("Settings");
+            await settingsVm.InitializeAsync();
+
+            // 3. Theme must remain Light - NOT reset back to default
+            Assert.Equal("Light", mainVm.ThemeService.CurrentTheme);
+            Assert.Equal("Light", settingsVm.SelectedTheme);
+            Assert.True(mainVm.IsLightTheme);
+
+            // 4. User selects Cobalt theme
+            mainVm.SelectThemeCommand.Execute("Cobalt");
+            Assert.Equal("Cobalt", mainVm.ThemeService.CurrentTheme);
+
+            // 5. Navigate to settings again
+            await settingsVm.InitializeAsync();
+            Assert.Equal("Cobalt", mainVm.ThemeService.CurrentTheme);
+            Assert.Equal("Cobalt", settingsVm.SelectedTheme);
+        });
+    }
 }

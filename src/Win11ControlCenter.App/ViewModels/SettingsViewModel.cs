@@ -63,16 +63,22 @@ public partial class SettingsViewModel : ViewModelBase
         _themeService = themeService;
         _settings = _storage.Load();
 
-        _selectedTheme = string.IsNullOrWhiteSpace(_settings.Theme) ? "System" : _settings.Theme;
+        var initialTheme = !string.IsNullOrWhiteSpace(_themeService.CurrentTheme) 
+            ? _themeService.CurrentTheme 
+            : (string.IsNullOrWhiteSpace(_settings.Theme) ? "System" : _settings.Theme);
+
+        _selectedTheme = initialTheme;
+        _settings.Theme = initialTheme;
 
         SaveCommand = new RelayCommand(SaveSettings);
         ResetDefaultsCommand = new RelayCommand(ResetDefaults);
 
         _themeService.ThemeChanged += (s, theme) =>
         {
-            if (_selectedTheme != theme)
+            if (!string.IsNullOrWhiteSpace(theme) && _selectedTheme != theme)
             {
                 _selectedTheme = theme;
+                _settings.Theme = theme;
                 OnPropertyChanged(nameof(SelectedTheme));
             }
         };
@@ -80,7 +86,21 @@ public partial class SettingsViewModel : ViewModelBase
 
     public override Task InitializeAsync()
     {
-        _themeService.ApplyTheme(Settings.Theme);
+        try
+        {
+            Settings = _storage.Load();
+        }
+        catch { }
+
+        // Synchronize with the currently active theme from ThemeService without overwriting it
+        var activeTheme = _themeService.CurrentTheme;
+        if (!string.IsNullOrWhiteSpace(activeTheme))
+        {
+            _selectedTheme = activeTheme;
+            Settings.Theme = activeTheme;
+            OnPropertyChanged(nameof(SelectedTheme));
+        }
+
         return Task.CompletedTask;
     }
 
