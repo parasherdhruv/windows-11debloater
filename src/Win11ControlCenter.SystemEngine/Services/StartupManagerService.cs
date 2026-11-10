@@ -59,7 +59,11 @@ public class StartupManagerService : IStartupManagerService
             Name = $"{(enable ? "Enable" : "Disable")} startup {entry.Name}",
             OperationType = OperationType.Startup,
             Target = entry.Name,
-            RecommendedValue = enable
+            RecommendedValue = enable,
+            Metadata = new Dictionary<string, string>
+            {
+                { "LocationType", entry.LocationType.ToString() }
+            }
         };
 
         var (success, message) = StartupOperationHandler.Apply(item);
@@ -196,16 +200,37 @@ public class StartupManagerService : IStartupManagerService
     {
         try
         {
-            const string approvedKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
-            using var key = Registry.CurrentUser.OpenSubKey(approvedKeyPath, false);
+            const string approvedRun = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
+            const string approvedFolder = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder";
+
+            // Check HKCU Run
+            CheckApprovedKey(Registry.CurrentUser, approvedRun, entries.Where(e => e.LocationType == StartupLocationType.RegistryCurrentUser));
+
+            // Check HKLM Run
+            CheckApprovedKey(Registry.LocalMachine, approvedRun, entries.Where(e => e.LocationType == StartupLocationType.RegistryLocalMachine));
+
+            // Check HKCU StartupFolder
+            CheckApprovedKey(Registry.CurrentUser, approvedFolder, entries.Where(e => e.LocationType == StartupLocationType.UserStartupFolder));
+
+            // Check HKLM StartupFolder
+            CheckApprovedKey(Registry.LocalMachine, approvedFolder, entries.Where(e => e.LocationType == StartupLocationType.CommonStartupFolder));
+        }
+        catch { }
+    }
+
+    private static void CheckApprovedKey(RegistryKey hive, string subKeyPath, IEnumerable<StartupEntry> targetEntries)
+    {
+        try
+        {
+            using var key = hive.OpenSubKey(subKeyPath, false);
             if (key == null) return;
 
-            foreach (var entry in entries.Where(e => e.LocationType == StartupLocationType.RegistryCurrentUser))
+            foreach (var entry in targetEntries)
             {
                 var raw = key.GetValue(entry.Name);
                 if (raw is byte[] bytes && bytes.Length > 0)
                 {
-                    // Byte 0: 0x02 = Enabled, 0x03 = Disabled
+                    // Byte 0: 0x02 = Enabled, 0x03 = Disabled (any odd byte = disabled)
                     entry.IsEnabled = (bytes[0] % 2 == 0);
                 }
             }

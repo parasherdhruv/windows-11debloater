@@ -22,15 +22,46 @@ public class PowerShellCommandRunner
         using var process = new Process { StartInfo = psi };
         process.Start();
 
-        var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
-        var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
+        try
+        {
+            var outputTask = process.StandardOutput.ReadToEndAsync(cancellationToken);
+            var errorTask = process.StandardError.ReadToEndAsync(cancellationToken);
 
-        await process.WaitForExitAsync(cancellationToken);
+            // 60-second safety timeout for automated command execution
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(60));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
 
-        var output = await outputTask;
-        var error = await errorTask;
+            await process.WaitForExitAsync(linkedCts.Token);
 
-        return (process.ExitCode == 0, output.Trim(), error.Trim());
+            var output = await outputTask;
+            var error = await errorTask;
+
+            return (process.ExitCode == 0, output.Trim(), error.Trim());
+        }
+        catch (OperationCanceledException)
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(true);
+                }
+            }
+            catch { }
+            return (false, string.Empty, "Command execution timed out or was cancelled.");
+        }
+        catch (Exception ex)
+        {
+            try
+            {
+                if (!process.HasExited)
+                {
+                    process.Kill(true);
+                }
+            }
+            catch { }
+            return (false, string.Empty, $"Execution exception: {ex.Message}");
+        }
     }
 
     public static bool ValidatePackageName(string packageName)

@@ -283,7 +283,7 @@ public partial class SystemCleanerViewModel : ViewModelBase
     private async Task PrepareCleanupPlanAsync()
     {
         var source = _allTargets.Count > 0 ? _allTargets : Targets.ToList();
-        var selected = source.Where(t => t.IsSelected && t.FileCount > 0).ToList();
+        var selected = source.Where(t => t.IsSelected && (t.FileCount > 0 || t.TotalSizeBytes > 0 || t.TargetPath.Equals("RecycleBin", StringComparison.OrdinalIgnoreCase))).ToList();
         if (selected.Count == 0)
         {
             _logger.LogInfo("No cleanup targets with files selected.", "SystemCleaner");

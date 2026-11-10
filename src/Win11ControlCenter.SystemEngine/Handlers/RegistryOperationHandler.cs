@@ -29,8 +29,9 @@ public static class RegistryOperationHandler
             }
 
             var kind = ParseValueKind(item.ValueType);
-            key.SetValue(valueName, item.RecommendedValue, kind);
-            return (true, $"Set '{valueName}' to '{item.RecommendedValue}' in {item.Target}");
+            var normalizedVal = NormalizeRegistryValue(item.RecommendedValue, kind);
+            key.SetValue(valueName, normalizedVal!, kind);
+            return (true, $"Set '{valueName}' to '{normalizedVal}' in {item.Target}");
         }
         catch (Exception ex)
         {
@@ -62,8 +63,9 @@ public static class RegistryOperationHandler
             }
 
             var kind = ParseValueKind(item.ValueType);
-            key.SetValue(valueName, item.OriginalValue, kind);
-            return (true, $"Rolled back '{valueName}' to original value: '{item.OriginalValue}'");
+            var normalizedVal = NormalizeRegistryValue(item.OriginalValue, kind);
+            key.SetValue(valueName, normalizedVal!, kind);
+            return (true, $"Rolled back '{valueName}' to original value: '{normalizedVal}'");
         }
         catch (Exception ex)
         {
@@ -103,8 +105,10 @@ public static class RegistryOperationHandler
         return (baseKey, subKey);
     }
 
-    private static RegistryValueKind ParseValueKind(string type)
+    private static RegistryValueKind ParseValueKind(string? type)
     {
+        if (string.IsNullOrWhiteSpace(type)) return RegistryValueKind.DWord;
+
         return type.ToLowerInvariant() switch
         {
             "dword" => RegistryValueKind.DWord,
@@ -114,6 +118,63 @@ public static class RegistryOperationHandler
             "multistring" => RegistryValueKind.MultiString,
             _ => RegistryValueKind.DWord
         };
+    }
+
+    public static object? NormalizeRegistryValue(object? val, RegistryValueKind kind)
+    {
+        if (val is null) return null;
+
+        if (val is System.Text.Json.JsonElement elem)
+        {
+            switch (elem.ValueKind)
+            {
+                case System.Text.Json.JsonValueKind.Number:
+                    if (kind == RegistryValueKind.QWord && elem.TryGetInt64(out var l))
+                        return l;
+                    if (elem.TryGetInt32(out var i))
+                        return i;
+                    if (elem.TryGetInt64(out var i64))
+                        return i64;
+                    return elem.GetRawText();
+
+                case System.Text.Json.JsonValueKind.True:
+                    return kind switch
+                    {
+                        RegistryValueKind.DWord => 1,
+                        RegistryValueKind.QWord => 1L,
+                        _ => "1"
+                    };
+
+                case System.Text.Json.JsonValueKind.False:
+                    return kind switch
+                    {
+                        RegistryValueKind.DWord => 0,
+                        RegistryValueKind.QWord => 0L,
+                        _ => "0"
+                    };
+
+                case System.Text.Json.JsonValueKind.String:
+                    var str = elem.GetString() ?? string.Empty;
+                    if (kind == RegistryValueKind.DWord && int.TryParse(str, out var parsedInt))
+                        return parsedInt;
+                    if (kind == RegistryValueKind.QWord && long.TryParse(str, out var parsedLong))
+                        return parsedLong;
+                    return str;
+
+                default:
+                    return elem.ToString();
+            }
+        }
+
+        if (val is string s)
+        {
+            if (kind == RegistryValueKind.DWord && int.TryParse(s, out var intVal))
+                return intVal;
+            if (kind == RegistryValueKind.QWord && long.TryParse(s, out var longVal))
+                return longVal;
+        }
+
+        return val;
     }
 }
 

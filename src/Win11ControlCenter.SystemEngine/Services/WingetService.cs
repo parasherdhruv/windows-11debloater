@@ -574,7 +574,14 @@ public partial class WingetService : IWingetService
                     }
                 }
 
-                await proc.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
+                try
+                {
+                    await proc.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
+                }
+                catch
+                {
+                    try { if (!proc.HasExited) proc.Kill(true); } catch { }
+                }
             }
 
             foreach (var pkg in packages)
@@ -640,8 +647,19 @@ public partial class WingetService : IWingetService
                 }
             }, ct);
 
-            await proc.WaitForExitAsync(ct).WaitAsync(TimeSpan.FromMinutes(5), ct);
-            await readTask;
+            try
+            {
+                await proc.WaitForExitAsync(ct).WaitAsync(TimeSpan.FromMinutes(5), ct);
+                await readTask;
+            }
+            finally
+            {
+                try
+                {
+                    if (!proc.HasExited) proc.Kill(true);
+                }
+                catch { }
+            }
 
             if (proc.ExitCode == 0)
             {

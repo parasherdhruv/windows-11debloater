@@ -82,6 +82,14 @@ public class RiskToBrushConverter : IValueConverter
     private static readonly SolidColorBrush HighBrush = new(Color.FromRgb(0xEF, 0x44, 0x44));
     private static readonly SolidColorBrush DefaultBrush = new(Color.FromRgb(0xA0, 0xA0, 0xA0));
 
+    static RiskToBrushConverter()
+    {
+        SafeBrush.Freeze();
+        ModerateBrush.Freeze();
+        HighBrush.Freeze();
+        DefaultBrush.Freeze();
+    }
+
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
         if (value is OperationRiskLevel risk)

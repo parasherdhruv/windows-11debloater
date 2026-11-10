@@ -623,4 +623,80 @@ public class FullAppAutomationFeatureTests
             Assert.Equal("Cobalt", settingsVm.SelectedTheme);
         });
     }
+
+    [Fact]
+    public void Test17_RegistryOperationHandler_JsonElementAndNullValueType_HandledSafely()
+    {
+        // 1. Test null ValueType (should not throw NullReferenceException)
+        var itemNullType = new OperationItem
+        {
+            Name = "Test Null Type",
+            OperationType = OperationType.Registry,
+            Target = @"HKCU\Software\Win11ControlCenterTest",
+            ValueType = null!,
+            RecommendedValue = 1,
+            Metadata = new Dictionary<string, string> { { "ValueName", "TestVal" } }
+        };
+        var (okNull, _) = Win11ControlCenter.SystemEngine.Handlers.RegistryOperationHandler.Apply(itemNullType);
+        Assert.True(okNull);
+
+        // 2. Test JsonElement numeric DWord normalization
+        using var doc = System.Text.Json.JsonDocument.Parse("{\"dwordVal\": 42, \"boolVal\": true, \"strVal\": \"100\"}");
+        var jsonDword = doc.RootElement.GetProperty("dwordVal");
+        var normalizedNum = Win11ControlCenter.SystemEngine.Handlers.RegistryOperationHandler.NormalizeRegistryValue(jsonDword, Microsoft.Win32.RegistryValueKind.DWord);
+        Assert.Equal(42, normalizedNum);
+
+        // 3. Test JsonElement boolean normalization to DWord
+        var jsonBool = doc.RootElement.GetProperty("boolVal");
+        var normalizedBool = Win11ControlCenter.SystemEngine.Handlers.RegistryOperationHandler.NormalizeRegistryValue(jsonBool, Microsoft.Win32.RegistryValueKind.DWord);
+        Assert.Equal(1, normalizedBool);
+
+        // 4. Test JsonElement string number normalization to DWord
+        var jsonStr = doc.RootElement.GetProperty("strVal");
+        var normalizedStr = Win11ControlCenter.SystemEngine.Handlers.RegistryOperationHandler.NormalizeRegistryValue(jsonStr, Microsoft.Win32.RegistryValueKind.DWord);
+        Assert.Equal(100, normalizedStr);
+
+        // Cleanup test registry key
+        try
+        {
+            Microsoft.Win32.Registry.CurrentUser.DeleteSubKeyTree("Software\\Win11ControlCenterTest", false);
+        }
+        catch { }
+    }
+
+    [Fact]
+    public void Test18_EmergencyRegFile_EscapedCorrectly()
+    {
+        var plan = new OperationPlan
+        {
+            Title = "Escape Test Plan",
+            Items = new List<OperationItem>
+            {
+                new()
+                {
+                    Name = "Path with Backslashes",
+                    OperationType = OperationType.Registry,
+                    Target = @"HKCU\Software\TestPath",
+                    OriginalValue = @"C:\Program Files\Test App\test.exe",
+                    RecommendedValue = @"C:\Program Files\New\test.exe",
+                    ValueType = "String",
+                    Metadata = new Dictionary<string, string> { { "ValueName", "InstallPath" } }
+                }
+            }
+        };
+
+        var repo = new BackupRepository();
+        var backupPath = repo.CreateBackupSession(plan);
+        var regFile = Path.Combine(backupPath, "registry", "pre_apply_rollback.reg");
+        Assert.True(File.Exists(regFile));
+
+        var lines = File.ReadAllLines(regFile);
+        var pathLine = lines.FirstOrDefault(l => l.StartsWith("\"InstallPath\"="));
+        Assert.NotNull(pathLine);
+        // Backslashes must be doubled for valid .reg files
+        Assert.Contains(@"C:\\Program Files\\Test App\\test.exe", pathLine);
+
+        // Cleanup
+        repo.DeleteBackupSession(Path.GetFileName(backupPath));
+    }
 }

@@ -5,8 +5,10 @@ namespace Win11ControlCenter.SystemEngine.Handlers;
 
 public static class StartupOperationHandler
 {
-    private const string CurrentUserRun = @"Software\Microsoft\Windows\CurrentVersion\Run";
-    private const string CurrentUserStartupApproved = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
+    private const string CurrentUserStartupApprovedRun = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
+    private const string CurrentUserStartupApprovedFolder = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder";
+    private const string LocalMachineStartupApprovedRun = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\Run";
+    private const string LocalMachineStartupApprovedFolder = @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder";
 
     public static (bool Success, string Message) Apply(OperationItem item)
     {
@@ -15,7 +17,9 @@ public static class StartupOperationHandler
             var enable = Convert.ToBoolean(item.RecommendedValue ?? false);
             var entryName = item.Target;
 
-            using var approvedKey = Registry.CurrentUser.CreateSubKey(CurrentUserStartupApproved, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            var (hive, subKey) = ResolveTargetKey(item);
+
+            using var approvedKey = hive.CreateSubKey(subKey, RegistryKeyPermissionCheck.ReadWriteSubTree);
             if (approvedKey != null)
             {
                 // Windows Task Manager uses a 12-byte binary value. Byte 0 is 0x02 for Enabled, 0x03 for Disabled.
@@ -42,7 +46,9 @@ public static class StartupOperationHandler
             var enable = Convert.ToBoolean(item.OriginalValue ?? true);
             var entryName = item.Target;
 
-            using var approvedKey = Registry.CurrentUser.OpenSubKey(CurrentUserStartupApproved, RegistryKeyPermissionCheck.ReadWriteSubTree);
+            var (hive, subKey) = ResolveTargetKey(item);
+
+            using var approvedKey = hive.OpenSubKey(subKey, RegistryKeyPermissionCheck.ReadWriteSubTree);
             if (approvedKey != null)
             {
                 byte[] binaryData = enable
@@ -59,6 +65,21 @@ public static class StartupOperationHandler
         {
             return (false, $"Startup rollback error: {ex.Message}");
         }
+    }
+
+    private static (RegistryKey Hive, string SubKey) ResolveTargetKey(OperationItem item)
+    {
+        if (item.Metadata.TryGetValue("LocationType", out var locStr))
+        {
+            if (locStr.Contains("UserStartupFolder"))
+                return (Registry.CurrentUser, CurrentUserStartupApprovedFolder);
+            if (locStr.Contains("CommonStartupFolder"))
+                return (Registry.LocalMachine, LocalMachineStartupApprovedFolder);
+            if (locStr.Contains("RegistryLocalMachine"))
+                return (Registry.LocalMachine, LocalMachineStartupApprovedRun);
+        }
+
+        return (Registry.CurrentUser, CurrentUserStartupApprovedRun);
     }
 }
 

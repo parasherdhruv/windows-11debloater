@@ -10,6 +10,7 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -33,8 +34,8 @@
         </Grid>
 
         <!-- Status Notification Banner -->
-        <Border Grid.Row="0" Margin="0,64,0,0" Style="{DynamicResource FluentCard}" Background="{DynamicResource BannerBackgroundBrush}" 
-                BorderBrush="{DynamicResource BannerBorderBrush}" Padding="12,8" VerticalAlignment="Top"
+        <Border Grid.Row="1" Margin="0,0,0,14" Style="{DynamicResource FluentCard}" Background="{DynamicResource BannerBackgroundBrush}" 
+                BorderBrush="{DynamicResource BannerBorderBrush}" Padding="12,8"
                 Visibility="{Binding StatusNotification, Converter={StaticResource NullOrEmptyToVisConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -46,7 +47,7 @@
         </Border>
 
         <!-- Main Tabbed Content -->
-        <TabControl Grid.Row="1" SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0">
+        <TabControl Grid.Row="2" SelectedIndex="{Binding SelectedTabIndex}" Background="Transparent" BorderThickness="0">
             <TabControl.Resources>
                 <Style TargetType="TabItem">
                     <Setter Property="Template">

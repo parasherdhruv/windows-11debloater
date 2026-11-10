@@ -105,12 +105,17 @@ public partial class ActivityLogsViewModel : ViewModelBase
                 .OrderBy(c => c)
                 .ToList();
 
+            var prevCategory = SelectedCategory;
             Categories.Clear();
             Categories.Add("All");
             foreach (var c in cats)
             {
                 Categories.Add(c);
             }
+
+            SelectedCategory = !string.IsNullOrWhiteSpace(prevCategory) && (prevCategory == "All" || cats.Contains(prevCategory))
+                ? prevCategory
+                : "All";
 
             ApplyFilter();
             OnPropertyChanged(nameof(TotalLogCount));

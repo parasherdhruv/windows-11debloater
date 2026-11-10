@@ -114,10 +114,17 @@ public class LoggingService : ILoggingService
             foreach (var line in lines.TakeLast(200))
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                var item = JsonSerializer.Deserialize<OperationItem>(line);
-                if (item != null)
+                try
                 {
-                    _memoryAuditHistory.Enqueue(item);
+                    var item = JsonSerializer.Deserialize<OperationItem>(line);
+                    if (item != null)
+                    {
+                        _memoryAuditHistory.Enqueue(item);
+                    }
+                }
+                catch
+                {
+                    // Skip malformed record, continue loading valid history
                 }
             }
         }

@@ -161,7 +161,10 @@ public class BackupRepository
                     }
                     else
                     {
-                        regLines.Add($"\"{valName}\"=\"{item.OriginalValue}\"");
+                        var escaped = item.OriginalValue.ToString()?
+                            .Replace("\\", "\\\\")
+                            .Replace("\"", "\\\"") ?? string.Empty;
+                        regLines.Add($"\"{valName}\"=\"{escaped}\"");
                     }
                 }
             }

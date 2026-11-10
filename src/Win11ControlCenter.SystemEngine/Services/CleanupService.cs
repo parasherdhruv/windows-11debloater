@@ -53,6 +53,10 @@ public class CleanupService : ICleanupService
                     {
                         try
                         {
+                            // Skip files modified within the last 2 hours (likely open by active applications)
+                            if (DateTime.UtcNow - file.LastWriteTimeUtc < TimeSpan.FromHours(2))
+                                continue;
+
                             totalBytes += file.Length;
                             totalFiles++;
                         }

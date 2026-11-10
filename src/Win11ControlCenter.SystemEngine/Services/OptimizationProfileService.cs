@@ -638,6 +638,20 @@ public class OptimizationProfileService : IOptimizationProfileService
                 profile.TargetPowerPlanName = activePlan.Name;
             }
 
+            // 4. Capture non-default / adjusted Windows services
+            try
+            {
+                var services = await _serviceManager.GetServicesAsync(cancellationToken);
+                foreach (var s in services.Where(s => !s.IsCoreService && !CoreWindowsServices.IsProtectedService(s.ServiceName)))
+                {
+                    if (s.StartupType != s.OriginalStartupType && !string.IsNullOrWhiteSpace(s.StartupType))
+                    {
+                        profile.ServiceAdjustments[s.ServiceName] = s.StartupType;
+                    }
+                }
+            }
+            catch { }
+
             _logger.LogInfo($"Captured current system profile with {profile.TotalActionCount} active settings.", "Profiles");
         }
         catch (Exception ex)
@@ -683,6 +697,28 @@ public class OptimizationProfileService : IOptimizationProfileService
             catch (Exception ex)
             {
                 _logger.LogWarning($"Could not resolve packages for profile execution: {ex.Message}", "Profiles");
+            }
+        }
+
+        if (profile.DisabledStartupItems.Count > 0)
+        {
+            foreach (var startupName in profile.DisabledStartupItems)
+            {
+                plan.Items.Add(new OperationItem
+                {
+                    Name = $"Disable startup: {startupName}",
+                    Description = $"Ensure startup entry '{startupName}' is disabled.",
+                    Category = "Startup Application",
+                    RiskLevel = OperationRiskLevel.Safe,
+                    OperationType = OperationType.Startup,
+                    Target = startupName,
+                    RecommendedValue = false,
+                    RollbackSupported = true,
+                    Metadata = new Dictionary<string, string>
+                    {
+                        { "LocationType", "RegistryCurrentUser" }
+                    }
+                });
             }
         }
 
