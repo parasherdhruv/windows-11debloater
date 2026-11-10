@@ -36,6 +36,7 @@ public partial class App : Application
         services.AddSingleton<ICleanupService, CleanupService>();
         services.AddSingleton<IRestoreService, RestoreService>();
         services.AddSingleton<IWingetService, WingetService>();
+        services.AddSingleton<IThemeService, Services.ThemeService>();
 
         // ViewModels
         services.AddSingleton<DashboardViewModel>();
@@ -82,6 +83,11 @@ public partial class App : Application
                 MessageBoxImage.Warning);
             args.Handled = true;
         };
+
+        var themeService = _serviceProvider.GetRequiredService<IThemeService>();
+        var settingsStorage = _serviceProvider.GetRequiredService<SettingsStorage>();
+        var savedTheme = settingsStorage.Load().Theme;
+        themeService.ApplyTheme(string.IsNullOrWhiteSpace(savedTheme) ? "System" : savedTheme);
 
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
         var mainViewModel = _serviceProvider.GetRequiredService<MainViewModel>();

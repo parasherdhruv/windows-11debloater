@@ -9,6 +9,7 @@
         Title="Win11 Control Center" Height="800" Width="1240"
         MinHeight="700" MinWidth="1050"
         WindowStartupLocation="CenterScreen"
+        Icon="Assets/app.ico"
         Background="{DynamicResource WindowBackgroundBrush}"
         FontFamily="{StaticResource SegoeFluent}">
 
@@ -69,61 +70,289 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!-- App Branding -->
-                <StackPanel Grid.Row="0" Margin="20,22,20,16">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Border Width="30" Height="30" CornerRadius="7" Background="#1A0078D4" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Margin="0,0,10,0">
-                            <TextBlock Text="⚡" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="{DynamicResource AccentLightBrush}" />
+                <!-- App Branding Header Card -->
+                <Border Grid.Row="0" Margin="12,12,12,8" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="10,8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Border Width="34" Height="34" CornerRadius="8" Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,10,0">
+                            <Image Source="Assets/app.ico" Width="22" Height="22" HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
-                        <StackPanel VerticalAlignment="Center">
-                            <TextBlock Text="Win11 Control" FontSize="17" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
-                            <TextBlock Text="Debloater &amp; Optimization" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1,0,0" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Win11 Control" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                <Border Background="{DynamicResource BadgeBackgroundBrush}" CornerRadius="6" Padding="4,1" Margin="6,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Text="v1.2" FontSize="9" FontWeight="SemiBold" Foreground="{DynamicResource AccentLightBrush}" />
+                                </Border>
+                            </StackPanel>
+                            <TextBlock Text="Debloater &amp; Optimization" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1,0,0" />
                         </StackPanel>
-                    </StackPanel>
-                </StackPanel>
+                    </Grid>
+                </Border>
 
                 <!-- Navigation List with Sections -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-                    <StackPanel Margin="10,0,10,10">
+                    <StackPanel Margin="8,0,8,8">
                         <!-- Section: System & Apps -->
-                        <TextBlock Text="SYSTEM &amp; PACKAGES" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="12,10,0,4" />
-                        <RadioButton Content="📊  Dashboard" Style="{DynamicResource NavRadioButton}" IsChecked="True" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="Dashboard" />
-                        <RadioButton Content="🗑️  App Debloater" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="AppDebloater" />
-                        <RadioButton Content="📦  Software Center" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="SoftwareCenter" />
-                        <RadioButton Content="🚀  Startup Manager" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="StartupManager" />
-                        <RadioButton Content="⚙️  Windows Services" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="ServicesManager" />
+                        <TextBlock Text="SYSTEM &amp; PACKAGES" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,8,0,3" />
+                        <RadioButton Style="{DynamicResource NavRadioButton}" IsChecked="True" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Dashboard">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="📊" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="AppDebloater">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🗑️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="App Debloater" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="SoftwareCenter">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="📦" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Software Center" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="StartupManager">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🚀" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Startup Manager" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="ServicesManager">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="⚙️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Windows Services" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
 
                         <!-- Section: Optimization -->
-                        <TextBlock Text="OPTIMIZATION &amp; TWEAKS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="12,14,0,4" />
-                        <RadioButton Content="🔒  Privacy &amp; Telemetry" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="Privacy" />
-                        <RadioButton Content="✨  Windows Tweaks" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="Optimization" />
-                        <RadioButton Content="🎮  Gaming Mode" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="Gaming" />
-                        <RadioButton Content="🧹  System Cleaner" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="SystemCleaner" />
-                        <RadioButton Content="🛠️  Custom Tweaks" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="CustomTweaks" />
+                        <TextBlock Text="OPTIMIZATION &amp; TWEAKS" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,12,0,3" />
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Privacy">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🔒" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Privacy &amp; Telemetry" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Optimization">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="✨" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Windows Tweaks" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Gaming">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🎮" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Gaming Mode" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="SystemCleaner">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🧹" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="System Cleaner" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="CustomTweaks">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🛠️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Custom Tweaks" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
 
                         <!-- Section: Recovery & Audit -->
-                        <TextBlock Text="SAFETY &amp; AUDIT" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="12,14,0,4" />
-                        <RadioButton Content="🛡️  Restore Center" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="RestoreCenter" />
-                        <RadioButton Content="📜  Activity Logs" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                     Command="{Binding NavigateCommand}" CommandParameter="ActivityLogs" />
+                        <TextBlock Text="SAFETY &amp; AUDIT" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" Margin="10,12,0,3" />
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="RestoreCenter">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="🛡️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Restore Center" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="ActivityLogs">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="📜" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Activity Logs" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
                     </StackPanel>
                 </ScrollViewer>
 
-                <!-- Bottom Sidebar: Settings -->
-                <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,12">
-                    <RadioButton Content="⚙️  Settings" Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
-                                 Command="{Binding NavigateCommand}" CommandParameter="Settings" />
+                <!-- Bottom Sidebar: Appearance & Settings Dock -->
+                <Border Grid.Row="2" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0" Padding="10,10">
+                    <StackPanel>
+                        <!-- Settings Navigation Item -->
+                        <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
+                                     Command="{Binding NavigateCommand}" CommandParameter="Settings" Margin="0,0,0,8">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Text="⚙️" Width="22" FontSize="13" TextAlignment="Center" Margin="0,0,8,0" />
+                                <TextBlock Text="Application Settings" FontSize="13" VerticalAlignment="Center" />
+                            </StackPanel>
+                        </RadioButton>
+
+                        <!-- Section Label & Current Theme -->
+                        <Grid Margin="4,0,4,6">
+                            <TextBlock Text="APPEARANCE" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource TextMutedBrush}" VerticalAlignment="Center" />
+                            <Border HorizontalAlignment="Right" Background="{DynamicResource BadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="10" Padding="6,1">
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                    <Ellipse Width="5" Height="5" Fill="{DynamicResource AccentLightBrush}" Margin="0,0,4,0" />
+                                    <TextBlock Text="{Binding EffectiveThemeText}" FontSize="9" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+
+                        <!-- Sleek Theme Segmented Pill Switcher -->
+                        <Border Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="14" Padding="2" Margin="0,0,0,10">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- 1. OS System Default -->
+                                <Button Grid.Column="0" ToolTip="System (Auto-sync with Windows 11 Light/Dark Mode)" 
+                                        Command="{Binding SelectThemeCommand}" CommandParameter="System" Cursor="Hand" BorderThickness="0" Margin="1">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="pill" Background="Transparent" CornerRadius="12" Padding="0,5">
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <TextBlock Text="💻" FontSize="11" />
+                                                                <TextBlock x:Name="lbl" Text="OS" FontSize="10" FontWeight="SemiBold" Margin="3,0,0,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource NavHoverBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                            </Trigger>
+                                                            <DataTrigger Binding="{Binding IsSystemTheme}" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="#FFFFFF" />
+                                                                <Setter TargetName="lbl" Property="FontWeight" Value="Bold" />
+                                                            </DataTrigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- 2. Fluent Dark -->
+                                <Button Grid.Column="1" ToolTip="Fluent Dark Theme" 
+                                        Command="{Binding SelectThemeCommand}" CommandParameter="Dark" Cursor="Hand" BorderThickness="0" Margin="1">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="pill" Background="Transparent" CornerRadius="12" Padding="0,5">
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <TextBlock Text="🌙" FontSize="11" />
+                                                                <TextBlock x:Name="lbl" Text="Dark" FontSize="10" FontWeight="SemiBold" Margin="3,0,0,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource NavHoverBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                            </Trigger>
+                                                            <DataTrigger Binding="{Binding IsDarkTheme}" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="#FFFFFF" />
+                                                                <Setter TargetName="lbl" Property="FontWeight" Value="Bold" />
+                                                            </DataTrigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- 3. Fluent Light -->
+                                <Button Grid.Column="2" ToolTip="Fluent Light Theme" 
+                                        Command="{Binding SelectThemeCommand}" CommandParameter="Light" Cursor="Hand" BorderThickness="0" Margin="1">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="pill" Background="Transparent" CornerRadius="12" Padding="0,5">
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <TextBlock Text="☀️" FontSize="11" />
+                                                                <TextBlock x:Name="lbl" Text="Light" FontSize="10" FontWeight="SemiBold" Margin="3,0,0,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource NavHoverBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                            </Trigger>
+                                                            <DataTrigger Binding="{Binding IsLightTheme}" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="#FFFFFF" />
+                                                                <Setter TargetName="lbl" Property="FontWeight" Value="Bold" />
+                                                            </DataTrigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+
+                                <!-- 4. Midnight OLED -->
+                                <Button Grid.Column="3" ToolTip="Midnight OLED (Pitch Black)" 
+                                        Command="{Binding SelectThemeCommand}" CommandParameter="OLED" Cursor="Hand" BorderThickness="0" Margin="1">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border x:Name="pill" Background="Transparent" CornerRadius="12" Padding="0,5">
+                                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                                                <TextBlock Text="🌌" FontSize="11" />
+                                                                <TextBlock x:Name="lbl" Text="OLED" FontSize="10" FontWeight="SemiBold" Margin="3,0,0,0" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                            </StackPanel>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource NavHoverBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                                            </Trigger>
+                                                            <DataTrigger Binding="{Binding IsOledTheme}" Value="True">
+                                                                <Setter TargetName="pill" Property="Background" Value="{DynamicResource AccentBrush}" />
+                                                                <Setter TargetName="lbl" Property="Foreground" Value="#FFFFFF" />
+                                                                <Setter TargetName="lbl" Property="FontWeight" Value="Bold" />
+                                                            </DataTrigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
                 </Border>
             </Grid>
         </Border>

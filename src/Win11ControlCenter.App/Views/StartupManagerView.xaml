@@ -57,7 +57,7 @@
                          Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="14,10" />
+                            <Setter Property="Padding" Value="9,6" />
                             <Setter Property="BorderThickness" Value="0,0,0,1" />
                             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                             <Setter Property="Template">
@@ -140,7 +140,7 @@
                                     Command="{Binding OpenLocationCommand}" CommandParameter="{Binding SelectedItem}" Margin="0,0,0,16" />
 
                             <!-- Safety Guarantee Box -->
-                            <Border Background="#1A107C41" BorderBrush="{DynamicResource SuccessBrush}" BorderThickness="1" CornerRadius="6" Padding="12">
+                            <Border Background="{DynamicResource SuccessBackgroundBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12">
                                 <StackPanel>
                                     <TextBlock Text="Non-Destructive Disabling" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource SuccessBrush}" />
                                     <TextBlock Text="Startup items are disabled using standard Windows Task Manager flags. Original files and registry paths remain intact." 

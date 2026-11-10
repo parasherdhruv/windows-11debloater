@@ -77,6 +77,9 @@ public class PrivacyAndOptimizationTests
         Assert.Contains(tweaks, t => t.Id == "show-file-extensions");
         Assert.Contains(tweaks, t => t.Id == "show-hidden-files");
         Assert.Contains(tweaks, t => t.Id == "compact-view-explorer");
+        Assert.Contains(tweaks, t => t.Id == "disable-bing-start-search");
+        Assert.Contains(tweaks, t => t.Id == "enable-taskbar-end-task");
+        Assert.Contains(tweaks, t => t.Id == "hide-recommended-start");
     }
 
     [Fact]

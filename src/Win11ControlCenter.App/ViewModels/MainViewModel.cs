@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Security.Principal;
 using System.Windows;
 using CommunityToolkit.Mvvm.Input;
+using Win11ControlCenter.Core.Interfaces;
 
 namespace Win11ControlCenter.App.ViewModels;
 
@@ -24,6 +25,18 @@ public partial class MainViewModel : ViewModelBase
 
     public bool IsElevated { get; }
     public string ElevationStatusText => IsElevated ? "Administrator (Elevated)" : "Standard User (Safe)";
+
+    public IThemeService ThemeService { get; }
+    public string CurrentThemeMode => ThemeService.CurrentTheme;
+    public string EffectiveThemeText => ThemeService.EffectiveThemeDisplayName;
+    public bool IsSystemTheme => ThemeService.CurrentTheme.Equals("System", StringComparison.OrdinalIgnoreCase);
+    public bool IsDarkTheme => ThemeService.CurrentTheme.Equals("Dark", StringComparison.OrdinalIgnoreCase);
+    public bool IsLightTheme => ThemeService.CurrentTheme.Equals("Light", StringComparison.OrdinalIgnoreCase);
+    public bool IsOledTheme => ThemeService.CurrentTheme.Equals("OLED", StringComparison.OrdinalIgnoreCase);
+    public bool IsCobaltTheme => ThemeService.CurrentTheme.Equals("Cobalt", StringComparison.OrdinalIgnoreCase);
+
+    public IRelayCommand<string> SelectThemeCommand { get; }
+    public IRelayCommand CycleThemeCommand { get; }
 
     // 13 ViewModels
     public DashboardViewModel DashboardVM { get; }
@@ -56,7 +69,8 @@ public partial class MainViewModel : ViewModelBase
         CustomTweaksViewModel customTweaksVM,
         RestoreCenterViewModel restoreCenterVM,
         ActivityLogsViewModel activityLogsVM,
-        SettingsViewModel settingsVM)
+        SettingsViewModel settingsVM,
+        IThemeService themeService)
     {
         DashboardVM = dashboardVM;
         AppDebloaterVM = appDebloaterVM;
@@ -71,6 +85,34 @@ public partial class MainViewModel : ViewModelBase
         RestoreCenterVM = restoreCenterVM;
         ActivityLogsVM = activityLogsVM;
         SettingsVM = settingsVM;
+        ThemeService = themeService;
+
+        ThemeService.ThemeChanged += (s, e) =>
+        {
+            OnPropertyChanged(nameof(CurrentThemeMode));
+            OnPropertyChanged(nameof(EffectiveThemeText));
+            OnPropertyChanged(nameof(IsSystemTheme));
+            OnPropertyChanged(nameof(IsDarkTheme));
+            OnPropertyChanged(nameof(IsLightTheme));
+            OnPropertyChanged(nameof(IsOledTheme));
+            OnPropertyChanged(nameof(IsCobaltTheme));
+        };
+
+        SelectThemeCommand = new RelayCommand<string>(theme =>
+        {
+            if (!string.IsNullOrWhiteSpace(theme))
+            {
+                ThemeService.ApplyTheme(theme);
+            }
+        });
+
+        CycleThemeCommand = new RelayCommand(() =>
+        {
+            var themes = ThemeService.AvailableThemes.ToList();
+            int currentIndex = themes.IndexOf(ThemeService.CurrentTheme);
+            int nextIndex = currentIndex >= 0 ? (currentIndex + 1) % themes.Count : 0;
+            ThemeService.ApplyTheme(themes[nextIndex]);
+        });
 
         using (var identity = WindowsIdentity.GetCurrent())
         {

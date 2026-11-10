@@ -17,12 +17,8 @@ public class BackupRepository
 
     public string CreateBackupSession(OperationPlan plan, string windowsBuild = "")
     {
-        var timestamp = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+        var timestamp = $"{DateTime.Now:yyyy-MM-dd_HH-mm-ss}_{Guid.NewGuid().ToString("N")[..6]}";
         var sessionDir = Path.Combine(_backupsRoot, timestamp);
-        if (Directory.Exists(sessionDir))
-        {
-            sessionDir = Path.Combine(_backupsRoot, $"{timestamp}_{Guid.NewGuid().ToString("N")[..4]}");
-        }
         Directory.CreateDirectory(sessionDir);
 
         var regDir = Path.Combine(sessionDir, "registry");

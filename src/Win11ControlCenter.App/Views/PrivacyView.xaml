@@ -101,7 +101,7 @@
                 <ItemsControl ItemsSource="{Binding Tweaks}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#1C1C1C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,8">
+                            <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,8">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
@@ -186,12 +186,12 @@
                     </StackPanel>
 
                     <!-- Dry Run Option -->
-                    <Border Grid.Row="1" Background="#181818" CornerRadius="6" Padding="12" Margin="0,0,0,12">
+                    <Border Grid.Row="1" Background="{DynamicResource SubCardBackgroundBrush}" CornerRadius="6" Padding="12" Margin="0,0,0,12">
                         <CheckBox Content="🧪 Dry-Run Mode (Simulate execution and log without modifying registry)" IsChecked="{Binding IsDryRun}" Foreground="{DynamicResource TextPrimaryBrush}" FontSize="12" />
                     </Border>
 
                     <!-- Items List -->
-                    <Border Grid.Row="2" Background="#141414" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,16">
+                    <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="8" Margin="0,0,0,16">
                         <ListBox ItemsSource="{Binding ActivePlan.Items}" Background="Transparent" BorderThickness="0" MaxHeight="220">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

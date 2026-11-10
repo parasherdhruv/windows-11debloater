@@ -64,7 +64,7 @@
         <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
             <DataGrid ItemsSource="{Binding FilteredEntries}" AutoGenerateColumns="False" IsReadOnly="True" 
                       Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
-                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="#252525">
+                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
                 <DataGrid.Columns>
                     <!-- Timestamp -->
                     <DataGridTextColumn Header="Timestamp" Binding="{Binding ExecutedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}" Width="150" />

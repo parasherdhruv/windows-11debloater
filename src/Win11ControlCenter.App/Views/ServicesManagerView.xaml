@@ -57,7 +57,7 @@
                          Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="14,10" />
+                            <Setter Property="Padding" Value="9,6" />
                             <Setter Property="BorderThickness" Value="0,0,0,1" />
                             <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                             <Setter Property="Template">
@@ -92,9 +92,9 @@
                                     <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
-                                            <Border Style="{DynamicResource StatusBadge}" Background="#3B2612" BorderBrush="#8A5A1C" Margin="8,0,0,0" 
+                                            <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" Margin="8,0,0,0" 
                                                     Visibility="{Binding IsCoreService, Converter={StaticResource BoolToVisConverter}}">
-                                                <TextBlock Text="🛡️ Core Protected" FontSize="11" Foreground="#FFC875" />
+                                                <TextBlock Text="🛡️ Core Protected" FontSize="11" Foreground="{DynamicResource WarningBrush}" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
@@ -169,9 +169,9 @@
                             </ItemsControl>
 
                             <!-- Safety Guarantee Box -->
-                            <Border Background="#253B2612" BorderBrush="#8A5A1C" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,4,0,0">
+                            <Border Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,4,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="Core Windows Services Shield" FontWeight="Bold" FontSize="12" Foreground="#FFC875" />
+                                    <TextBlock Text="Core Windows Services Shield" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource WarningBrush}" />
                                     <TextBlock Text="Foundational Windows infrastructure services (RPC, Defender, Networking, EventLog, Windows Update) cannot be stopped or disabled." 
                                                FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,2,0,0" />
                                 </StackPanel>

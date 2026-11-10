@@ -215,6 +215,48 @@ public class TweakEngineService : ITweakEngineService
         {
             new()
             {
+                Id = "disable-bing-start-search",
+                Name = "Disable Bing Web Search in Start Menu",
+                Description = "Stops Start Menu from querying Bing for web searches on every keystroke, keeping searches local and fast.",
+                Category = "Start Menu",
+                RegistryHive = "HKCU",
+                KeyPath = @"Software\Policies\Microsoft\Windows\Explorer",
+                ValueName = "DisableSearchBoxSuggestions",
+                ValueType = "DWord",
+                RecommendedValue = 1,
+                DefaultValue = 0,
+                RiskLevel = OperationRiskLevel.Safe
+            },
+            new()
+            {
+                Id = "enable-taskbar-end-task",
+                Name = "Enable 'End Task' on Taskbar Right-Click",
+                Description = "Adds native Windows 11 developer 'End Task' button when right-clicking open apps in the taskbar.",
+                Category = "Taskbar",
+                RegistryHive = "HKCU",
+                KeyPath = @"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced\TaskbarDeveloperSettings",
+                ValueName = "TaskbarEndTask",
+                ValueType = "DWord",
+                RecommendedValue = 1,
+                DefaultValue = 0,
+                RiskLevel = OperationRiskLevel.Safe
+            },
+            new()
+            {
+                Id = "hide-recommended-start",
+                Name = "Hide 'Recommended' Section in Start Menu",
+                Description = "Hides recommended recent files and suggested apps from the Windows 11 Start Menu.",
+                Category = "Start Menu",
+                RegistryHive = "HKCU",
+                KeyPath = @"Software\Policies\Microsoft\Windows\Explorer",
+                ValueName = "HideRecommendedSection",
+                ValueType = "DWord",
+                RecommendedValue = 1,
+                DefaultValue = 0,
+                RiskLevel = OperationRiskLevel.Safe
+            },
+            new()
+            {
                 Id = "show-file-extensions",
                 Name = "Show File Extensions",
                 Description = "Displays file extensions (.txt, .exe, etc.) in File Explorer for clearer file identification.",

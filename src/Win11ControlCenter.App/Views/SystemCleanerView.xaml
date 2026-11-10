@@ -37,7 +37,7 @@
         </Grid>
 
         <!-- Metric Stat Cards -->
-        <Grid Grid.Row="1" Margin="0,0,0,16">
+        <Grid Grid.Row="1" Margin="0,0,0,8">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="*" />
@@ -46,44 +46,44 @@
             </Grid.ColumnDefinitions>
 
             <!-- Total Scanned -->
-            <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Margin="0,0,8,0" Padding="16,14">
+            <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Margin="0,0,6,0" Padding="10,8">
                 <StackPanel>
-                    <TextBlock Text="TOTAL CLUTTER SCANNED" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
-                    <TextBlock Text="{Binding TotalScannedFormatted}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,0" />
-                    <TextBlock Text="Temporary caches on disk" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="TOTAL CLUTTER SCANNED" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" />
+                    <TextBlock Text="{Binding TotalScannedFormatted}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="Temporary caches on disk" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,1,0,0" />
                 </StackPanel>
             </Border>
 
             <!-- Selected to Clean -->
-            <Border Grid.Column="1" Style="{DynamicResource FluentCardElevated}" Margin="4,0,4,0" Padding="16,14">
+            <Border Grid.Column="1" Style="{DynamicResource FluentCardElevated}" Margin="3,0,3,0" Padding="10,8">
                 <StackPanel>
-                    <TextBlock Text="SELECTED TO CLEAN" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource AccentLightBrush}" />
-                    <TextBlock Text="{Binding TotalSelectedFormatted}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource AccentLightBrush}" Margin="0,4,0,0" />
-                    <TextBlock Text="Reclaimable storage space" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="SELECTED TO CLEAN" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource AccentLightBrush}" />
+                    <TextBlock Text="{Binding TotalSelectedFormatted}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource AccentLightBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="Reclaimable storage space" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,1,0,0" />
                 </StackPanel>
             </Border>
 
             <!-- Files Selected -->
-            <Border Grid.Column="2" Style="{DynamicResource FluentCard}" Margin="4,0,4,0" Padding="16,14">
+            <Border Grid.Column="2" Style="{DynamicResource FluentCard}" Margin="3,0,3,0" Padding="10,8">
                 <StackPanel>
-                    <TextBlock Text="SELECTED FILES" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource WarningBrush}" />
-                    <TextBlock Text="{Binding TotalSelectedFiles}" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}" Margin="0,4,0,0" />
-                    <TextBlock Text="Ready for safe purging" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="SELECTED FILES" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource WarningBrush}" />
+                    <TextBlock Text="{Binding TotalSelectedFiles}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource WarningBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="Ready for safe purging" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,1,0,0" />
                 </StackPanel>
             </Border>
 
             <!-- Safety Guarantee -->
-            <Border Grid.Column="3" Style="{DynamicResource FluentCard}" Margin="8,0,0,0" Padding="16,14">
+            <Border Grid.Column="3" Style="{DynamicResource FluentCard}" Margin="6,0,0,0" Padding="10,8">
                 <StackPanel>
-                    <TextBlock Text="SAFETY GUARANTEE" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource SuccessBrush}" />
-                    <TextBlock Text="100% Protected" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}" Margin="0,4,0,0" />
-                    <TextBlock Text="Zero user files or drivers touched" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="SAFETY GUARANTEE" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource SuccessBrush}" />
+                    <TextBlock Text="100% Protected" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource SuccessBrush}" Margin="0,2,0,0" />
+                    <TextBlock Text="Zero user files or drivers touched" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" Margin="0,1,0,0" />
                 </StackPanel>
             </Border>
         </Grid>
 
         <!-- Segmented Tab Filter (All / Selected Only) -->
-        <Border Grid.Row="2" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" Margin="0,0,0,12">
+        <Border Grid.Row="2" Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="18" Padding="3,2" HorizontalAlignment="Left" Margin="0,0,0,8">
             <StackPanel Orientation="Horizontal">
                 <RadioButton Content="All Categories" Style="{DynamicResource SegmentPillButton}" GroupName="CleanerTabsGroup" IsChecked="{Binding IsAllTabActive}" 
                              Command="{Binding SwitchTabCommand}" CommandParameter="All" />
@@ -100,7 +100,7 @@
         </Border>
 
         <!-- Selected Targets Quick Shelf / Tray (Surfaces selected targets with instant uncheck) -->
-        <Border Grid.Row="3" Style="{DynamicResource FluentCardElevated}" Margin="0,0,0,12" Padding="12,10"
+        <Border Grid.Row="3" Style="{DynamicResource FluentCardElevated}" Margin="0,0,0,8" Padding="8,5"
                 Visibility="{Binding HasSelectedTargets, Converter={StaticResource BoolToVisConverter}}">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -109,10 +109,10 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,12,0">
-                    <TextBlock Text="Selected Targets (" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
-                    <TextBlock Text="{Binding SelectedCount}" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
-                    <TextBlock Text="):" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="0,0,10,0">
+                    <TextBlock Text="Selected (" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource AccentLightBrush}" />
+                    <TextBlock Text="{Binding SelectedCount}" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource AccentLightBrush}" />
+                    <TextBlock Text="):" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource AccentLightBrush}" />
                 </StackPanel>
 
                 <!-- Horizontal Scrollable Chips of Selected Targets -->
@@ -125,13 +125,13 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Border Background="#253545" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="12" Padding="8,3" Margin="0,0,6,0">
+                                <Border Background="{DynamicResource ChipBackgroundBrush}" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="10" Padding="6,2" Margin="0,0,4,0">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,6,0" />
-                                        <TextBlock Text="{Binding SizeFormatted}" FontSize="11" Foreground="{DynamicResource AccentLightBrush}" Margin="0,0,6,0" />
+                                        <TextBlock Text="{Binding Name}" FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,4,0" />
+                                        <TextBlock Text="{Binding SizeFormatted}" FontSize="10" Foreground="{DynamicResource AccentLightBrush}" Margin="0,0,4,0" />
                                         <Button Command="{Binding DataContext.UnselectTargetCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                 CommandParameter="{Binding}" Content="✕" Cursor="Hand" Background="Transparent" BorderThickness="0" 
-                                                Foreground="{DynamicResource DangerBrush}" FontWeight="Bold" FontSize="11" Padding="2,0" />
+                                                Foreground="{DynamicResource DangerBrush}" FontWeight="Bold" FontSize="10" Padding="2,0" />
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
@@ -141,17 +141,17 @@
 
                 <Button Grid.Column="2" Content="Deselect All" Command="{Binding DeselectAllCommand}" 
                         Background="Transparent" BorderThickness="0" Foreground="{DynamicResource TextSecondaryBrush}" 
-                        FontSize="11" Cursor="Hand" VerticalAlignment="Center" Margin="8,0,0,0" />
+                        FontSize="11" Cursor="Hand" VerticalAlignment="Center" Margin="6,0,0,0" />
             </Grid>
         </Border>
 
         <!-- Targets List -->
-        <Border Grid.Row="4" Style="{DynamicResource FluentCard}" Padding="8">
+        <Border Grid.Row="4" Style="{DynamicResource FluentCard}" Padding="6">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <ItemsControl ItemsSource="{Binding Targets}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Background="#161619" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16,14" Margin="0,0,0,8">
+                            <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="7" Padding="12,8" Margin="0,0,0,4">
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
@@ -161,28 +161,28 @@
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Checkbox -->
-                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,16,0" />
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" VerticalAlignment="Center" Margin="0,0,12,0" />
 
                                     <!-- Details -->
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                            <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
-                                            <Border Style="{DynamicResource StatusBadge}" Margin="10,0,0,0" Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisConverter}}">
-                                                <TextBlock Text="🛡️ Admin Required" FontSize="10" Foreground="{DynamicResource WarningBrush}" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                            <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                            <Border Style="{DynamicResource StatusBadge}" Margin="8,0,0,0" Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisConverter}}">
+                                                <TextBlock Text="🛡️ Admin Required" FontSize="9" Foreground="{DynamicResource WarningBrush}" />
                                             </Border>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,4" />
-                                        <TextBlock Text="{Binding TargetPath}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" FontFamily="Consolas" />
+                                        <TextBlock Text="{Binding Description}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,2" />
+                                        <TextBlock Text="{Binding TargetPath}" FontSize="10" Foreground="{DynamicResource TextMutedBrush}" FontFamily="Consolas" />
                                     </StackPanel>
 
                                     <!-- File Count Badge -->
-                                    <Border Grid.Column="2" VerticalAlignment="Center" Padding="10,4" CornerRadius="6" Background="#121214" Margin="0,0,12,0">
-                                        <TextBlock Text="{Binding FileCount, StringFormat='{}{0} files'}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    <Border Grid.Column="2" VerticalAlignment="Center" Padding="8,3" CornerRadius="5" Background="{DynamicResource BadgeBackgroundBrush}" Margin="0,0,10,0">
+                                        <TextBlock Text="{Binding FileCount, StringFormat='{}{0} files'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
                                     </Border>
 
                                     <!-- Reclaimable Size Badge -->
-                                    <Border Grid.Column="3" VerticalAlignment="Center" Padding="12,6" CornerRadius="6" Background="#202026" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" MinWidth="90">
-                                        <TextBlock Text="{Binding SizeFormatted}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource AccentLightBrush}" HorizontalAlignment="Center" />
+                                    <Border Grid.Column="3" VerticalAlignment="Center" Padding="10,4" CornerRadius="5" Background="{DynamicResource ChipBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" MinWidth="80">
+                                        <TextBlock Text="{Binding SizeFormatted}" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentLightBrush}" HorizontalAlignment="Center" />
                                     </Border>
                                 </Grid>
                             </Border>
@@ -210,7 +210,7 @@
                     </StackPanel>
 
                     <!-- Warning Banner & Dry Run -->
-                    <Border Grid.Row="1" Background="#2A1800" BorderBrush="#885500" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,14">
+                    <Border Grid.Row="1" Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,14">
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
                                 <TextBlock Text="⚠️ Notice: " FontWeight="Bold" Foreground="{DynamicResource WarningBrush}" FontSize="12" />
@@ -221,7 +221,7 @@
                     </Border>
 
                     <!-- Items List -->
-                    <Border Grid.Row="2" Background="#141416" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="8" Margin="0,0,0,16">
+                    <Border Grid.Row="2" Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="8" Margin="0,0,0,16">
                         <ListBox ItemsSource="{Binding ActivePlan.Items}" Background="Transparent" BorderThickness="0" MaxHeight="200">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

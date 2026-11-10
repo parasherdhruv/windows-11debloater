@@ -65,7 +65,7 @@
                 </Border>
 
                 <!-- Segmented Tabs (All / Selected / Safe) -->
-                <Border Grid.Column="1" Background="#18181C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <Border Grid.Column="1" Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Padding="4,2" HorizontalAlignment="Left" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
                         <RadioButton Content="All Applications" Style="{DynamicResource SegmentPillButton}" GroupName="DebloaterTabsGroup" IsChecked="{Binding IsAllTabActive}" 
                                      Command="{Binding SwitchTabCommand}" CommandParameter="All" />
@@ -115,7 +115,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#253545" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="12" Padding="8,3" Margin="0,0,6,0">
+                                    <Border Background="{DynamicResource ChipBackgroundBrush}" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="12" Padding="8,3" Margin="0,0,6,0">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                                             <TextBlock Text="{Binding DisplayName}" FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,6,0" />
                                             <Button Command="{Binding DataContext.UnselectPackageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
@@ -147,7 +147,7 @@
                              Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="14,10" />
+                                <Setter Property="Padding" Value="10,6" />
                                 <Setter Property="BorderThickness" Value="0,0,0,1" />
                                 <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                                 <Setter Property="Template">
@@ -186,9 +186,9 @@
                                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
-                                            <Border Style="{DynamicResource StatusBadge}" Background="#3B2612" BorderBrush="#8A5A1C" Margin="8,0,0,0" 
+                                            <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" Margin="8,0,0,0" 
                                                     Visibility="{Binding IsProtected, Converter={StaticResource BoolToVisConverter}}">
-                                                <TextBlock Text="🛡️ Protected" FontSize="11" Foreground="#FFC875" />
+                                                <TextBlock Text="🛡️ Protected" FontSize="11" Foreground="{DynamicResource WarningBrush}" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="{Binding Publisher}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
@@ -246,7 +246,7 @@
                                       Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,4,0,14" />
 
                             <!-- Safety Warning Banner -->
-                            <Border Background="#1A0078D4" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
+                            <Border Background="{DynamicResource BannerBackgroundBrush}" BorderBrush="{DynamicResource BannerBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
                                 <StackPanel>
                                     <TextBlock Text="🛡️ Reversibility Note" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" />
                                     <TextBlock Text="Removing an application deletes its local packages. You can easily re-install it anytime via the Microsoft Store or our integrated Software Center." 
@@ -280,7 +280,7 @@
                     </Grid>
 
                     <!-- Selected Items List -->
-                    <Border Grid.Row="1" Background="#141416" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="8" Margin="0,0,0,16">
+                    <Border Grid.Row="1" Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="8" Margin="0,0,0,16">
                         <ListBox ItemsSource="{Binding ActivePlan.Items}" Background="Transparent" BorderThickness="0" MaxHeight="250">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>

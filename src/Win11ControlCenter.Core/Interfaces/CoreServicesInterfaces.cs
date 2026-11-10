@@ -81,3 +81,14 @@ public interface ILoggingService
     Task<string> ExportAuditHistoryAsync(string destinationPath, CancellationToken cancellationToken = default);
 }
 
+public interface IThemeService
+{
+    string CurrentTheme { get; }
+    string EffectiveThemeDisplayName { get; }
+    bool IsDark { get; }
+    IReadOnlyList<string> AvailableThemes { get; }
+    void ApplyTheme(string themeName);
+    bool DetectWindowsIsLightTheme();
+    event EventHandler<string>? ThemeChanged;
+}
+

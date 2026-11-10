@@ -88,7 +88,7 @@
             </UniformGrid>
 
             <!-- Pending Reboot Warning Banner if reboot is required -->
-            <Border Background="#3B2E15" BorderBrush="#8A6A1C" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,16"
+            <Border Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14" Margin="0,0,0,16"
                     Visibility="{Binding SystemInfo.IsPendingRestart, Converter={StaticResource BoolToVisConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -97,7 +97,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center" Margin="0,0,12,0" />
                     <StackPanel Grid.Column="1">
-                        <TextBlock Text="Pending System Restart Detected" FontWeight="Bold" FontSize="13" Foreground="#FFD266" />
+                        <TextBlock Text="Pending System Restart Detected" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource WarningBrush}" />
                         <TextBlock Text="Windows has pending servicing or update file rename operations queued. It is recommended to restart before applying major system modifications." FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" TextWrapping="Wrap" />
                     </StackPanel>
                 </Grid>
@@ -140,7 +140,7 @@
             </UniformGrid>
 
             <!-- Safety & Reversibility Banner -->
-            <Border Background="#1A60CDFF" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,8,0,0">
+            <Border Background="{DynamicResource BannerBackgroundBrush}" BorderBrush="{DynamicResource BannerBorderBrush}" BorderThickness="1" CornerRadius="8" Padding="16" Margin="0,8,0,0">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />

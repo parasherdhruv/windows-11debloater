@@ -574,7 +574,7 @@ public class FullAppAutomationFeatureTests
 
             // Test Theme Toggling
             var originalTheme = settingsVm.SelectedTheme;
-            var targetTheme = originalTheme.Contains("Dark") ? "Light Theme" : "Dark Theme";
+            var targetTheme = originalTheme.Equals("Dark", StringComparison.OrdinalIgnoreCase) ? "Light" : "Dark";
             settingsVm.SelectedTheme = targetTheme;
             settingsVm.SaveCommand.Execute(null);
             Assert.Equal(targetTheme, settingsVm.SelectedTheme);

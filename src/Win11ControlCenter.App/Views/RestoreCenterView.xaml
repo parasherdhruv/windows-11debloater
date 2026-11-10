@@ -110,7 +110,7 @@
                         <ListBox ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" Background="Transparent" BorderThickness="0">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="#1C1C1C" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14,10" Margin="0,0,0,6">
+                                    <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14,10" Margin="0,0,0,6">
                                         <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="Auto" />
@@ -164,7 +164,7 @@
                         </Grid>
 
                         <!-- Path Display -->
-                        <Border Background="#161616" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,16">
+                        <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="12" Margin="0,0,0,16">
                             <StackPanel>
                                 <TextBlock Text="SNAPSHOT STORAGE LOCATION:" FontSize="10" FontWeight="SemiBold" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,0,0,4" />
                                 <TextBlock Text="{Binding SelectedBackup.Path}" FontSize="11" Foreground="{DynamicResource AccentBrush}" FontFamily="Consolas" TextWrapping="Wrap" />
@@ -180,28 +180,28 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0" Background="#181818" CornerRadius="6" Padding="12" Margin="0,0,6,0">
+                            <Border Grid.Column="0" Background="{DynamicResource SubCardBackgroundBrush}" CornerRadius="6" Padding="12" Margin="0,0,6,0">
                                 <StackPanel>
                                     <TextBlock Text="REGISTRY VALUES" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding SelectedBackup.RegistryEntriesCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="1" Background="#181818" CornerRadius="6" Padding="12" Margin="2,0,4,0">
+                            <Border Grid.Column="1" Background="{DynamicResource SubCardBackgroundBrush}" CornerRadius="6" Padding="12" Margin="2,0,4,0">
                                 <StackPanel>
                                     <TextBlock Text="SERVICES" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding SelectedBackup.ServicesCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="2" Background="#181818" CornerRadius="6" Padding="12" Margin="4,0,2,0">
+                            <Border Grid.Column="2" Background="{DynamicResource SubCardBackgroundBrush}" CornerRadius="6" Padding="12" Margin="4,0,2,0">
                                 <StackPanel>
                                     <TextBlock Text="STARTUP ITEMS" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding SelectedBackup.StartupCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
                                 </StackPanel>
                             </Border>
 
-                            <Border Grid.Column="3" Background="#181818" CornerRadius="6" Padding="12" Margin="6,0,0,0">
+                            <Border Grid.Column="3" Background="{DynamicResource SubCardBackgroundBrush}" CornerRadius="6" Padding="12" Margin="6,0,0,0">
                                 <StackPanel>
                                     <TextBlock Text="PACKAGES" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
                                     <TextBlock Text="{Binding SelectedBackup.PackageCount}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" />
@@ -209,7 +209,7 @@
                             </Border>
                         </Grid>
 
-                        <Border Background="#1A1A1A" CornerRadius="6" Padding="14">
+                        <Border Background="{DynamicResource BannerBackgroundBrush}" BorderBrush="{DynamicResource BannerBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14">
                             <StackPanel>
                                 <TextBlock Text="💡 About Emergency Rollback" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,4" />
                                 <TextBlock Text="Each snapshot creates a standalone .reg file located in the 'registry' subfolder. Even if Win11 Control Center is closed or uninstalled, double-clicking 'pre_apply_rollback.reg' in Windows Explorer will instantly restore all registry settings to their pre-modification state." 
@@ -235,7 +235,7 @@
                     <TextBlock Grid.Row="0" Text="Recovery Operation" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,16" />
 
                     <!-- Status Text -->
-                    <Border Grid.Row="1" Background="#181818" CornerRadius="6" Padding="14" Margin="0,0,0,16">
+                    <Border Grid.Row="1" Background="{DynamicResource SubCardBackgroundBrush}" CornerRadius="6" Padding="14" Margin="0,0,0,16">
                         <TextBlock Text="{Binding RestoreStatusMessage}" FontSize="13" Foreground="{DynamicResource TextPrimaryBrush}" TextWrapping="Wrap" />
                     </Border>
 
