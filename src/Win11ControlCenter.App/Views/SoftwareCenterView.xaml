@@ -64,7 +64,7 @@
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Border Width="28" Height="28" CornerRadius="6" Background="{DynamicResource ChipBackgroundBrush}" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" Margin="0,0,10,0" VerticalAlignment="Center">
-                    <TextBlock Text="🏛️" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    <TextBlock Text="🏛️" FontSize="14" Foreground="{DynamicResource AccentLightBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </Border>
                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
                     <StackPanel Orientation="Horizontal">
@@ -93,7 +93,7 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="🔍" VerticalAlignment="Center" Margin="4,0,6,0" Foreground="{DynamicResource TextMutedBrush}" FontSize="12" />
+                    <TextBlock Text="🔍" VerticalAlignment="Center" Margin="4,0,6,0" Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="{DynamicResource SegoeEmoji}" FontSize="12" />
                     <TextBox Grid.Column="1" Text="{Binding SearchFilter, UpdateSourceTrigger=PropertyChanged}" 
                              Background="Transparent" Foreground="{DynamicResource TextPrimaryBrush}" 
                              BorderThickness="0" VerticalAlignment="Center" FontSize="12" FontFamily="{DynamicResource SegoeFluent}" />
@@ -153,7 +153,7 @@
                             <DataTemplate>
                                 <Border Background="{DynamicResource ChipBackgroundBrush}" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1" CornerRadius="10" Padding="6,2" Margin="0,0,4,0">
                                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding IconGlyph}" FontSize="11" Margin="0,0,3,0" />
+                                        <TextBlock Text="{Binding IconGlyph}" FontSize="11" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,4,0" />
                                         <TextBlock Text="{Binding Name}" FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,4,0" />
                                         <Button Command="{Binding DataContext.UnselectPackageCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" 
                                                 CommandParameter="{Binding}" Content="✕" Cursor="Hand" Background="Transparent" BorderThickness="0" 
@@ -203,8 +203,8 @@
                                     <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}" IsEnabled="{Binding IsInstalled, Converter={StaticResource InverseBoolConverter}}" VerticalAlignment="Center" Margin="0,0,12,0" />
 
                                     <!-- Application Icon Badge -->
-                                    <Border Grid.Column="1" Width="36" Height="36" CornerRadius="8" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding IconGlyph}" FontSize="18" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    <Border Grid.Column="1" Width="36" Height="36" CornerRadius="8" Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding IconGlyph}" FontSize="17" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
                                     </Border>
 
                                     <!-- Details & Metadata -->

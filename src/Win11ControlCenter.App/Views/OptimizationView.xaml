@@ -88,13 +88,15 @@
                                                      Margin="0,0,0,8">
                                             <RadioButton.Template>
                                                 <ControlTemplate TargetType="RadioButton">
-                                                    <Border x:Name="CardBorder" Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="14,12" Cursor="Hand">
+                                                    <Border x:Name="CardBorder" Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Cursor="Hand">
                                                         <Grid>
                                                             <Grid.ColumnDefinitions>
                                                                 <ColumnDefinition Width="Auto" />
                                                                 <ColumnDefinition Width="*" />
                                                             </Grid.ColumnDefinitions>
-                                                            <TextBlock Text="{Binding Icon}" FontSize="24" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                                            <Border Width="38" Height="38" CornerRadius="8" Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Center">
+                                                                <TextBlock Text="{Binding Icon}" FontSize="18" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                                            </Border>
                                                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                                                 <TextBlock Text="{Binding Name}" FontSize="14" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
                                                                 <TextBlock Text="{Binding SafetyTier}" FontSize="11" Foreground="{DynamicResource SuccessBrush}" Margin="0,2,0,0" />
@@ -103,7 +105,12 @@
                                                     </Border>
                                                     <ControlTemplate.Triggers>
                                                         <Trigger Property="IsMouseOver" Value="True">
-                                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="#444444" />
+                                                            <Setter TargetName="CardBorder" Property="Background" Value="{DynamicResource SubCardHoverBrush}" />
+                                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="{DynamicResource BorderHighlightBrush}" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsChecked" Value="True">
+                                                            <Setter TargetName="CardBorder" Property="Background" Value="{DynamicResource CardElevatedBackgroundBrush}" />
+                                                            <Setter TargetName="CardBorder" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
                                                         </Trigger>
                                                     </ControlTemplate.Triggers>
                                                 </ControlTemplate>
@@ -125,8 +132,10 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding SelectedProfile.Icon}" FontSize="28" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <Border Width="44" Height="44" CornerRadius="10" Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,14,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding SelectedProfile.Icon}" FontSize="22" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                        </Border>
                                         <StackPanel VerticalAlignment="Center">
                                             <TextBlock Text="{Binding SelectedProfile.Name}" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
                                             <TextBlock Text="{Binding SelectedProfile.SafetyTier}" FontSize="12" Foreground="{DynamicResource SuccessBrush}" Margin="0,2,0,0" />
@@ -503,7 +512,9 @@
                         </Grid.ColumnDefinitions>
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding ImportedProfile.Icon}" FontSize="20" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                <Border Width="36" Height="36" CornerRadius="8" Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,10,0" VerticalAlignment="Center">
+                                    <TextBlock Text="{Binding ImportedProfile.Icon}" FontSize="18" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
                                 <TextBlock Text="{Binding ImportedProfile.Name}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" VerticalAlignment="Center" />
                                 <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource SuccessBackgroundBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" Margin="10,0,0,0">
                                     <TextBlock Text="Portable Profile (.w11profile)" FontSize="10.5" Foreground="{DynamicResource SuccessBrush}" FontWeight="SemiBold" />

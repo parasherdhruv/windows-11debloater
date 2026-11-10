@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="🛠️ Custom Registry Tweaks" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="🛠️ Custom Registry Tweaks" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                 <TextBlock Text="Define, test, and manage custom Windows registry optimizations with built-in safety boundaries and automated rollback generation." 
                            FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
@@ -135,7 +135,7 @@
                                                 <TextBlock Text="{Binding ScopeDescription}" FontSize="10" Foreground="{DynamicResource AccentBrush}" />
                                             </Border>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding KeyPath, StringFormat='Path: {0}'}" FontSize="11" Foreground="#888888" FontFamily="Consolas" />
+                                        <TextBlock Text="{Binding KeyPath, StringFormat='Path: {0}'}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas" />
                                         <TextBlock Text="{Binding ValueName, StringFormat='Value: {0}'}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontFamily="Consolas" Margin="0,2,0,0" />
                                     </StackPanel>
 

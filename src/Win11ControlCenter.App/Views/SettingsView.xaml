@@ -16,7 +16,7 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel>
-                    <TextBlock Text="⚙️ Application Settings &amp; Appearance" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                    <TextBlock Text="⚙️ Application Settings &amp; Appearance" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                     <TextBlock Text="Configure user interface theme, safety boundaries, and retention policies." FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
                 </StackPanel>
                 <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">

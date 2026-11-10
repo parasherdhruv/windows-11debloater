@@ -11,6 +11,7 @@
         WindowStartupLocation="CenterScreen"
         Icon="Assets/app.ico"
         Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
         FontFamily="{StaticResource SegoeFluent}">
 
     <Window.Resources>
@@ -100,35 +101,35 @@
                         <RadioButton Style="{DynamicResource NavRadioButton}" IsChecked="True" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Dashboard">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="📊" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="📊" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Dashboard" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="AppDebloater">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🗑️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🗑️" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="App Debloater" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="SoftwareCenter">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="📦" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="📦" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Software Center" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="StartupManager">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🚀" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🚀" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Startup Manager" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="ServicesManager">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="⚙️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="⚙️" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Windows Services" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
@@ -138,35 +139,35 @@
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Privacy">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🔒" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🔒" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Privacy &amp; Telemetry" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Optimization">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="✨" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="✨" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Windows Tweaks" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="Gaming">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🎮" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🎮" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Gaming Mode" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="SystemCleaner">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🧹" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🧹" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="System Cleaner" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="CustomTweaks">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🛠️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🛠️" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Custom Tweaks" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
@@ -176,14 +177,14 @@
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="RestoreCenter">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="🛡️" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="🛡️" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Restore Center" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>
                         <RadioButton Style="{DynamicResource NavRadioButton}" GroupName="SidebarNavGroup"
                                      Command="{Binding NavigateCommand}" CommandParameter="ActivityLogs">
                             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="📜" Width="22" FontSize="13.5" TextAlignment="Center" Margin="0,0,10,0" />
+                                <TextBlock Text="📜" Width="22" FontSize="13.5" TextAlignment="Center" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,10,0" />
                                 <TextBlock Text="Activity Logs" FontSize="13" VerticalAlignment="Center" />
                             </StackPanel>
                         </RadioButton>

@@ -168,7 +168,7 @@
                                         <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
                                             <TextBlock Text="{Binding Name}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
                                             <Border Style="{DynamicResource StatusBadge}" Margin="8,0,0,0" Visibility="{Binding RequiresAdmin, Converter={StaticResource BoolToVisConverter}}">
-                                                <TextBlock Text="🛡️ Admin Required" FontSize="9" Foreground="{DynamicResource WarningBrush}" />
+                                                <TextBlock Text="🛡️ Admin Required" FontSize="9" Foreground="{DynamicResource WarningBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                                             </Border>
                                         </StackPanel>
                                         <TextBlock Text="{Binding Description}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" Margin="0,0,0,2" />
@@ -255,7 +255,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="🛡️ User personal files strictly protected" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource SuccessBrush}" />
+                        <TextBlock Text="🛡️ User personal files strictly protected" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource SuccessBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <Button Content="Cancel" Style="{DynamicResource ModernButton}" Command="{Binding CancelModalCommand}" Margin="0,0,8,0" IsEnabled="{Binding IsNotExecuting}" />
                             <Button Content="Confirm &amp; Clean Files" Style="{DynamicResource DangerButton}" Command="{Binding ExecuteCleanCommand}" IsEnabled="{Binding IsNotExecuting}" />

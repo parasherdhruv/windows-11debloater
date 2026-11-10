@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="🔒 Privacy &amp; Telemetry Management" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="🔒 Privacy &amp; Telemetry Management" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                 <TextBlock Text="Documented Windows registry controls to minimize telemetry, disable tracking beacons, and prevent background cloud sync safely." 
                            FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
@@ -229,7 +229,7 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
-                        <TextBlock Text="🛡️ Reversible via Restore Center" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource SuccessBrush}" />
+                        <TextBlock Text="🛡️ Reversible via Restore Center" VerticalAlignment="Center" FontSize="11" Foreground="{DynamicResource SuccessBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                         <StackPanel Grid.Column="1" Orientation="Horizontal">
                             <Button Content="Cancel" Style="{DynamicResource ModernButton}" Command="{Binding CancelPlanCommand}" Margin="0,0,8,0" IsEnabled="{Binding IsNotExecuting}" />
                             <Button Content="Confirm &amp; Apply" Style="{DynamicResource AccentButton}" Command="{Binding ExecutePlanCommand}" IsEnabled="{Binding IsNotExecuting}" />

@@ -38,6 +38,8 @@
     <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
     <SolidColorBrush x:Key="DangerBrush" Color="{StaticResource DangerColor}" />
     <SolidColorBrush x:Key="BadgeBackgroundBrush" Color="{StaticResource BadgeBackgroundColor}" />
+    <SolidColorBrush x:Key="IconBadgeBackgroundBrush" Color="#222228" />
+    <SolidColorBrush x:Key="IconForegroundBrush" Color="{StaticResource AccentLightColor}" />
     <SolidColorBrush x:Key="NavHoverBrush" Color="#14FFFFFF" />
     <SolidColorBrush x:Key="NavSelectedBrush" Color="#1EFFFFFF" />
     <SolidColorBrush x:Key="NavSelectedTextBrush" Color="#FFFFFF" />
@@ -74,7 +76,8 @@
     <conv:RiskToBrushConverter x:Key="RiskToBrushConverter" />
 
     <!-- Typography -->
-    <FontFamily x:Key="SegoeFluent">Segoe UI Variable Display, Segoe UI, -apple-system, BlinkMacSystemFont, Arial</FontFamily>
+    <FontFamily x:Key="SegoeFluent">Segoe UI Variable Display, Segoe UI, Segoe UI Emoji, -apple-system, BlinkMacSystemFont, Arial</FontFamily>
+    <FontFamily x:Key="SegoeEmoji">Segoe UI Emoji, Segoe UI Variable Display, Segoe UI</FontFamily>
 
     <!-- Windows 11 Fluent ScrollBar Styles -->
     <Style x:Key="FluentScrollThumb" TargetType="Thumb">
@@ -260,6 +263,8 @@
         <Setter Property="CornerRadius" Value="10" />
         <Setter Property="Padding" Value="16" />
         <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="TextElement.Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="TextElement.FontFamily" Value="{StaticResource SegoeFluent}" />
     </Style>
 
     <!-- Elevated Fluent Card with Highlight border -->
@@ -285,7 +290,9 @@
                     <Border x:Name="border" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="7">
+                            CornerRadius="7"
+                            TextElement.Foreground="{TemplateBinding Foreground}"
+                            TextElement.FontFamily="{TemplateBinding FontFamily}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -317,7 +324,9 @@
                     <Border x:Name="border" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="7">
+                            CornerRadius="7"
+                            TextElement.Foreground="{TemplateBinding Foreground}"
+                            TextElement.FontFamily="{TemplateBinding FontFamily}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -350,7 +359,9 @@
                     <Border x:Name="border" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
-                            CornerRadius="7">
+                            CornerRadius="7"
+                            TextElement.Foreground="{TemplateBinding Foreground}"
+                            TextElement.FontFamily="{TemplateBinding FontFamily}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Margin="{TemplateBinding Padding}" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -564,7 +575,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border x:Name="navBorder" Background="{TemplateBinding Background}" CornerRadius="6" Margin="0,1.5" Height="36">
+                    <Border x:Name="navBorder" Background="{TemplateBinding Background}" 
+                            TextElement.Foreground="{TemplateBinding Foreground}"
+                            TextElement.FontFamily="{TemplateBinding FontFamily}"
+                            CornerRadius="6" Margin="0,1.5" Height="36">
                         <Grid>
                             <!-- Windows 11 Active Indicator Pill on the left -->
                             <Rectangle x:Name="indicator" Width="3" Height="18" Fill="{DynamicResource NavIndicatorBrush}" 
@@ -588,6 +602,18 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Default Application TextBlock Style -->
+    <Style TargetType="TextBlock">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource SegoeFluent}" />
+    </Style>
+
+    <!-- Default Application ListBoxItem Style -->
+    <Style TargetType="ListBoxItem">
+        <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+        <Setter Property="FontFamily" Value="{StaticResource SegoeFluent}" />
     </Style>
 
     <!-- Badge Style -->

@@ -108,31 +108,48 @@
 
                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
                         <ListBox ItemsSource="{Binding Backups}" SelectedItem="{Binding SelectedBackup}" Background="Transparent" BorderThickness="0">
+                            <ListBox.ItemContainerStyle>
+                                <Style TargetType="ListBoxItem">
+                                    <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}" />
+                                    <Setter Property="Margin" Value="0,1" />
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="Cursor" Value="Hand" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14,10" Margin="0,0,0,6">
+                                    <Border Background="{DynamicResource SubCardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12,10" Margin="0,0,0,6">
                                         <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="Auto" />
-                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" Background="{DynamicResource IconBadgeBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0,0,12,0" VerticalAlignment="Center">
+                                                <TextBlock Text="🛡️" FontSize="16" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                            </Border>
+                                            <Grid Grid.Column="1">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                    <RowDefinition Height="Auto" />
+                                                </Grid.RowDefinitions>
 
-                                            <!-- Row 0: Timestamp -->
-                                            <TextBlock Grid.Row="0" Text="{Binding BackupId}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                                                <!-- Row 0: Timestamp -->
+                                                <TextBlock Grid.Row="0" Text="{Binding BackupId}" FontSize="13" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
 
-                                            <!-- Row 1: Profile -->
-                                            <TextBlock Grid.Row="1" Text="{Binding TriggerProfile}" FontSize="12" Foreground="{DynamicResource AccentBrush}" Margin="0,2,0,4" />
+                                                <!-- Row 1: Profile -->
+                                                <TextBlock Grid.Row="1" Text="{Binding TriggerProfile}" FontSize="12" Foreground="{DynamicResource AccentLightBrush}" Margin="0,2,0,4" />
 
-                                            <!-- Row 2: Counts -->
-                                            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                                                <Border Style="{DynamicResource StatusBadge}" Margin="0,0,6,0">
-                                                    <TextBlock Text="{Binding RegistryEntriesCount, StringFormat='{}{0} Reg'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                                </Border>
-                                                <Border Style="{DynamicResource StatusBadge}">
-                                                    <TextBlock Text="{Binding ServicesCount, StringFormat='{}{0} Svc'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
-                                                </Border>
-                                            </StackPanel>
+                                                <!-- Row 2: Counts -->
+                                                <StackPanel Grid.Row="2" Orientation="Horizontal">
+                                                    <Border Style="{DynamicResource StatusBadge}" Margin="0,0,6,0">
+                                                        <TextBlock Text="{Binding RegistryEntriesCount, StringFormat='{}{0} Reg'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                    </Border>
+                                                    <Border Style="{DynamicResource StatusBadge}">
+                                                        <TextBlock Text="{Binding ServicesCount, StringFormat='{}{0} Svc'}" FontSize="10" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                                    </Border>
+                                                </StackPanel>
+                                            </Grid>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -211,7 +228,7 @@
 
                         <Border Background="{DynamicResource BannerBackgroundBrush}" BorderBrush="{DynamicResource BannerBorderBrush}" BorderThickness="1" CornerRadius="6" Padding="14">
                             <StackPanel>
-                                <TextBlock Text="💡 About Emergency Rollback" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,0,0,4" />
+                                <TextBlock Text="💡 About Emergency Rollback" FontSize="12" FontWeight="Bold" Foreground="{DynamicResource AccentLightBrush}" FontFamily="{DynamicResource SegoeEmoji}" Margin="0,0,0,4" />
                                 <TextBlock Text="Each snapshot creates a standalone .reg file located in the 'registry' subfolder. Even if Win11 Control Center is closed or uninstalled, double-clicking 'pre_apply_rollback.reg' in Windows Explorer will instantly restore all registry settings to their pre-modification state." 
                                            FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" TextWrapping="Wrap" />
                             </StackPanel>

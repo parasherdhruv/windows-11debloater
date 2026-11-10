@@ -22,7 +22,7 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel>
-                <TextBlock Text="📜 Activity &amp; Audit Logs" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" />
+                <TextBlock Text="📜 Activity &amp; Audit Logs" FontSize="24" FontWeight="Bold" Foreground="{DynamicResource TextPrimaryBrush}" FontFamily="{DynamicResource SegoeEmoji}" />
                 <TextBlock Text="Chronological, persistent record of all operations, validations, and rollbacks executed by Win11 Control Center." 
                            FontSize="13" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,4,0,0" />
             </StackPanel>
@@ -65,6 +65,7 @@
             <Grid>
                 <DataGrid ItemsSource="{Binding FilteredEntries}" AutoGenerateColumns="False" IsReadOnly="True" 
                           Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
+                          RowBackground="Transparent" AlternatingRowBackground="Transparent"
                           GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
                           RowHeight="40">
                     <DataGrid.Columns>
@@ -201,7 +202,7 @@
                 <!-- Empty State Indicator -->
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
                             Visibility="{Binding FilteredEntries.Count, Converter={StaticResource CountToVisConverter}, ConverterParameter=Inverse}">
-                    <TextBlock Text="📋" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10" Opacity="0.6" />
+                    <TextBlock Text="📋" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10" Foreground="{DynamicResource IconForegroundBrush}" FontFamily="{DynamicResource SegoeEmoji}" Opacity="0.85" />
                     <TextBlock Text="No activity logs found" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center" />
                     <TextBlock Text="Operations and audit events will appear here chronologically." FontSize="12" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center" Margin="0,4,0,0" />
                 </StackPanel>

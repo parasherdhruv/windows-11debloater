@@ -95,7 +95,7 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <TextBlock Text="⚠️" FontSize="20" VerticalAlignment="Center" Margin="0,0,12,0" />
+                    <TextBlock Text="⚠️" FontSize="20" Foreground="{DynamicResource WarningBrush}" FontFamily="{DynamicResource SegoeEmoji}" VerticalAlignment="Center" Margin="0,0,12,0" />
                     <StackPanel Grid.Column="1">
                         <TextBlock Text="Pending System Restart Detected" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource WarningBrush}" />
                         <TextBlock Text="Windows has pending servicing or update file rename operations queued. It is recommended to restart before applying major system modifications." FontSize="12" Foreground="{DynamicResource TextPrimaryBrush}" Margin="0,2,0,0" TextWrapping="Wrap" />

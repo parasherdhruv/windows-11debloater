@@ -190,6 +190,8 @@ public class ThemeService : IThemeService
                 res["TextSecondaryBrush"] = new SolidColorBrush(Color.FromRgb(0x47, 0x55, 0x69));
                 res["TextMutedBrush"] = new SolidColorBrush(Color.FromRgb(0x8B, 0x95, 0xA5));
                 res["BadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0xE2, 0xE4, 0xEC));
+                res["IconBadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0xEA, 0xEC, 0xF2));
+                res["IconForegroundBrush"] = new SolidColorBrush(Color.FromRgb(0x00, 0x67, 0xB8));
                 res["NavHoverBrush"] = new SolidColorBrush(Color.FromArgb(0x10, 0x00, 0x00, 0x00));
                 res["NavSelectedBrush"] = new SolidColorBrush(Color.FromArgb(0x18, 0x00, 0x67, 0xB8));
                 res["NavSelectedTextBrush"] = new SolidColorBrush(Color.FromRgb(0x00, 0x67, 0xB8));
@@ -230,6 +232,8 @@ public class ThemeService : IThemeService
                 res["TextSecondaryBrush"] = new SolidColorBrush(Color.FromRgb(0xA1, 0xA1, 0xAA));
                 res["TextMutedBrush"] = new SolidColorBrush(Color.FromRgb(0x65, 0x65, 0x72));
                 res["BadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0x18, 0x18, 0x22));
+                res["IconBadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0x14, 0x14, 0x1A));
+                res["IconForegroundBrush"] = new SolidColorBrush(Color.FromRgb(0x7D, 0xD3, 0xFC));
                 res["NavHoverBrush"] = new SolidColorBrush(Color.FromArgb(0x15, 0xFF, 0xFF, 0xFF));
                 res["NavSelectedBrush"] = new SolidColorBrush(Color.FromArgb(0x28, 0x38, 0xBD, 0xF8));
                 res["NavSelectedTextBrush"] = new SolidColorBrush(Color.FromRgb(0x38, 0xBD, 0xF8));
@@ -270,6 +274,8 @@ public class ThemeService : IThemeService
                 res["TextSecondaryBrush"] = new SolidColorBrush(Color.FromRgb(0x94, 0xA3, 0xB8));
                 res["TextMutedBrush"] = new SolidColorBrush(Color.FromRgb(0x64, 0x74, 0x8B));
                 res["BadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0x17, 0x23, 0x3D));
+                res["IconBadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0x16, 0x20, 0x32));
+                res["IconForegroundBrush"] = new SolidColorBrush(Color.FromRgb(0x60, 0xA5, 0xFA));
                 res["NavHoverBrush"] = new SolidColorBrush(Color.FromArgb(0x15, 0x60, 0xA5, 0xFA));
                 res["NavSelectedBrush"] = new SolidColorBrush(Color.FromArgb(0x28, 0x3B, 0x82, 0xF6));
                 res["NavSelectedTextBrush"] = new SolidColorBrush(Color.FromRgb(0x60, 0xA5, 0xFA));
@@ -310,6 +316,8 @@ public class ThemeService : IThemeService
                 res["TextSecondaryBrush"] = new SolidColorBrush(Color.FromRgb(0xA1, 0xA1, 0xAA));
                 res["TextMutedBrush"] = new SolidColorBrush(Color.FromRgb(0x71, 0x71, 0x7A));
                 res["BadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0x27, 0x27, 0x2A));
+                res["IconBadgeBackgroundBrush"] = new SolidColorBrush(Color.FromRgb(0x22, 0x22, 0x28));
+                res["IconForegroundBrush"] = new SolidColorBrush(Color.FromRgb(0x60, 0xCD, 0xFF));
                 res["NavHoverBrush"] = new SolidColorBrush(Color.FromArgb(0x14, 0xFF, 0xFF, 0xFF));
                 res["NavSelectedBrush"] = new SolidColorBrush(Color.FromArgb(0x1E, 0xFF, 0xFF, 0xFF));
                 res["NavSelectedTextBrush"] = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
