@@ -60,60 +60,152 @@
             </Grid>
         </Border>
 
-        <!-- Data Grid -->
-        <Border Grid.Row="2" Background="{DynamicResource CardBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="12">
-            <DataGrid ItemsSource="{Binding FilteredEntries}" AutoGenerateColumns="False" IsReadOnly="True" 
-                      Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
-                      GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}">
-                <DataGrid.Columns>
-                    <!-- Timestamp -->
-                    <DataGridTextColumn Header="Timestamp" Binding="{Binding ExecutedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}" Width="150" />
+        <!-- Data Grid Container -->
+        <Border Grid.Row="2" Style="{DynamicResource FluentCard}" Padding="0" ClipToBounds="True">
+            <Grid>
+                <DataGrid ItemsSource="{Binding FilteredEntries}" AutoGenerateColumns="False" IsReadOnly="True" 
+                          Background="Transparent" BorderThickness="0" HeadersVisibility="Column"
+                          GridLinesVisibility="Horizontal" HorizontalGridLinesBrush="{DynamicResource BorderBrush}"
+                          RowHeight="40">
+                    <DataGrid.Columns>
+                        <!-- Timestamp -->
+                        <DataGridTemplateColumn Header="Timestamp" Width="160">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ExecutedAt, StringFormat='{}{0:yyyy-MM-dd HH:mm:ss}'}" 
+                                               FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" 
+                                               VerticalAlignment="Center" Margin="14,0,0,0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <!-- Status Badge -->
-                    <DataGridTemplateColumn Header="Status" Width="100">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Border Style="{DynamicResource StatusBadge}" HorizontalAlignment="Center">
-                                    <TextBlock FontSize="10" FontWeight="SemiBold">
-                                        <TextBlock.Style>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="Text" Value="{Binding Status}" />
-                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                        <!-- Status Badge -->
+                        <DataGridTemplateColumn Header="Status" Width="120">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border HorizontalAlignment="Left" CornerRadius="12" Padding="8,3" BorderThickness="1" Margin="8,0,0,0">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="{DynamicResource PillRailBackgroundBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Status}" Value="Succeeded">
-                                                        <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                        <Setter Property="Background" Value="{DynamicResource SuccessBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource SuccessBorderBrush}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="Failed">
-                                                        <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+                                                        <Setter Property="Background" Value="{DynamicResource DangerBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}" />
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Status}" Value="RolledBack">
-                                                        <Setter Property="Foreground" Value="{DynamicResource WarningBrush}" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Status}" Value="Skipped">
-                                                        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                        <Setter Property="Background" Value="{DynamicResource WarningBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
-                                        </TextBlock.Style>
-                                    </TextBlock>
-                                </Border>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                                        </Border.Style>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock FontSize="10" FontWeight="Bold" Margin="0,0,4,0">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Text" Value="↷" />
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Succeeded">
+                                                                <Setter Property="Text" Value="✓" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Failed">
+                                                                <Setter Property="Text" Value="✕" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="RolledBack">
+                                                                <Setter Property="Text" Value="↺" />
+                                                                <Setter Property="Foreground" Value="{DynamicResource WarningBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold">
+                                                <TextBlock.Style>
+                                                    <Style TargetType="TextBlock">
+                                                        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Succeeded">
+                                                                <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="Failed">
+                                                                <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Status}" Value="RolledBack">
+                                                                <Setter Property="Foreground" Value="{DynamicResource WarningBrush}" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBlock.Style>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <!-- Category -->
-                    <DataGridTextColumn Header="Category" Binding="{Binding Category}" Width="150" />
+                        <!-- Category -->
+                        <DataGridTemplateColumn Header="Category" Width="150">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" 
+                                            BorderThickness="1" CornerRadius="6" Padding="6,2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="8,0,0,0">
+                                        <TextBlock Text="{Binding Category}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <!-- Operation Name -->
-                    <DataGridTextColumn Header="Operation" Binding="{Binding Name}" Width="200" />
+                        <!-- Operation Name -->
+                        <DataGridTemplateColumn Header="Operation" Width="200">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" FontWeight="SemiBold" FontSize="12.5" 
+                                               Foreground="{DynamicResource TextPrimaryBrush}" 
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <!-- Target -->
-                    <DataGridTextColumn Header="Target" Binding="{Binding Target}" Width="220" />
+                        <!-- Target -->
+                        <DataGridTemplateColumn Header="Target" Width="220">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Target}" FontSize="12" 
+                                               Foreground="{DynamicResource AccentLightBrush}" 
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="8,0,0,0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <!-- Result / Message -->
-                    <DataGridTextColumn Header="Result Message" Binding="{Binding ResultMessage}" Width="*" />
-                </DataGrid.Columns>
-            </DataGrid>
+                        <!-- Result / Message -->
+                        <DataGridTemplateColumn Header="Result Message" Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ResultMessage}" FontSize="12" 
+                                               Foreground="{DynamicResource TextSecondaryBrush}" 
+                                               VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="8,0,14,0" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Empty State Indicator -->
+                <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center" 
+                            Visibility="{Binding FilteredEntries.Count, Converter={StaticResource CountToVisConverter}, ConverterParameter=Inverse}">
+                    <TextBlock Text="📋" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10" Opacity="0.6" />
+                    <TextBlock Text="No activity logs found" FontSize="14" FontWeight="SemiBold" Foreground="{DynamicResource TextPrimaryBrush}" HorizontalAlignment="Center" />
+                    <TextBlock Text="Operations and audit events will appear here chronologically." FontSize="12" Foreground="{DynamicResource TextMutedBrush}" HorizontalAlignment="Center" Margin="0,4,0,0" />
+                </StackPanel>
+            </Grid>
         </Border>
     </Grid>
 </UserControl>

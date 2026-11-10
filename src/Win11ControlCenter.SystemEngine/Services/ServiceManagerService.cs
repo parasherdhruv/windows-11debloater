@@ -1,4 +1,6 @@
+using System.Runtime.InteropServices;
 using System.ServiceProcess;
+using System.Text;
 using Microsoft.Win32;
 using Win11ControlCenter.Core.Enums;
 using Win11ControlCenter.Core.Interfaces;
@@ -34,6 +36,8 @@ public class ServiceManagerService : IServiceManagerService
                         var name = sc.ServiceName;
                         var isCore = CoreWindowsServices.IsProtectedService(name);
                         var (desc, startType, binaryPath, account) = ReadServiceRegistryDetails(name);
+                        var cleanDisplayName = string.IsNullOrWhiteSpace(sc.DisplayName) ? name : sc.DisplayName;
+                        var finalDesc = !string.IsNullOrWhiteSpace(desc) ? desc : $"{cleanDisplayName} background service.";
 
                         var category = isCore ? ServiceCategory.CoreWindows : CategorizeService(name, sc.DisplayName);
                         var risk = isCore ? OperationRiskLevel.Critical : CalculateServiceRisk(category);
@@ -41,8 +45,8 @@ public class ServiceManagerService : IServiceManagerService
                         var item = new WindowsServiceItem
                         {
                             ServiceName = name,
-                            DisplayName = string.IsNullOrWhiteSpace(sc.DisplayName) ? name : sc.DisplayName,
-                            Description = desc,
+                            DisplayName = cleanDisplayName,
+                            Description = finalDesc,
                             Status = sc.Status.ToString(),
                             StartupType = startType,
                             OriginalStartupType = startType,
@@ -189,6 +193,39 @@ public class ServiceManagerService : IServiceManagerService
         }
     }
 
+    [DllImport("shlwapi.dll", BestFitMapping = false, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = false, ThrowOnUnmappableChar = true)]
+    private static extern int SHLoadIndirectString(string pszSourceString, StringBuilder pszOutBuf, int cchOutBuf, IntPtr ppvReserved);
+
+    public static string ResolveIndirectString(string raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+        var trimmed = raw.Trim();
+        if (!trimmed.StartsWith("@")) return trimmed;
+
+        try
+        {
+            var sb = new StringBuilder(1024);
+            int hr = SHLoadIndirectString(trimmed, sb, sb.Capacity, IntPtr.Zero);
+            if (hr == 0 && sb.Length > 0)
+            {
+                return sb.ToString();
+            }
+        }
+        catch { }
+
+        // If SHLoadIndirectString did not resolve it (e.g. INF strings with semicolon descriptions), extract text after semicolon
+        if (trimmed.Contains(';'))
+        {
+            var parts = trimmed.Split(';', 2);
+            if (parts.Length > 1 && !string.IsNullOrWhiteSpace(parts[1]))
+            {
+                return parts[1].Trim();
+            }
+        }
+
+        return string.Empty;
+    }
+
     private static (string Description, string StartupType, string BinaryPath, string Account) ReadServiceRegistryDetails(string serviceName)
     {
         string desc = string.Empty;
@@ -201,7 +238,8 @@ public class ServiceManagerService : IServiceManagerService
             using var key = Registry.LocalMachine.OpenSubKey(@$"SYSTEM\CurrentControlSet\Services\{serviceName}", false);
             if (key != null)
             {
-                desc = key.GetValue("Description")?.ToString() ?? string.Empty;
+                var rawDesc = key.GetValue("Description")?.ToString() ?? string.Empty;
+                desc = ResolveIndirectString(rawDesc);
                 binaryPath = key.GetValue("ImagePath")?.ToString() ?? string.Empty;
                 account = key.GetValue("ObjectName")?.ToString() ?? "LocalSystem";
 

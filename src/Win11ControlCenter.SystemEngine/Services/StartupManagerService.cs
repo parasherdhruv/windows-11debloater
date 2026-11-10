@@ -128,7 +128,16 @@ public class StartupManagerService : IStartupManagerService
 
             foreach (var valName in key.GetValueNames())
             {
+                if (string.IsNullOrWhiteSpace(valName) || 
+                    string.Equals(valName, "desktop", StringComparison.OrdinalIgnoreCase) || 
+                    string.Equals(valName, "desktop.ini", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 var command = key.GetValue(valName)?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(command)) continue;
+
                 var exePath = ExtractExecutablePath(command);
                 var exists = !string.IsNullOrEmpty(exePath) && File.Exists(exePath);
 
@@ -157,7 +166,16 @@ public class StartupManagerService : IStartupManagerService
 
             foreach (var file in Directory.GetFiles(folderPath))
             {
+                var fileName = Path.GetFileName(file);
+                if (string.Equals(fileName, "desktop.ini", StringComparison.OrdinalIgnoreCase) ||
+                    file.EndsWith(".ini", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
                 var name = Path.GetFileNameWithoutExtension(file);
+                if (string.IsNullOrWhiteSpace(name)) continue;
+
                 results.Add(new StartupEntry
                 {
                     Name = name,

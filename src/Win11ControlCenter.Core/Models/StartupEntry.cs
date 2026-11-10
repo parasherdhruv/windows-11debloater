@@ -12,6 +12,14 @@ public class StartupEntry
     
     public StartupLocationType LocationType { get; set; } = StartupLocationType.RegistryCurrentUser;
     public string RegistryKeyPath { get; set; } = string.Empty;
+    public string LocationText => LocationType switch
+    {
+        StartupLocationType.RegistryCurrentUser => "User Registry",
+        StartupLocationType.RegistryLocalMachine => "System Registry",
+        StartupLocationType.UserStartupFolder => "Startup Folder",
+        StartupLocationType.CommonStartupFolder => "Common Startup",
+        _ => LocationType.ToString()
+    };
     
     public bool IsEnabled { get; set; } = true;
     public string StatusText => IsEnabled ? "Enabled" : "Disabled";

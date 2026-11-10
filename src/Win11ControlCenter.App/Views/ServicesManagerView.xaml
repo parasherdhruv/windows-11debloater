@@ -52,68 +52,162 @@
             </Grid.ColumnDefinitions>
 
             <!-- Left: Services List -->
-            <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Padding="0" Margin="0,0,12,0">
+            <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Padding="6,8" Margin="0,0,12,0">
                 <ListBox ItemsSource="{Binding Services}" SelectedItem="{Binding SelectedService}"
                          Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                     <ListBox.ItemContainerStyle>
                         <Style TargetType="ListBoxItem">
-                            <Setter Property="Padding" Value="9,6" />
-                            <Setter Property="BorderThickness" Value="0,0,0,1" />
-                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                            <Setter Property="Margin" Value="0,2" />
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Cursor" Value="Hand" />
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="ListBoxItem">
-                                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                            <ContentPresenter />
+                                        <Border x:Name="serviceCard" Background="{DynamicResource SubCardBackgroundBrush}" 
+                                                BorderBrush="{DynamicResource BorderBrush}" 
+                                                BorderThickness="1" 
+                                                CornerRadius="8" 
+                                                Padding="10,8">
+                                            <Grid>
+                                                <Rectangle x:Name="indicator" Width="3" Height="18" Fill="{DynamicResource AccentLightBrush}" 
+                                                           HorizontalAlignment="Left" RadiusX="1.5" RadiusY="1.5" Visibility="Collapsed" Margin="-6,0,0,0" />
+                                                <ContentPresenter Margin="2,0,0,0" />
+                                            </Grid>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
+                                                <Setter TargetName="serviceCard" Property="Background" Value="{DynamicResource SubCardHoverBrush}" />
+                                                <Setter TargetName="serviceCard" Property="BorderBrush" Value="{DynamicResource BorderHighlightBrush}" />
                                             </Trigger>
                                             <Trigger Property="IsSelected" Value="True">
-                                                <Setter Property="Background" Value="#2560CDFF" />
+                                                <Setter TargetName="serviceCard" Property="Background" Value="{DynamicResource CardElevatedBackgroundBrush}" />
+                                                <Setter TargetName="serviceCard" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                                <Setter TargetName="indicator" Property="Visibility" Value="Visible" />
                                             </Trigger>
                                         </ControlTemplate.Triggers>
                                     </ControlTemplate>
                                 </Setter.Value>
                             </Setter>
                         </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                                    <!-- Service Info -->
-                                    <StackPanel Grid.Column="0" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
-                                            <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" Margin="8,0,0,0" 
-                                                    Visibility="{Binding IsCoreService, Converter={StaticResource BoolToVisConverter}}">
-                                                <TextBlock Text="🛡️ Core Protected" FontSize="11" Foreground="{DynamicResource WarningBrush}" />
-                                            </Border>
-                                        </StackPanel>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" TextTrimming="CharacterEllipsis" />
+                                <!-- Service Icon Badge -->
+                                <Border Grid.Column="0" Width="34" Height="34" CornerRadius="8" 
+                                        Background="{DynamicResource PillRailBackgroundBrush}" 
+                                        BorderBrush="{DynamicResource BorderBrush}" 
+                                        BorderThickness="1" 
+                                        VerticalAlignment="Center" 
+                                        Margin="0,0,12,0">
+                                    <TextBlock Text="⚙️" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+
+                                <!-- Service Info -->
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="13.5" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                        <Border CornerRadius="6" Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Padding="6,1" Margin="8,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding ServiceName}" FontSize="10.5" Foreground="{DynamicResource TextSecondaryBrush}" />
+                                        </Border>
+                                        <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" Margin="6,0,0,0" 
+                                                Visibility="{Binding IsCoreService, Converter={StaticResource BoolToVisConverter}}">
+                                            <TextBlock Text="🛡️ Core Protected" FontSize="10.5" Foreground="{DynamicResource WarningBrush}" FontWeight="SemiBold" />
+                                        </Border>
                                     </StackPanel>
+                                    <TextBlock Text="{Binding Description}" FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,3,0,0" TextTrimming="CharacterEllipsis" />
+                                </StackPanel>
 
-                                    <!-- Status Badge -->
-                                    <Border Grid.Column="1" Style="{DynamicResource StatusBadge}" Margin="10,0">
-                                        <TextBlock Text="{Binding Status}" FontSize="11" Foreground="{DynamicResource TextPrimaryBrush}" />
-                                    </Border>
+                                <!-- Status Badge with Colored Indicator Dot -->
+                                <Border Grid.Column="2" CornerRadius="12" Padding="9,3" BorderThickness="1" VerticalAlignment="Center" Margin="10,0">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource PillRailBackgroundBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Status}" Value="Running">
+                                                    <Setter Property="Background" Value="{DynamicResource SuccessBackgroundBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource SuccessBorderBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                        <TextBlock FontSize="10" FontWeight="Bold" Margin="0,0,4,0">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Text" Value="○" />
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Running">
+                                                            <Setter Property="Text" Value="●" />
+                                                            <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding Status}" FontSize="11" FontWeight="SemiBold">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Status}" Value="Running">
+                                                            <Setter Property="Foreground" Value="{DynamicResource SuccessBrush}" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </Border>
 
-                                    <!-- Startup Type Badge -->
-                                    <Border Grid.Column="2" Style="{DynamicResource StatusBadge}">
-                                        <TextBlock Text="{Binding StartupType}" FontSize="11" Foreground="{DynamicResource AccentBrush}" />
-                                    </Border>
-                                </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Border>
+                                <!-- Startup Type Badge -->
+                                <Border Grid.Column="3" CornerRadius="12" Padding="9,3" BorderThickness="1" VerticalAlignment="Center">
+                                    <Border.Style>
+                                        <Style TargetType="Border">
+                                            <Setter Property="Background" Value="{DynamicResource PillRailBackgroundBrush}" />
+                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding StartupType}" Value="Automatic">
+                                                    <Setter Property="Background" Value="{DynamicResource ChipBackgroundBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding StartupType}" Value="Disabled">
+                                                    <Setter Property="Background" Value="{DynamicResource DangerBackgroundBrush}" />
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <TextBlock Text="{Binding StartupType}" FontSize="11" FontWeight="SemiBold">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding StartupType}" Value="Automatic">
+                                                        <Setter Property="Foreground" Value="{DynamicResource AccentLightBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding StartupType}" Value="Disabled">
+                                                        <Setter Property="Foreground" Value="{DynamicResource DangerBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
 
                 <!-- Right: Service Detail Inspector -->
                 <Border Grid.Column="1" Style="{DynamicResource FluentCard}" Padding="16">

@@ -142,26 +142,37 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Left: Application List -->
-                <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Padding="0" Margin="0,0,12,0">
+                <Border Grid.Column="0" Style="{DynamicResource FluentCard}" Padding="6,8" Margin="0,0,12,0">
                     <ListBox ItemsSource="{Binding Packages}" SelectedItem="{Binding SelectedPackage}"
                              Background="Transparent" BorderThickness="0" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
-                                <Setter Property="Padding" Value="10,6" />
-                                <Setter Property="BorderThickness" Value="0,0,0,1" />
-                                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                <Setter Property="Margin" Value="0,2" />
+                                <Setter Property="Padding" Value="0" />
+                                <Setter Property="Cursor" Value="Hand" />
                                 <Setter Property="Template">
                                     <Setter.Value>
                                         <ControlTemplate TargetType="ListBoxItem">
-                                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
-                                                <ContentPresenter />
+                                            <Border x:Name="itemCard" Background="{DynamicResource SubCardBackgroundBrush}" 
+                                                    BorderBrush="{DynamicResource BorderBrush}" 
+                                                    BorderThickness="1" 
+                                                    CornerRadius="8" 
+                                                    Padding="10,8">
+                                                <Grid>
+                                                    <Rectangle x:Name="indicator" Width="3" Height="18" Fill="{DynamicResource AccentLightBrush}" 
+                                                               HorizontalAlignment="Left" RadiusX="1.5" RadiusY="1.5" Visibility="Collapsed" Margin="-6,0,0,0" />
+                                                    <ContentPresenter Margin="2,0,0,0" />
+                                                </Grid>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
-                                                    <Setter Property="Background" Value="{DynamicResource CardHoverBrush}" />
+                                                    <Setter TargetName="itemCard" Property="Background" Value="{DynamicResource SubCardHoverBrush}" />
+                                                    <Setter TargetName="itemCard" Property="BorderBrush" Value="{DynamicResource BorderHighlightBrush}" />
                                                 </Trigger>
                                                 <Trigger Property="IsSelected" Value="True">
-                                                    <Setter Property="Background" Value="#250078D4" />
+                                                    <Setter TargetName="itemCard" Property="Background" Value="{DynamicResource CardElevatedBackgroundBrush}" />
+                                                    <Setter TargetName="itemCard" Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                                                    <Setter TargetName="indicator" Property="Visibility" Value="Visible" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
@@ -174,31 +185,73 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
                                     <!-- Selection Checkbox -->
-                                    <CheckBox IsChecked="{Binding IsSelectedForRemoval, Mode=TwoWay}" IsEnabled="{Binding IsRemovable}" VerticalAlignment="Center" Margin="0,0,12,0" />
+                                    <CheckBox IsChecked="{Binding IsSelectedForRemoval, Mode=TwoWay}" IsEnabled="{Binding IsRemovable}" VerticalAlignment="Center" Margin="2,0,10,0" />
+
+                                    <!-- App Glyph / Icon Container -->
+                                    <Border Grid.Column="1" Width="34" Height="34" CornerRadius="8" 
+                                            Background="{DynamicResource PillRailBackgroundBrush}" 
+                                            BorderBrush="{DynamicResource BorderBrush}" 
+                                            BorderThickness="1" 
+                                            VerticalAlignment="Center" 
+                                            Margin="0,0,12,0">
+                                        <TextBlock Text="📦" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                    </Border>
 
                                     <!-- App Info -->
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal">
-                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="14" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
+                                    <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" FontSize="13.5" Foreground="{DynamicResource TextPrimaryBrush}" TextTrimming="CharacterEllipsis" />
                                             <Border Style="{DynamicResource StatusBadge}" Background="{DynamicResource WarningBackgroundBrush}" BorderBrush="{DynamicResource WarningBorderBrush}" Margin="8,0,0,0" 
                                                     Visibility="{Binding IsProtected, Converter={StaticResource BoolToVisConverter}}">
-                                                <TextBlock Text="🛡️ Protected" FontSize="11" Foreground="{DynamicResource WarningBrush}" />
+                                                <TextBlock Text="🛡️ Protected" FontSize="10.5" Foreground="{DynamicResource WarningBrush}" FontWeight="SemiBold" />
                                             </Border>
                                         </StackPanel>
-                                        <TextBlock Text="{Binding Publisher}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" Margin="0,2,0,0" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,3,0,0">
+                                            <TextBlock Text="{Binding Publisher}" FontSize="11.5" Foreground="{DynamicResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis" MaxWidth="220" />
+                                            <TextBlock Text=" • " FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Visibility="{Binding Version, Converter={StaticResource NullOrEmptyToVisConverter}}" />
+                                            <TextBlock Text="{Binding Version}" FontSize="11" Foreground="{DynamicResource TextMutedBrush}" Visibility="{Binding Version, Converter={StaticResource NullOrEmptyToVisConverter}}" />
+                                        </StackPanel>
                                     </StackPanel>
 
-                                    <!-- Size -->
-                                    <TextBlock Grid.Column="2" Text="{Binding SizeFormatted}" FontSize="12" Foreground="{DynamicResource TextSecondaryBrush}" VerticalAlignment="Center" Margin="12,0" />
+                                    <!-- Size Pill -->
+                                    <Border Grid.Column="3" Background="{DynamicResource PillRailBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" 
+                                            BorderThickness="1" CornerRadius="10" Padding="8,3" VerticalAlignment="Center" Margin="10,0">
+                                        <TextBlock Text="{Binding SizeFormatted}" FontSize="11" Foreground="{DynamicResource TextSecondaryBrush}" FontWeight="SemiBold" />
+                                    </Border>
 
-                                    <!-- Risk Badge -->
-                                    <Border Grid.Column="3" Style="{DynamicResource StatusBadge}">
+                                    <!-- Risk Badge with dynamic color tint -->
+                                    <Border Grid.Column="4" CornerRadius="12" Padding="9,3" BorderThickness="1" VerticalAlignment="Center">
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Setter Property="Background" Value="{DynamicResource PillRailBackgroundBrush}" />
+                                                <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Safe">
+                                                        <Setter Property="Background" Value="{DynamicResource SuccessBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource SuccessBorderBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Moderate">
+                                                        <Setter Property="Background" Value="{DynamicResource WarningBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource WarningBorderBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Advanced">
+                                                        <Setter Property="Background" Value="{DynamicResource DangerBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding RiskLevel}" Value="Critical">
+                                                        <Setter Property="Background" Value="{DynamicResource DangerBackgroundBrush}" />
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource DangerBorderBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <TextBlock Text="{Binding RiskLevel}" FontSize="11" Foreground="{Binding RiskLevel, Converter={StaticResource RiskToBrushConverter}}" FontWeight="SemiBold" />
                                     </Border>
                                 </Grid>

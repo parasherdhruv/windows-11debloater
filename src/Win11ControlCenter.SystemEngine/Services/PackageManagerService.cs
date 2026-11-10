@@ -1,5 +1,6 @@
 using System.IO;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
 using Win11ControlCenter.Core.Enums;
 using Win11ControlCenter.Core.Interfaces;
@@ -26,8 +27,8 @@ public class PackageManagerService : IPackageManagerService
 
         try
         {
-            // 1. Query Current User AppX/MSIX Packages via PowerShell runner
-            const string script = "Get-AppxPackage | Select-Object Name, PackageFullName, PackageFamilyName, Publisher, Version, InstallLocation | ConvertTo-Json -Compress";
+            // 1. Query Current User AppX/MSIX Packages via PowerShell runner (filtered for non-framework, removable user applications)
+            const string script = "Get-AppxPackage | Where-Object { -not $_.IsFramework -and -not $_.NonRemovable } | Select-Object Name, PackageFullName, PackageFamilyName, Publisher, Version, InstallLocation | ConvertTo-Json -Compress";
             var (success, output, error) = await PowerShellCommandRunner.RunSafeCommandAsync(script, cancellationToken);
 
             if (success && !string.IsNullOrWhiteSpace(output))
@@ -165,13 +166,15 @@ public class PackageManagerService : IPackageManagerService
                 catch { }
             }
 
+            var cleanPublisher = CleanPublisher(publisher);
+
             return new ApplicationPackage
             {
                 Name = name,
-                DisplayName = FormatDisplayName(name),
+                DisplayName = FormatDisplayName(name, cleanPublisher),
                 PackageFullName = fullName,
                 PackageFamilyName = familyName,
-                Publisher = CleanPublisher(publisher),
+                Publisher = cleanPublisher,
                 Version = version,
                 InstallLocation = installLocation,
                 PackageType = "AppX / MSIX",
@@ -238,10 +241,19 @@ public class PackageManagerService : IPackageManagerService
         return apps;
     }
 
-    private static string FormatDisplayName(string rawName)
+    private static string FormatDisplayName(string rawName, string? publisher = null)
     {
-        var cleaned = rawName.Replace("Microsoft.", "").Replace("Windows.", "");
-        return cleaned switch
+        // 1. Strip Store Publisher ID prefix hash e.g. "15EF7777.Crunchyroll" -> "Crunchyroll", "5319275A.WhatsAppDesktop" -> "WhatsAppDesktop"
+        var cleaned = Regex.Replace(rawName, @"^[0-9A-Za-z]{7,12}\.", "");
+
+        // 2. Remove standard namespace stubs
+        cleaned = cleaned.Replace("MicrosoftCorporationII.", "")
+                         .Replace("MicrosoftWindows.", "")
+                         .Replace("Microsoft.", "")
+                         .Replace("Windows.", "");
+
+        // 3. Known application name dictionary
+        var mapped = cleaned switch
         {
             "BingNews" => "Microsoft News",
             "BingWeather" => "MSN Weather",
@@ -250,21 +262,70 @@ public class PackageManagerService : IPackageManagerService
             "Clipchamp.Clipchamp" or "Clipchamp" => "Clipchamp Video Editor",
             "GamingApp" => "Xbox App",
             "XboxGamingOverlay" => "Xbox Game Bar",
+            "Xbox.TCUI" => "Xbox Live In-Game UI",
+            "XboxIdentityProvider" => "Xbox Identity Provider",
+            "XboxSpeechToTextOverlay" => "Xbox Speech-to-Text Overlay",
             "YourPhone" => "Phone Link",
             "Todos" => "Microsoft To Do",
             "PowerAutomateDesktop" => "Power Automate",
             "GetHelp" => "Get Help",
             "Getstarted" => "Tips / Get Started",
             "WindowsMaps" => "Windows Maps",
-            "ZuneMusic" => "Media Player",
+            "ZuneMusic" => "Windows Media Player",
             "ZuneVideo" => "Films & TV",
             "WindowsFeedbackHub" => "Feedback Hub",
             "MicrosoftOfficeHub" => "Microsoft 365 (Office)",
             "People" => "Microsoft People",
             "SkypeApp" => "Skype",
             "Cortana" or "549981C3F5F10" => "Cortana",
-            _ => rawName
+            "Crunchyroll" => "Crunchyroll",
+            "WhatsAppDesktop" or "WhatsApp" => "WhatsApp Desktop",
+            "AppUp.IntelGraphicsExperience" or "IntelGraphicsExperience" => "Intel Graphics Experience",
+            "NVIDIACorp.NVIDIAControlPanel" or "NVIDIAControlPanel" => "NVIDIA Control Panel",
+            "RealtekSemiconductorCorp.RealtekAudioControl" or "RealtekAudioControl" => "Realtek Audio Control",
+            "AdvancedMicroDevicesInc-RSXCM" => "AMD Radeon Software Companion",
+            "MicrosoftFamily" or "Family" => "Microsoft Family Safety",
+            "QuickAssist" => "Quick Assist",
+            "WindowsNotepad" or "Notepad" => "Notepad",
+            "WindowsCalculator" or "Calculator" => "Calculator",
+            "WindowsCamera" or "Camera" => "Camera",
+            "WindowsAlarms" or "Alarms" => "Clock & Alarms",
+            "WindowsSoundRecorder" or "SoundRecorder" => "Sound Recorder",
+            "ScreenSketch" => "Snipping Tool",
+            "MicrosoftStickyNotes" or "StickyNotes" => "Sticky Notes",
+            "WindowsTerminal" or "Terminal" => "Windows Terminal",
+            "Paint" => "Paint",
+            "OutlookForWindows" => "Outlook for Windows",
+            "PythonSoftwareFoundation.PythonManager" or "PythonManager" => "Python Manager",
+            "RazerDynamicLighting" => "Razer Dynamic Lighting",
+            "WidgetsPlatformRuntime" => "Windows Widgets Platform",
+            "StartExperiencesApp" => "Windows Start Experience",
+            "Client.WebExperience" or "WebExperience" => "Windows Web Experience",
+            "CrossDevice" => "Cross Device Experience Host",
+            "DevHome" => "Windows Dev Home",
+            "StorePurchaseApp" => "Microsoft Store Purchase Service",
+            "WindowsStore" => "Microsoft Store",
+            "Winget.Source" => "Winget Package Source Engine",
+            _ => null
         };
+
+        if (mapped != null) return mapped;
+
+        // 4. If package name is a raw GUID (e.g. sideloaded OEM stub like 65d483df-b37e...)
+        if (Regex.IsMatch(cleaned, @"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-"))
+        {
+            if (!string.IsNullOrWhiteSpace(publisher) && !publisher.Equals("Unknown", StringComparison.OrdinalIgnoreCase))
+            {
+                var pubClean = publisher.Trim('\"', ' ');
+                return $"{pubClean} Component";
+            }
+            return $"OEM Package ({cleaned.Substring(0, 8)}...)";
+        }
+
+        // 5. Expand CamelCase to readable words (e.g. "RealtekAudioControl" -> "Realtek Audio Control")
+        var formatted = Regex.Replace(cleaned, @"([a-z])([A-Z])", "$1 $2");
+        formatted = Regex.Replace(formatted, @"([A-Z]+)([A-Z][a-z])", "$1 $2");
+        return formatted.Trim();
     }
 
     private static string CleanPublisher(string rawPublisher)
@@ -279,7 +340,7 @@ public class PackageManagerService : IPackageManagerService
             return endIdx > cnIdx ? rawPublisher.Substring(cnIdx + 3, endIdx - cnIdx - 3) : rawPublisher.Substring(cnIdx + 3);
         }
 
-        return string.IsNullOrWhiteSpace(rawPublisher) ? "Unknown" : rawPublisher;
+        return string.IsNullOrWhiteSpace(rawPublisher) ? "Unknown" : rawPublisher.Trim('\"', ' ');
     }
 
     private static PackageCategory CategorizePackage(string name)
@@ -301,6 +362,8 @@ public class PackageManagerService : IPackageManagerService
             name.Contains("Todos", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Cortana", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("549981C3F5F10", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("Crunchyroll", StringComparison.OrdinalIgnoreCase) ||
+            name.Contains("WhatsApp", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Spotify", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Netflix", StringComparison.OrdinalIgnoreCase) ||
             name.Contains("Disney", StringComparison.OrdinalIgnoreCase) ||

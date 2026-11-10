@@ -44,11 +44,14 @@ public class CountToVisibilityConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
+        var isInverse = string.Equals(parameter?.ToString(), "Inverse", StringComparison.OrdinalIgnoreCase);
         if (value is int count)
         {
-            return count > 0 ? Visibility.Visible : Visibility.Collapsed;
+            var isPositive = count > 0;
+            var visible = isInverse ? !isPositive : isPositive;
+            return visible ? Visibility.Visible : Visibility.Collapsed;
         }
-        return Visibility.Collapsed;
+        return isInverse ? Visibility.Visible : Visibility.Collapsed;
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
