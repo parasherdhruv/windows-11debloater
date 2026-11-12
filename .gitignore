@@ -8,4 +8,6 @@ obj/
 *.suo
 *.userprefs
 TestResults/
+artifacts/
+
 
