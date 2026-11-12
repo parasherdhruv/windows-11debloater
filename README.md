@@ -122,3 +122,14 @@ $env:DOTNET_ROOT = "$env:USERPROFILE\.dotnet"; $env:PATH = "$env:USERPROFILE\.do
 dotnet build Win11ControlCenter.slnx
 dotnet run --project src/Win11ControlCenter.App
 ```
+
+### Option C: Install from GitHub Releases
+Download either `Win11ControlCenter-Setup-win-x64.exe` (Windows installer) or `Win11ControlCenter-win-x64.zip` (portable) from [GitHub Releases](https://github.com/parasherdhruv/windows-11debloater/releases).
+
+#### SmartScreen Notice & Checksum Verification
+Because official releases are built openly in GitHub Actions without a paid Authenticode code-signing certificate, Windows Defender SmartScreen may show *"Windows protected your PC"* on first launch:
+1. Click **More info → Run anyway** (or right-click the file → **Properties** → **Unblock**, or run `Unblock-File .\Win11ControlCenter-Setup-win-x64.exe`).
+2. Verify the download integrity against the `SHA256SUMS.txt` asset attached to each release:
+   ```powershell
+   Get-FileHash .\Win11ControlCenter-Setup-win-x64.exe -Algorithm SHA256
+   ```

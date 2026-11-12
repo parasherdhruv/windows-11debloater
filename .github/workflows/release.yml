@@ -54,12 +54,44 @@ jobs:
           & $iscc "/DMyAppVersion=$env:APP_VERSION" "/DSourceDir=${{ github.workspace }}\artifacts\Win11ControlCenter-win-x64" "installer\Win11ControlCenter.iss"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
+      - name: Generate SHA-256 checksums
+        id: checksums
+        shell: pwsh
+        run: |
+          $zipHash = (Get-FileHash "artifacts/Win11ControlCenter-win-x64.zip" -Algorithm SHA256).Hash.ToLowerInvariant()
+          $exeHash = (Get-FileHash "artifacts/Win11ControlCenter-Setup-win-x64.exe" -Algorithm SHA256).Hash.ToLowerInvariant()
+          @(
+            "$zipHash  Win11ControlCenter-win-x64.zip"
+            "$exeHash  Win11ControlCenter-Setup-win-x64.exe"
+          ) | Set-Content -Path "artifacts/SHA256SUMS.txt" -Encoding utf8
+          "zip_sha256=$zipHash" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+          "exe_sha256=$exeHash" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.ref_name }}
           generate_release_notes: true
+          body: |
+            ### Downloads
+            - **Installer (`Win11ControlCenter-Setup-win-x64.exe`)**: Standard Windows installer (Start Menu shortcut, optional Desktop icon, clean uninstaller).
+            - **Portable (`Win11ControlCenter-win-x64.zip`)**: Extract and run `Win11ControlCenter.App.exe` directly without installing.
+
+            > **SmartScreen Notice (Unsigned Open-Source Build)**
+            > Releases are compiled directly from source via GitHub Actions without a commercial Authenticode certificate, so Windows Defender SmartScreen may display *"Windows protected your PC"*. Click **More info → Run anyway** (or run `Unblock-File .\Win11ControlCenter-Setup-win-x64.exe`), and verify the SHA-256 hash below against `SHA256SUMS.txt`.
+
+            ### SHA-256 Checksums
+            ```text
+            Win11ControlCenter-Setup-win-x64.exe : ${{ steps.checksums.outputs.exe_sha256 }}
+            Win11ControlCenter-win-x64.zip       : ${{ steps.checksums.outputs.zip_sha256 }}
+            ```
+
+            Verify in PowerShell:
+            ```powershell
+            Get-FileHash .\Win11ControlCenter-Setup-win-x64.exe -Algorithm SHA256
+            ```
           files: |
             artifacts/Win11ControlCenter-win-x64.zip
             artifacts/Win11ControlCenter-Setup-win-x64.exe
+            artifacts/SHA256SUMS.txt
 
