@@ -1,4 +1,4 @@
-# Win11 Control Center v1.2.0
+# Win11 Control Center v1.2.2
 
 A modern, modular, and safety-first Windows 11 debloater, optimization dashboard, software installer, and system configuration center built in C# and .NET 10 LTS with WPF, MVVM (`CommunityToolkit.Mvvm`), and Dependency Injection.
 
@@ -10,10 +10,23 @@ A modern, modular, and safety-first Windows 11 debloater, optimization dashboard
 
 ---
 
+## Quick Navigation
+
+- [Core Philosophy](#core-philosophy)
+- [Complete 13-Module Feature Set](#complete-13-module-feature-set)
+- [10-Step Safe Execution Workflow](#10-step-safe-execution-workflow)
+- [Automated Test Suite (145 Tests)](#automated-test-suite)
+- [Building and Running](#building-and-running)
+- [Documentation Links](#documentation-links)
+- [Contributing](#contributing)
+- [License](#license)
+
+---
+
 ## Core Philosophy
 
-1. **Safety before performance**: Never disable or remove critical system infrastructure or core security providers.
-2. **Reversibility before convenience**: Every configuration change is backed up before modification with automatic rollback readiness.
+1. **Safety before performance**: Never disable or remove critical system infrastructure, boot components, or core security providers.
+2. **Reversibility before convenience**: Every configuration change is backed up before modification with automatic rollback readiness and emergency `.reg` generation.
 3. **Transparency before automation**: Detailed dry-run simulations, state diff previews, and selected items surfacing before execution.
 4. **User consent before system modifications**: Explicit review dialogs with clear risk tiers and dry-run toggles.
 5. **Measurable optimization instead of fake performance claims**: Genuine Windows APIs, performance counters, and registry keys; zero fake RAM-flushes or simulated FPS boosts.
@@ -23,11 +36,13 @@ A modern, modular, and safety-first Windows 11 debloater, optimization dashboard
 
 ## Complete 13-Module Feature Set
 
-1. **📊 Intelligent Dashboard**: Genuine hardware detection (CPU model, GPU model, RAM via `GlobalMemoryStatusEx`, storage via `DriveInfo`, active power scheme, administrator elevation status, and pending reboot flags from CBS and Windows Update). Read-only scan with zero system modifications.
+Win11 Control Center integrates 13 dedicated modules into a unified desktop interface:
+
+1. **📊 Intelligent Dashboard**: Genuine hardware detection (CPU model, GPU model, RAM via `GlobalMemoryStatusEx`, storage via `DriveInfo`, active power scheme, administrator elevation status, and pending reboot flags from CBS and Windows Update). Read-only scan with zero system mutations.
 2. **🗑️ Application Debloater**: Discovers installed AppX, MSIX, Provisioned packages (`AppxAllUserStore`), and traditional Win32 applications. Differentiates user profile installs from provisioned packages. Features an interactive **"Selected for Removal" Quick Shelf / Tray**, segmented tabs (`All Applications`, `Selected Only`, `Safe Recommendations`), and auto-pinning selected items to top. Protected package shields strictly prevent removal of Windows Shell, Store, Defender, or VCLibs dependencies.
 3. **📦 Essential Software Center (Winget)**: Curated bloat-free open-source software installer powered by the official Windows Package Manager (`winget.exe`). Allows single-click or batch installation of essential utilities (7-Zip, Notepad++, Everything Search, PowerToys, ShareX, FastStone), browsers (Firefox, Brave, LibreWolf), developer tools (VS Code, Git, Windows Terminal, Node.js, Python), media players (VLC, OBS Studio, HandBrake, Sumatra PDF), and privacy/notes tools (Bitwarden, Obsidian). Includes live progress streaming and strict Regex ID sanitization.
-4. **🚀 Startup Manager**: Audits Run registry keys (`HKCU`/`HKLM`) and Startup folders. Non-destructive enabling and disabling via `StartupApproved\Run` bitmasks (`0x02` vs `0x03`). Never deletes binary files.
-5. **⚙️ Windows Services Manager**: Comprehensive service manager with dependency graph inspection, startup type configuration (Automatic, Manual, Disabled), and service start/stop controls. Hardcoded safety shields protect 28 core Windows infrastructure services (`wuauserv`, `RpcSs`, `WinDefend`, `CryptSvc`, `Dhcp`, `Dnscache`, `AppXSvc`, etc.).
+4. **🚀 Startup Manager**: Audits Run registry keys (`HKCU`/`HKLM`) and Startup folders. Non-destructive enabling and disabling via `StartupApproved\Run` bitmasks (`0x02` vs `0x03`). Never deletes binary files. Includes file location explorer reveal and JSON export.
+5. **⚙️ Windows Services Manager**: Comprehensive service manager with dependency graph inspection, startup type configuration (Automatic, Manual, Disabled), and service start/stop controls. Hardcoded safety shields protect 31 core Windows infrastructure services (`wuauserv`, `RpcSs`, `WinDefend`, `CryptSvc`, `Dhcp`, `Dnscache`, `AppXSvc`, etc.). Includes JSON export.
 6. **🔒 Privacy & Telemetry**: Manages 10 standard Windows privacy settings (Advertising ID, Tailored Experiences, Diagnostic Data minimization to required baseline, Activity History cloud sync, Bing search in Start, App launch tracking, Settings suggestions) using documented registry mechanisms.
 7. **✨ Windows Tweaks & Optimization**: 5 predefined optimization profiles (Safe Cleanup, Balanced Optimization, Gaming Optimization, Privacy Focused, Minimal Windows) + an interactive Live Profile State Diff Inspector. Includes File Explorer usability tweaks (show extensions, show hidden files, compact view, reduce menu show delay) and `powercfg` scheme switching.
 8. **🎮 Gaming Mode Optimization**: Hardware-Accelerated GPU Scheduling (HAGS), Windows Game Mode prioritization, Game DVR background MP4 capture buffering elimination (preventing micro-stutters during disk-heavy scenes), Xbox broadcast capture suppression, and High Performance power scheme alignment.
@@ -35,7 +50,7 @@ A modern, modular, and safety-first Windows 11 debloater, optimization dashboard
 10. **🛠️ Custom Tweaks**: User-defined registry tweaks builder supporting `HKCU` and `HKLM`, subkeys, value names, types (`DWord`, `String`, `QWord`), and target/default values. Real-time safety validation blocks attempts to target critical security or boot hives (`SAM`, `SECURITY`, `BCD00000000`, `SafeBoot`, `KnownDLLs`).
 11. **🛡️ Restore Center**: Pre-optimization snapshot repository with collision-resistant timestamps and directory isolation. Generates emergency `pre_apply_rollback.reg` files for offline registry rollback directly through Windows Explorer. Integrates with Windows System Restore (`Checkpoint-Computer`) with description sanitization.
 12. **📜 Activity Logs**: Persistent JSONL audit trail (`audit.jsonl`) recording every operation, status (Succeeded, Failed, Skipped, RolledBack), and message. Includes status severity filtering, category filtering, search, and JSON export.
-13. **⚙️ Settings & Appearance**: Runtime theme switching between Fluent Dark Mode (Default) and Light Mode. Configuration for startup audits, restore point creation, and audit retention policies stored in `%APPDATA%\Win11ControlCenter\settings.json`.
+13. **⚙️ Settings & Appearance**: Runtime theme switching between Fluent Dark Mode (Default) and Light Mode. Configuration for startup audits, restore point creation, and audit retention policies stored in `%LOCALAPPDATA%\Win11ControlCenter\settings.json`.
 
 ---
 
@@ -73,7 +88,7 @@ Win11 Control Center includes **145 automated tests** passing with a 100% pass r
 - **54 Unit & Full Automation Feature Tests** (`Win11ControlCenter.UnitTests`):
   - **Full Application Automation Suite (`FullAppAutomationFeatureTests.cs`)**:
     - End-to-end verification of all 15 core feature workflows
-    - Full DI Container registration & resolution across all 14 services and 13 ViewModels
+    - Full DI Container registration & resolution across all 13 services and 13 ViewModels
     - Automated shell navigation across all 13 pages without dispatcher thread termination
     - Package discovery, Safe Bloat selection, Pin to Top, and Unselect chip tray
     - Software Center category filtering, catalog search, and dry-run execution
@@ -91,6 +106,7 @@ Win11 Control Center includes **145 automated tests** passing with a 100% pass r
   - Custom tweaks validation and storage
 
 ### Running the Full Application Automation Suite
+
 A dedicated PowerShell automation runner is included for an immediate live console walkthrough of all features:
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\run-full-automation.ps1
@@ -100,6 +116,11 @@ Or run all test suites via dotnet CLI:
 ```powershell
 $env:DOTNET_ROOT = "$env:USERPROFILE\.dotnet"; $env:PATH = "$env:USERPROFILE\.dotnet;$env:PATH"
 dotnet test
+```
+
+Or use the test runner script:
+```powershell
+powershell -ExecutionPolicy Bypass -File run-automation-tests.ps1
 ```
 
 ---
@@ -133,3 +154,26 @@ Because official releases are built openly in GitHub Actions without a paid Auth
    ```powershell
    Get-FileHash .\Win11ControlCenter-Setup-win-x64.exe -Algorithm SHA256
    ```
+
+---
+
+## Documentation Links
+
+- [Architecture Specification](docs/ARCHITECTURE.md) — Comprehensive technical architecture, dependency injection, and layers.
+- [Features Specification](docs/FEATURES.md) — Detailed breakdown of all 13 modules.
+- [Safety & Governance Specification](docs/SAFETY.md) — Hardcoded protected packages, core services, and forbidden anti-patterns.
+- [Rollback & Recovery Strategy](docs/ROLLBACK.md) — Pre-change snapshots, emergency `.reg` generation, and one-click restoration.
+- [Development Plan & Milestones](DEVELOPMENT_PLAN.md) — Phased development tracking and acceptance criteria.
+- [Contributing Guide](CONTRIBUTING.md) — Engineering principles, coding conventions, and pull request guidelines.
+
+---
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) before opening issues or submitting pull requests. All contributions must preserve system safety boundaries and include corresponding safety tests.
+
+---
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
